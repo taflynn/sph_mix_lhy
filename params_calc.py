@@ -3,7 +3,7 @@ from numpy import pi
 from equil_dens import eq_dens_lck
 from units import units,natural_consts
 
-def dens_lck_params(m1,m2,a11,a22,a12,N):
+def params_dens_lck(m1,m2,a11,a22,a12,N):
     """
     This function calculates the necessary dimensionless parameter for the density-locked mixture. 
     
@@ -37,9 +37,16 @@ def dens_lck_params(m1,m2,a11,a22,a12,N):
         g22 = 4*pi*hbar**2*a22/m2
         N_lck = (N/(n01*xi**3))*(np.sqrt(g22)/(np.sqrt(g11) + np.sqrt(g22)))
     
+    print('Calculating defining parameters and scales for density locked mixture:')
+    print('Effective atom number of density-locked mixture, N_lck = ',N_lck)
+    print('Lengthscale, xi = ',xi)
+    print('Timescale, tau = ',tau)
+    print('Equilibrium density of component 1, n01 = ',n01)
+    print('Equilibrium density of component 2, n02 = ',n02)
+    print(67*'-')
     return N_lck,xi,tau,n01,n02
 
-def eqm_dens_ulck_params(m1,m2,a11,a22,a12,N1,N2):
+def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
     """
     This function calculates the necessary dimensionless parameters for the density-unlocked mixture (though this is 
     currently only for the equal masses mixture). The outputs are hence:
@@ -55,7 +62,13 @@ def eqm_dens_ulck_params(m1,m2,a11,a22,a12,N1,N2):
     -> a12 - the interspecies scattering length
     -> N1,N2 - the two component atom numbers
     """
+    
+    # natural constants
+    [hbar,a0,Da] = natural_consts()
+    
     if m1 == m2:
+        a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
+        m1 = m1*Da; m2 = m2*Da
         # equilibrium densities equal masses solving coupled equations
         #n01,n02 = eq_dens_unlck_eqm(m1,m2,a11,a22,a12)
         
@@ -79,5 +92,14 @@ def eqm_dens_ulck_params(m1,m2,a11,a22,a12,N1,N2):
     elif m1 != m2:
         # equilibrium densities unequal masses
         print('Density-unlocked and unequal masses is not yet available')
+    
+    print('Calculating defining parameters and scales for density-unlocked mixture:')
+    print('Dimensionless parameters of mixture:')
+    print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
+    print('Lengthscale, xi = ',xi)
+    print('Timescale, tau = ',tau)
+    print('Equilibrium density of component 1, n01 = ',n01)
+    print('Equilibrium density of component 2, n02 = ',n02)
+    print(67*'-')
     
     return alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2

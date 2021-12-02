@@ -2,6 +2,9 @@ import numpy as np
 from numpy import pi
 
 def units(m1,m2,a11,a22,a12,n01):
+    """
+    
+    """
     # natural constants
     [hbar,a0,Da] = natural_consts()
 
@@ -11,7 +14,7 @@ def units(m1,m2,a11,a22,a12,n01):
         
         # length and time scaling
         xi = np.sqrt((3/(8*pi))*((np.sqrt(a11) + np.sqrt(a22))/(np.abs(delta_a)*np.sqrt(a11)*n01)))
-        tau = (3*m/(8*pi))*((np.sqrt(a11) + np.sqrt(a22))/(np.abs(delta_a)*np.sqrt(a11)*n01))
+        tau = (3*m/(8*pi*hbar))*((np.sqrt(a11) + np.sqrt(a22))/(np.abs(delta_a)*np.sqrt(a11)*n01))
         
     elif m1 != m2:
         # interaction strengths
@@ -27,8 +30,14 @@ def units(m1,m2,a11,a22,a12,n01):
     return xi,tau
 
 def natural_consts():
+    """
+    The natural constants used throughout defining the parameters in these equations:
+    -> hbar - Planck's constant on 2\pi
+    -> a0 - Bohr radius used in defining the scattering length
+    -> Da - Dalton used in defining the unified atomic mass
+    """
     # natural constants
-    hbar = 1.0545718*1e-34
-    a0 = 5.29*1e-11 # Bohr radius
+    hbar = 1.054571817*1e-34
+    a0 = 5.29177210903*1e-11
     Da = 1.66053906660*1e-27
     return hbar,a0,Da
