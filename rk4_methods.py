@@ -218,11 +218,13 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE)))
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE)))
         
-
+        t = 0.0
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
         dt = 1j*dt
+        
+        print('dt =',dt)
         
         psi1 = psi1.astype(complex)
         psi2 = psi2.astype(complex)
@@ -240,12 +242,13 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
+        t = 0.0 + 0.0j
+        
     E1_array = np.zeros((T_STEPS//T_SAVE))  
     E2_array = np.zeros((T_STEPS//T_SAVE))    
     t_array = np.zeros((T_STEPS//T_SAVE))
     
     # initialise variables used as counters or for convergence calculations    
-    t = 0.0
     previous_mode = 1.0
     mu1 = 0.0
     mu2 = 0.0
@@ -389,20 +392,20 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
                 # save energies
                 E1_array[l//T_SAVE] = E1_total
                 E2_array[l//T_SAVE] = E2_total
-
+                # save current time
+                t_array[l//T_SAVE] = t.real
+                
             elif IM_REAL == 1:
                 # save energies
                 E1_array[l//T_SAVE] = 0.0
                 E2_array[l//T_SAVE] = 0.0
-                
+                # save current time
+                t_array[l//T_SAVE] = t.imag
+
             # save wavefunctions
             spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
             spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
-            
-            # save current time
-            t_array[l//T_SAVE] = t.imag
-            print(t.imag)
-            
+
             # plotting densities
             plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
             plt.xlim((0,np.max(r)))
@@ -410,13 +413,9 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.xlabel(r'$r$')
             plt.ylabel(r'$n_0(r)$')
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.show()
-            
-        # iterate time    
-        if IM_REAL == 0:
-            t = t + dt
-        elif IM_REAL == 1:
-            t = t + dt
+            plt.show()    
+
+        t = t + dt
         
     if IM_REAL == 0:
         print('Imaginary time finished')

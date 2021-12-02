@@ -95,7 +95,7 @@ def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA,INIT_TYPE1,INIT_TYPE2):
         print('Super-Gaussian in 1st component')
     elif INIT_TYPE1 == 'NON_ZERO_TAIL':
         # Super-Gaussian initial condition w/ non-zero tail (1st-component)
-        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3) + 0.1*np.ones(len(r))
+        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3) + 0.001*np.ones(len(r))
         print('Super-Gaussian w/ non-zero density tail in 1st component')
     
     # normalise initial condition (1st-component)
