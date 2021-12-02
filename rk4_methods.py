@@ -10,6 +10,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
+    """
+    The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
+    for solving the Gross-Pitaevskii (GP) equations. 
+    
+    The outputs of this function are:
+    (1) phi - the final wavefunction after imaginary or real time propagation
+    (2) mu - the associated chemical potential of the density-locked mixture
+    (3) t_array - a 1D array of the times saved at every T_SAVE time-steps
+    (4) spacetime - an 2D array of the wavefunction saved at every T_SAVE time-steps
+    (5) E_array - a 1D array of the energy of the mixture saved at every T_SAVE time-steps 
+    
+    This function solves the density-locked GP equation, and takes the following inputs:
+    -> r - the spatial array
+    -> phi - the initial guess wavefunction
+    -> V - the trapping potential
+    -> N_lck - the effective atom number used to normalise wavefunction
+    -> dr- the spatial discretisation
+    -> dt - the time discretisation
+    -> T_STEPS - the number of time-steps (either real or imaginary time-steps)
+    -> T_SAVE - the number of time-steps between saving snapshots of the data
+    -> IM_REAL - a switch that informs the function of whether imaginary (IM_REAL = 0) or real (IM_REAL) time is required
+    -> BC_TYPE - a switch that informs the function of which boundary conditions to implement (see 'boundary.py' for
+                 further details
+    """
     if IM_REAL == 0:
         # initalise Runge-Kutta arrays
         k1 = np.zeros(phi.size)
@@ -154,6 +178,31 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
     return phi,mu,t_array,spacetime,E_array
 
 def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
+    """
+    The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
+    for solving the Gross-Pitaevskii (GP) equations. 
+    
+    The outputs of this function are:
+    (1) psi1,psi2 - the final wavefunctions after imaginary or real time propagation
+    (2) mu1,mu2 - the associated chemical potentials of the density-unlocked mixture
+    (3) t_array - a 1D array of the times saved at every T_SAVE time-steps
+    (4) spacetime1,spacetime2 - 2D arrays of the wavefunctions saved at every T_SAVE time-steps
+    (5) E1_array,E2_array - 1D arrays of the energy of the mixture saved at every T_SAVE time-steps 
+    
+    This function solves the density-locked GP equation, and takes the following inputs:
+    -> r - the spatial array
+    -> psi1,psi2 - the initial guess wavefunctions
+    -> V1,V2 - the trapping potentials
+    -> alpha,beta,eta - the dimensionless parameters defining the GP equations
+    -> N1,N2 - the rescaled atom numbers used to normalise wavefunctions
+    -> dr- the spatial discretisation
+    -> dt - the time discretisation
+    -> T_STEPS - the number of time-steps (either real or imaginary time-steps)
+    -> T_SAVE - the number of time-steps between saving snapshots of the data
+    -> IM_REAL - a switch that informs the function of whether imaginary (IM_REAL = 0) or real (IM_REAL) time is required
+    -> BC_TYPE - a switch that informs the function of which boundary conditions to implement (see 'boundary.py' for
+                 further details
+    """
     if IM_REAL == 0:
         # initalise Runge-Kutta arrays
         k1_1 = np.zeros(psi1.size)
@@ -168,6 +217,8 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         # initialise array to save wavefunction snapshots
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE)))
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE)))
+        
+
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
@@ -184,7 +235,6 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         k2_2 = np.zeros(psi2.size).astype(complex)
         k3_2 = np.zeros(psi2.size).astype(complex)
         k4_2 = np.zeros(psi2.size).astype(complex)
-
         
         # initialise array to save wavefunction snapshots
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
@@ -312,7 +362,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             
             # print convergence outputs
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
-            print('-'*21,'Max Densty Convergence','-'*21)
+            print('-'*21,'Max Density Convergence','-'*21)
             print('Max density of component 1 = ',N1*np.abs(psi1[1])**2)
             print('Max density of component 2 = ',N2*np.abs(psi2[1])**2)
             print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
@@ -335,16 +385,23 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         
         # save data
         if (l % T_SAVE == 0):
-            # save energies
-            E1_array[l//T_SAVE] = E1_total
-            E2_array[l//T_SAVE] = E2_total
+            if IM_REAL == 0:
+                # save energies
+                E1_array[l//T_SAVE] = E1_total
+                E2_array[l//T_SAVE] = E2_total
 
+            elif IM_REAL == 1:
+                # save energies
+                E1_array[l//T_SAVE] = 0.0
+                E2_array[l//T_SAVE] = 0.0
+                
             # save wavefunctions
             spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
             spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
             
             # save current time
-            t_array[l//T_SAVE] = t
+            t_array[l//T_SAVE] = t.imag
+            print(t.imag)
             
             # plotting densities
             plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
@@ -352,11 +409,14 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
             plt.xlabel(r'$r$')
             plt.ylabel(r'$n_0(r)$')
-            plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi1|^2 + |\psi2|^2$'))
+            plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
             plt.show()
             
         # iterate time    
-        t = t + dt
+        if IM_REAL == 0:
+            t = t + dt
+        elif IM_REAL == 1:
+            t = t + dt
         
     if IM_REAL == 0:
         print('Imaginary time finished')
