@@ -1,8 +1,13 @@
-def imag_time(m1,m2,a11,a22,a12,N1,N2,dr,Nr,DENS_LCK,DT_COEF,IM_T_STEPS,RE_T_STEPS,T_SAVE,GAUSS_SIGMA=10.0,INIT_TYPE='S_GAUSS',OMEGA=0.0,BC_TYPE=0,INIT_TYPE1='NON_ZERO_TAIL',INIT_TYPE2='S_GAUSS'):
+from init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
+from params_calc import params_dens_lck, params_dens_ulck
+from rk4_methods import rk4_dens_lck, rk4_dens_ulck
+
+def time(m1,m2,a11,a22,a12,N1,N2,dr,Nr,DENS_LCK,DT_COEF,IM_T_STEPS,RE_T_STEPS,T_SAVE,GAUSS_SIGMA=10.0,INIT_TYPE='S_GAUSS',OMEGA=0.0,OMEGA1=0.0,OMEGA2=2.0,BC_TYPE=0,INIT_TYPE1='NON_ZERO_TAIL',INIT_TYPE2='S_GAUSS',BREATH='0',BREATH1 = 0.001, BREATH2 = 0.0):
     
     [Lr,r,dt] = grid_setup(dr,Nr,DT_COEF)
     
     if DENS_LCK == 1:
+        N = N1 + N2
         # setup initial wavefunctions 
         phi_0 = init_wavefun_dens_lck(r,dr,GAUSS_SIGMA,INIT_TYPE)
         
@@ -62,7 +67,7 @@ def imag_time(m1,m2,a11,a22,a12,N1,N2,dr,Nr,DENS_LCK,DT_COEF,IM_T_STEPS,RE_T_STE
 
             # theoretical parameters
             alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale \
-            = eqm_dens_ulck_params(m1,m2,a11,a22,a12,N1,N2)
+            = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2)
             
             if IM_T_STEPS > 0:
                 # imaginary time
