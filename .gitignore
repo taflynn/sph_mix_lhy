@@ -2,3 +2,5 @@
 __pycache__
 .ipynb_checkpoints/*
 mix_time_step.py
+data/
+old_files/
