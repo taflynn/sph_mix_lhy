@@ -1,14 +1,16 @@
 import json
 
-from init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
-from params_calc import params_dens_lck, params_dens_ulck
-from rk4_methods import rk4_dens_lck, rk4_dens_ulck
+from main.init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
+from main.params_calc import params_dens_lck, params_dens_ulck
+from main.rk4_methods import rk4_dens_lck, rk4_dens_ulck
 
 def time(json_input):
     
     f = open(json_input,"r")
 
     setup = json.loads(f.read())
+    
+    f.close()
     
     # locking?
     DENS_LCK = setup['DENS_LCK']
