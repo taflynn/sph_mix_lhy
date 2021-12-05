@@ -189,7 +189,7 @@ elif setup['DENS_LCK'] == 0:
         np.savetxt(path + 'imag_fin_dens1.csv',im_dens1,delimiter=',',fmt='%18.16f')
         
         im_dens2 = np.column_stack((r,np.abs(psi2_im)**2))
-        np.savetxt(path + 'imag_fin_dens1.csv',im_dens2,delimiter=',',fmt='%18.16f')
+        np.savetxt(path + 'imag_fin_dens2.csv',im_dens2,delimiter=',',fmt='%18.16f')
         
         im_dens_tot = np.column_stack((r,np.abs(psi1_im)**2) + np.abs(psi2_im)**2)
         np.savetxt(path + 'imag_fin_dens_tot.csv',im_dens_tot,delimiter=',',fmt='%18.16f')
