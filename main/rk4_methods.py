@@ -385,7 +385,11 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             
         elif (IM_REAL == 1 and l % T_SAVE == 0):
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
-        
+            print('-'*21,'Max Densities','-'*21)
+            print('Max density of component 1 = ',N1*np.abs(psi1[1])**2)
+            print('Max density of component 2 = ',N2*np.abs(psi2[1])**2)
+            print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
+            print('Density at max radius of component 2 = ',N2*np.abs(psi2[-1])**2)
         # save data
         if (l % T_SAVE == 0):
             if IM_REAL == 0:
@@ -413,7 +417,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.xlabel(r'$r$')
             plt.ylabel(r'$n_0(r)$')
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.close()    
+            plt.show()    
 
         t = t + dt
         
