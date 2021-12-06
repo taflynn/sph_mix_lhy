@@ -1,5 +1,7 @@
 import json
 
+import numpy as np
+
 from main.init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
 from main.params_calc import params_dens_lck, params_dens_ulck
 from main.rk4_methods import rk4_dens_lck, rk4_dens_ulck
@@ -111,6 +113,7 @@ def time(json_input):
             = rk4_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
             
             if RE_T_STEPS > 0:
+                V1 = -0.01*1.0j*(np.tanh(r - 15)+1)
                 if setup['BREATH1'] == 1:
                     psi1_im = psi1_im*np.exp(1.0j*lamb*r**2)
                 if setup['BREATH2'] == 1:
