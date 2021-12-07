@@ -151,14 +151,18 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             
         # save data
         if (l % T_SAVE == 0):
-            # save energy
-            E_array[l//T_SAVE] = E_total
-            
+            if IM_REAL == 0:
+                # save energy
+                E_array[l//T_SAVE] = E_total
+                # save current time
+                t_array[l//T_SAVE] = t.real
+            elif IM_REAL == 1:
+                E_array[l//T_SAVE] = 0.0
+                # save current time
+                t_array[l//T_SAVE] = t.imag
+
             # save wavefunction
             spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
-            
-            # save current time
-            t_array[l//T_SAVE] = t
             
             # plotting density
             plt.plot(r,N_lck*np.abs(phi)**2)
@@ -417,7 +421,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.xlabel(r'$r$')
             plt.ylabel(r'$n_0(r)$')
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.show()    
+            plt.close()    
 
         t = t + dt
         
