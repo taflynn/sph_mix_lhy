@@ -8,10 +8,10 @@ import sys
 import shutil
 
 # select data file to load in
-fname = 'config_dens_lck.json'
+fname = 'config_dens_ulck.json'
 
 # give name to directory storing simulation data
-dirarg = 'imbalance_lck'
+dirarg = 'more_plots_ulck'
 
 # create directory for data storage
 path = os.path.join('./data',dirarg+'/')
@@ -49,9 +49,25 @@ if setup['DENS_LCK'] == 1:
         spacetime_re = mix_data['spacetime_re']
         
         # imaginary time final density
+        plt.plot(r,np.abs(phi_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\phi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(phi_im)**2)))
+        plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
+        plt.close()    
+        # save final imaginary time density in csv file
         im_dens = np.column_stack((r,np.abs(phi_im)**2))
         np.savetxt(path + 'imag_fin_dens.csv',im_dens,delimiter=',',fmt='%18.16f')
         # real time final density
+        plt.plot(r,np.abs(phi_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\phi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(phi_re)**2)))
+        plt.savefig(path + 'real_fin_dens.png',dpi='figure')
+        plt.close()    
+        # save final real time density in csv file
         re_dens = np.column_stack((r,np.abs(phi_re)**2))
         np.savetxt(path + 'real_fin_dens.csv',re_dens,delimiter=',',fmt='%18.16f')
         # total energy in imaginary time 
@@ -64,6 +80,7 @@ if setup['DENS_LCK'] == 1:
         plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\phi|^2$')
         plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
@@ -71,13 +88,13 @@ if setup['DENS_LCK'] == 1:
         # save spacetime in a format that it is easy to reload into Python
         with open(path + 'imag_spacetime_wav.npy', 'wb') as f:
             np.save(f, spacetime_im)
-        
         # meshgrid real time and spatial arrays
         [T_RE,R] = np.meshgrid(t_array_re,r)
         # save total image of snapshots from real time
         plt.pcolormesh(T_RE,R,np.abs(spacetime_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\phi|^2$')
         plt.savefig(path + 'real_spacetime_dens.png',dpi='figure')
@@ -96,6 +113,14 @@ if setup['DENS_LCK'] == 1:
         spacetime_im = mix_data['spacetime_im']
         
         # imaginary time final density
+        plt.plot(r,np.abs(phi_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\phi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(phi_im)**2)))
+        plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
+        plt.close()    
+        # save final imaginary time density in csv file
         im_dens = np.column_stack((r,np.abs(phi_im)**2))
         np.savetxt(path + 'imag_fin_dens.csv',im_dens,delimiter=',',fmt='%18.16f')
         # total energy in imaginary time 
@@ -108,6 +133,7 @@ if setup['DENS_LCK'] == 1:
         plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\phi|^2$')
         plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
@@ -124,6 +150,14 @@ if setup['DENS_LCK'] == 1:
         spacetime_re = mix_data['spacetime_re']
         
         # real time final density
+        plt.plot(r,np.abs(phi_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\phi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(phi_re)**2)))
+        plt.savefig(path + 'real_fin_dens.png',dpi='figure')
+        plt.close()   
+        # save final real time density in csv file
         re_dens = np.column_stack((r,np.abs(phi_re)**2))
         np.savetxt(path + 'real_fin_dens.csv',re_dens,delimiter=',',fmt='%18.16f')
 
@@ -133,6 +167,7 @@ if setup['DENS_LCK'] == 1:
         plt.pcolormesh(T_RE,R,np.abs(spacetime_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)	
         cbar = plt.colorbar()
         cbar.set_label(r'$|\phi|^2$')
         plt.savefig(path + 'real_spacetime_dens.png',dpi='figure')
@@ -170,6 +205,15 @@ elif setup['DENS_LCK'] == 0:
         # imaginary time final total density 
         im_dens_tot = np.column_stack((r,np.abs(psi1_im)**2) + np.abs(psi2_im)**2)
         np.savetxt(path + 'imag_fin_dens_tot.csv',im_dens_tot,delimiter=',',fmt='%18.16f')
+        # imaginary time final density
+        plt.plot(r,np.abs(psi1_im)**2,r,np.abs(psi2_im)**2,r,np.abs(psi1_im)**2 + np.abs(psi2_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\psi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(psi1_im)**2 + np.abs(psi2_im)**2)))
+        plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_{1+2}|^2$'))
+        plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
+        plt.close()   
         # real time final density of component 1
         re_dens1 = np.column_stack((r,np.abs(psi1_re)**2))
         np.savetxt(path + 'real_fin_dens1.csv',re_dens1,delimiter=',',fmt='%18.16f')
@@ -179,6 +223,15 @@ elif setup['DENS_LCK'] == 0:
         # real time final total density
         re_dens_tot = np.column_stack((r,np.abs(psi1_re)**2) + np.abs(psi2_re)**2)
         np.savetxt(path + 'real_fin_dens_tot.csv',re_dens_tot,delimiter=',',fmt='%18.16f')
+        # real time final density
+        plt.plot(r,np.abs(psi1_re)**2,r,np.abs(psi2_re)**2,r,np.abs(psi1_re)**2 + np.abs(psi2_re)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\psi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(psi1_re)**2 + np.abs(psi2_re)**2)))
+        plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_{1+2}|^2$'))
+        plt.savefig(path + 'real_fin_dens.png',dpi='figure')
+        plt.close()
         # total energy in imaginary time
         E_tot_im = np.column_stack((t_array_im,E1_array_im + E2_array_im))
         np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f')
@@ -189,6 +242,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)		
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_1|^2$')
         plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
@@ -200,6 +254,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_2|^2$')
         plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
@@ -212,6 +267,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_{1+2}|^2$')
         plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
@@ -223,6 +279,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime1_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_1|^2$')
         plt.savefig(path + 'real_spacetime_dens1.png',dpi='figure')
@@ -234,6 +291,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime2_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_2|^2$')
         plt.savefig(path + 'real_spacetime_dens2.png',dpi='figure')
@@ -245,6 +303,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime1_re)**2 + np.abs(spacetime2_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_{1+2}|^2$')
         plt.savefig(path + 'real_spacetime_dens_tot.png',dpi='figure')
@@ -272,6 +331,15 @@ elif setup['DENS_LCK'] == 0:
         # imaginary time final total density
         im_dens_tot = np.column_stack((r,np.abs(psi1_im)**2 + np.abs(psi2_im)**2))
         np.savetxt(path + 'imag_fin_dens_tot.csv',im_dens_tot,delimiter=',',fmt='%18.16f')
+        # imaginary time final density
+        plt.plot(r,np.abs(psi1_im)**2,r,np.abs(psi2_im)**2,r,np.abs(psi1_im)**2 + np.abs(psi2_im)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\psi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(psi1_im)**2 + np.abs(psi2_im)**2)))
+        plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_{1+2}|^2$'))
+        plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
+        plt.close()   
         # total energy in imaginary time
         E_tot_im = np.column_stack((t_array_im,E1_array_im + E2_array_im))
         np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f') 
@@ -283,6 +351,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_1|^2$')
         plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
@@ -294,6 +363,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_2|^2$')
         plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
@@ -305,6 +375,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_{1+2}|^2$')
         plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
@@ -328,6 +399,15 @@ elif setup['DENS_LCK'] == 0:
         # real time final total density
         re_dens_tot = np.column_stack((r,np.abs(psi1_re)**2) + np.abs(psi2_re)**2)
         np.savetxt(path + 'real_fin_dens_tot.csv',re_dens_tot,delimiter=',',fmt='%18.16f')
+        # real time final density
+        plt.plot(r,np.abs(psi1_re)**2,r,np.abs(psi2_re)**2,r,np.abs(psi1_re)**2 + np.abs(psi2_re)**2)
+        plt.xlabel(r'$r$')
+        plt.ylabel(r'$|\psi|^2$')
+        plt.xlim((0,setup['Nr']*setup['dr']))
+        plt.ylim((0,1.2*np.max(np.abs(psi1_re)**2 + np.abs(psi2_re)**2)))
+        plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_{1+2}|^2$'))
+        plt.savefig(path + 'real_fin_dens.png',dpi='figure')
+        plt.close()
 
         # meshgrid real time and spatial arrays
         [T_RE,R] = np.meshgrid(t_array_re,r)
@@ -335,6 +415,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime1_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_1|^2$')
         plt.savefig(path + 'real_spacetime_dens1.png',dpi='figure')
@@ -346,6 +427,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime2_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_2|^2$')
         plt.savefig(path + 'real_spacetime_dens2.png',dpi='figure')
@@ -357,6 +439,7 @@ elif setup['DENS_LCK'] == 0:
         plt.pcolormesh(T_RE,R,np.abs(spacetime1_re)**2 + np.abs(spacetime2_re)**2,shading='gouraud')
         plt.xlabel(r'$t$')
         plt.ylabel(r'$r$')
+        plt.clim(0.0,None)
         cbar = plt.colorbar()
         cbar.set_label(r'$|\psi_{1+2}|^2$')
         plt.savefig(path + 'real_spacetime_dens_tot.png',dpi='figure')
