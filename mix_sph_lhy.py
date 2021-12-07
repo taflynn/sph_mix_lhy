@@ -5,6 +5,7 @@ import numpy as np
 from main.init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
 from main.params_calc import params_dens_lck, params_dens_ulck
 from main.rk4_methods import rk4_dens_lck, rk4_dens_ulck
+from main.boundary import absorb_bc_dens_lck,absorb_bc_dens_ulck
 
 def time(json_input):
     
@@ -60,8 +61,10 @@ def time(json_input):
             phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
         
         if RE_T_STEPS > 0:
-            if BREATH == 1:
+            if setup['BREATH'] == 1:
                 phi_im = phi_im*np.exp(1.0j*lamb*r**2)
+            if setup['ABSORB_BC'] == 1:
+               V = absorb_bc_dens_lck(r,setup['ABS_COEF']) 
             # real time
             phi_re,mu_re,t_array_re,spacetime_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
         
@@ -118,7 +121,8 @@ def time(json_input):
                     psi1_im = psi1_im*np.exp(1.0j*lamb*r**2)
                 if setup['BREATH2'] == 1:
                     psi2_im = psi2_im*np.exp(1.0j*lamb*r**2)
-                    
+                if setup['ABSORB_BC'] == 1:
+                    V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_COEF'],setup['ABS_COMP']) 
                 # real time
             psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re,E2_array_re \
             = rk4_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
