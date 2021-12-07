@@ -67,15 +67,15 @@ def time(json_input):
                V = absorb_bc_dens_lck(r,setup['ABS_COEF']) 
             # real time
             phi_re,mu_re,t_array_re,spacetime_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
-        
+       
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:
             mix_data = {
             'r' : r,
             't_array_im' : t_array_im,
             't_array_re' : t_array_re,
-            'phi_im' : phi_im,
-            'phi_re' : phi_re,
+            'phi_im' : N_lck**0.5*phi_im,
+            'phi_re' : N_lck**0.5*phi_re,
             'mu_im' : mu_im,
             'E_array_im' : E_array_im,
             'spacetime_im' : spacetime_im,
@@ -85,7 +85,7 @@ def time(json_input):
             mix_data = {
             'r' : r,
             't_array_im' : t_array_im,
-            'phi_im' : phi_im,
+            'phi_im' : N_lck**0.5*phi_im,
             'mu_im' : mu_im,
             'E_array_im' : E_array_im,
             'spacetime_im' : spacetime_im,
@@ -94,7 +94,7 @@ def time(json_input):
             mix_data = {
             'r' : r,
             't_array_re' : t_array_re,
-            'phi_re' : phi_re,
+            'phi_re' : N_lck**0.5*phi_re,
             'spacetime_re' : spacetime_re               
             } 
 
@@ -112,15 +112,16 @@ def time(json_input):
             
             if IM_T_STEPS > 0:
                 # imaginary time
-                psi1_im,psi2_im,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E1_array_im,E2_array_im \
+                psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E1_array_im,E2_array_im \
             = rk4_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
-            
+            psi1_im = psi1_gs
+            psi2_im = psi2_gs
             if RE_T_STEPS > 0:
                 V1 = -0.01*1.0j*(np.tanh(r - 15)+1)
                 if setup['BREATH1'] == 1:
-                    psi1_im = psi1_im*np.exp(1.0j*lamb*r**2)
+                    psi1_im = psi1_gs*np.exp(1.0j*lamb*r**2)
                 if setup['BREATH2'] == 1:
-                    psi2_im = psi2_im*np.exp(1.0j*lamb*r**2)
+                    psi2_im = psi2_gs*np.exp(1.0j*lamb*r**2)
                 if setup['ABSORB_BC'] == 1:
                     V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_COEF'],setup['ABS_COMP']) 
                 # real time
@@ -136,10 +137,10 @@ def time(json_input):
             'r' : r,
             't_array_im' : t_array_im,
             't_array_re' : t_array_re,
-            'psi1_im' : psi1_im,
-            'psi1_re' : psi1_re,
-            'psi2_im' : psi2_im,
-            'psi2_re' : psi2_re,
+            'psi1_im' : N1_rescale**0.5*psi1_gs,
+            'psi1_re' : N1_rescale**0.5*psi1_re,
+            'psi2_im' : N2_rescale**0.5*psi2_gs,
+            'psi2_re' : N2_rescale**0.5*psi2_re,
             'mu1_im' : mu1_im,
             'mu2_im' : mu2_im,
             'E1_array_im' : E1_array_im,
@@ -153,8 +154,8 @@ def time(json_input):
             mix_data = {
             'r' : r,
             't_array_im' : t_array_im,
-            'psi1_im' : psi1_im,
-            'psi2_im' : psi2_im,
+            'psi1_im' : N1_rescale**0.5*psi1_gs,
+            'psi2_im' : N2_rescale**0.5*psi2_gs,
             'mu1_im' : mu1_im,
             'mu2_im' : mu2_im,
             'E1_array_im' : E1_array_im,
@@ -166,8 +167,8 @@ def time(json_input):
             mix_data = {
             'r' : r,
             't_array_re' : t_array_re,
-            'psi1_re' : psi1_re,
-            'psi2_re' : psi2_re,
+            'psi1_re' : N1_rescale**0.5*psi1_re,
+            'psi2_re' : N2_rescale**0.5*psi2_re,
             'E1_array_im' : E1_array_im,
             'E2_array_im' : E2_array_im,
             'spacetime1_re' : spacetime1_re,
