@@ -5,6 +5,5 @@ mix_time_step.py
 data/
 old_files/
 slurm*
-*.json
 *.out
 *.npy
