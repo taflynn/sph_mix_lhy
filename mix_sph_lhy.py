@@ -61,7 +61,7 @@ def time(json_input):
             phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
         
         if RE_T_STEPS > 0:
-            lamb = 0.01
+		lamb = 0.01
             if setup['BREATH'] == 1:
                 phi_im = phi_im*np.exp(1.0j*lamb*r**2)
             if setup['ABSORB_BC'] == 1:
@@ -118,7 +118,6 @@ def time(json_input):
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             if RE_T_STEPS > 0:
-                V1 = -0.01*1.0j*(np.tanh(r - 15)+1)
 		lamb = 0.01
                 if setup['BREATH1'] == 1:
                     psi1_im = psi1_gs*np.exp(1.0j*lamb*r**2)
