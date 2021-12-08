@@ -48,6 +48,10 @@ mix_data = time(fname)
 
 # extracting data from dictionary
 r = mix_data['r']
+# save spacetime in a format that it is easy to reload into Python
+with open(path + 'r_array.npy', 'wb') as f:
+    np.save(f,r)
+
 
 # data-saving of density-lock mixture
 if setup['DENS_LCK'] == 1:
@@ -63,6 +67,13 @@ if setup['DENS_LCK'] == 1:
         spacetime_im = mix_data['spacetime_im']
         spacetime_re = mix_data['spacetime_re']
         
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'imag_t_array.npy', 'wb') as f:
+            np.save(f,t_array_im)
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'real_t_array.npy', 'wb') as f:
+            np.save(f,t_array_re)
+
         # imaginary time final density
         plt.plot(r,np.abs(phi_im)**2)
         plt.xlabel(r'$r$')
@@ -127,6 +138,10 @@ if setup['DENS_LCK'] == 1:
         E_array_im = mix_data['E_array_im']
         spacetime_im = mix_data['spacetime_im']
         
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'imag_t_array.npy', 'wb') as f:
+            np.save(f,t_array_im)
+        
         # imaginary time final density
         plt.plot(r,np.abs(phi_im)**2)
         plt.xlabel(r'$r$')
@@ -164,8 +179,12 @@ if setup['DENS_LCK'] == 1:
         phi_re = mix_data['phi_re']
         spacetime_re = mix_data['spacetime_re']
         
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'real_t_array.npy', 'wb') as f:
+            np.save(f,t_array_re)
+        
         # real time final density
-        plt.plot(r,np.abs(phi_im)**2)
+        plt.plot(r,np.abs(phi_re)**2)
         plt.xlabel(r'$r$')
         plt.ylabel(r'$|\phi|^2$')
         plt.xlim((0,setup['Nr']*setup['dr']))
@@ -210,6 +229,13 @@ elif setup['DENS_LCK'] == 0:
         spacetime2_im = mix_data['spacetime2_im']
         spacetime1_re = mix_data['spacetime1_re']
         spacetime2_re = mix_data['spacetime2_re']
+        
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'imag_t_array.npy', 'wb') as f:
+            np.save(f,t_array_im)
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'real_t_array.npy', 'wb') as f:
+            np.save(f,t_array_re)
         
         # imaginary time final density of component 1
         im_dens1 = np.column_stack((r,np.abs(psi1_im)**2))
@@ -336,6 +362,10 @@ elif setup['DENS_LCK'] == 0:
         E2_array_im = mix_data['E2_array_im']
         spacetime1_im = mix_data['spacetime1_im']
         spacetime2_im = mix_data['spacetime2_im']
+       
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'imag_t_array.npy', 'wb') as f:
+            np.save(f,t_array_im)
         
         # imaginary time final density of component 1
         im_dens1 = np.column_stack((r,np.abs(psi1_im)**2))
@@ -405,6 +435,10 @@ elif setup['DENS_LCK'] == 0:
         spacetime1_re = mix_data['spacetime1_re']
         spacetime2_re = mix_data['spacetime2_re']
 
+        # save spacetime in a format that it is easy to reload into Python
+        with open(path + 'real_t_array.npy', 'wb') as f:
+            np.save(f,t_array_re)
+        
         # real time final density of component 1
         re_dens1 = np.column_stack((r,np.abs(psi1_re)**2))
         np.savetxt(path + 'real_fin_dens1.csv',re_dens1,delimiter=',',fmt='%18.16f')
