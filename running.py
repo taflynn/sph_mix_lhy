@@ -8,10 +8,10 @@ import sys
 import shutil
 
 # select data file to load in
-fname = 'config_dens_ulck.json'
+fname = 'config_dens_lck.json'
 
 # give name to directory storing simulation data
-dirarg = 'more_plots_ulck'
+dirarg = 'pert_dens_lck_absorb'
 
 # create directory for data storage
 path = os.path.join('./data',dirarg+'/')
@@ -20,6 +20,21 @@ if not os.path.isdir(path):
 
 # file to save print outputs to
 sys.stdout=open(path+'sim.out',"w")
+
+# class to reflush print commands 
+class Unbuffered(object):
+   def __init__(self, stream):
+       self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def writelines(self, datas):
+       self.stream.writelines(datas)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
+
+sys.stdout = Unbuffered(sys.stdout)
 
 shutil.copy2(fname,path)
 
