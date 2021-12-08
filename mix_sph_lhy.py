@@ -118,7 +118,7 @@ def time(json_input):
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             if RE_T_STEPS > 0:
-            lamb = 0.01
+                lamb = 0.01
                 if setup['BREATH1'] == 1:
                     psi1_im = psi1_gs*np.exp(1.0j*lamb*r**2)
                 if setup['BREATH2'] == 1:
