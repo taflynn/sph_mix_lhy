@@ -19,7 +19,7 @@ def energy_eqm_dens_lck(phi,V,r,dr,N_lck):
     E_ke = 4*pi*np.trapz(r**2*0.5*np.abs(dphi_dr)**2)*dr 
     E_pot = 4*pi*np.trapz(r**2*V*np.abs(phi)**2)*dr
     E_int = 2.0*(4*pi*np.trapz(r**2*(-3*N_lck*np.abs(phi)**4))*dr)
-    E_lhy = 0.4*(4*pi*np.trapz(r**2*(-2.5*N_lck**1.5*np.abs(phi)**2.5))*dr)
+    E_lhy = 0.4*(4*pi*np.trapz(r**2*(-2.5*N_lck**1.5*np.abs(phi)**5))*dr)
                           
     return E_ke,E_pot,E_int,E_lhy
 
