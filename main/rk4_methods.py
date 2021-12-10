@@ -134,6 +134,11 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             E_tol = np.abs(E_total - E_prev)/np.abs(E_prev)
             E_prev = E_total
             
+            # save energy
+            E_array[l//T_SAVE] = E_total
+            # save current time
+            t_array[l//T_SAVE] = t.real
+            
             # printed output
             print('-'*21,'Max Densty Convergence','-'*21)
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
@@ -146,21 +151,15 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             print('Tolerance between successive total energies = ',E_tol)
             print('-'*66)
             
-        elif (IM_REAL == 1):
+        elif (IM_REAL == 1 and l % T_SAVE == 0):
+            # save dummy energy
+            E_array[l//T_SAVE] = 0.0
+            # save current time
+            t_array[l//T_SAVE] = t.imag
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             
-        # save data
+        # data output
         if (l % T_SAVE == 0):
-            if IM_REAL == 0:
-                # save energy
-                E_array[l//T_SAVE] = E_total
-                # save current time
-                t_array[l//T_SAVE] = t.real
-            elif IM_REAL == 1:
-                E_array[l//T_SAVE] = 0.0
-                # save current time
-                t_array[l//T_SAVE] = t.imag
-
             # save wavefunction
             spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
             
