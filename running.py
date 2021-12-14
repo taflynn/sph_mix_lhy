@@ -11,7 +11,7 @@ import shutil
 fname = 'config_dens_lck.json'
 
 # give name to directory storing simulation data
-dirarg = 'breath_lck'
+dirarg = 'N175_abscoef_0p25_pos_0p75'
 
 # create directory for data storage
 path = os.path.join('./data',dirarg+'/')
