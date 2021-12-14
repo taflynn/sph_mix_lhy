@@ -31,7 +31,7 @@ def absorb_bc_dens_lck(r,ABS_COEF):
 
     The function then just outputs one potential, V.
     """
-    V = 1.0j*ABS_COEF*(np.tanh(r - 0.9*np.max(r))+1)
+    V = 1.0j*ABS_COEF*(np.tanh(r - 0.8*np.max(r))+1)
     return V
 
 def absorb_bc_dens_ulck(r,ABS_COEF,ABS_COMP):
