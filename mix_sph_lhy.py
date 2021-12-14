@@ -61,7 +61,7 @@ def time(json_input):
             phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
         
         if RE_T_STEPS > 0:
-            lamb = 0.005
+            lamb = 0.001
             if setup['BREATH'] == 1:
                 phi_im = phi_im*np.exp(1.0j*lamb*r**2)
             if setup['ABSORB_BC'] == 1:
@@ -118,7 +118,7 @@ def time(json_input):
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             if RE_T_STEPS > 0:
-                lamb = 0.005
+                lamb = 0.001
                 if setup['BREATH1'] == 1:
                     psi1_im = psi1_gs*np.exp(1.0j*lamb*r**2)
                 if setup['BREATH2'] == 1:
@@ -177,50 +177,3 @@ def time(json_input):
             }
         
     return mix_data
-"""
-    # parse arguments
-    p = argparse.ArgumentParser()
-    # REQUIRED:
-    # masses
-    p.add_argument('--m1', dest ='m1', required = True, nargs=1)
-    p.add_argument('--m2', dest ='m2', required = True, nargs=1)
-    # scattering lengths
-    p.add_argument('--a11', dest ='a11', required = True, nargs=1)
-    p.add_argument('--a22', dest ='a22', required = True, nargs=1)
-    p.add_argument('--a12', dest ='a12', required = True, nargs=1)
-    # grid spacing
-    p.add_argument('--dr', dest ='dr', required = True, nargs=1)
-    p.add_argument('--Nr', dest ='Nr', required = True, nargs=1)
-    # density-locked?
-    p.add_argument('--DENS_LCK', dest ='DENS_LCK', required = True, nargs=1)
-    # time-stepping
-    p.add_argument('--DT_COEF', dest ='DT_COEF', required = True, nargs=1)
-    p.add_argument('--IM_T_STEPS', dest ='IM_T_STEPS', required = True, nargs=1)
-    p.add_argument('--RE_T_STEPS', dest ='RE_T_STEPS', required = True, nargs=1)
-    p.add_argument('--T_SAVE', dest ='T_SAVE', required = True, nargs=1)
-    # atom numbers
-    p.add_argument('N1', dest ='N1', required = True, nargs=1)
-    p.add_argument('N2', dest ='N2', required = True, nargs=1)
-    
-    # NOT REQUIRED
-    # boundary conditions
-    p.add_argument('BC_TYPE', dest ='BC_TYPE', required = False, default=0, nargs=1)
-    
-    # initial condition
-    p.add_argument('GAUSS_SIGMA', dest ='GAUSS_SIGMA', required = False, default=10.0, nargs=1)
-    if DENS_LCK == 1:
-        p.add_argument('INIT_TYPE', dest ='INIT_TYPE', required = False, default='S_GAUSS', nargs=1)
-        # trapping potential
-        p.add_argument('OMEGA', dest ='OMEGA', required = False, default=0.0, nargs=1)
-    elif DENS_LCK == 0:
-        p.add_argument('INIT_TYPE1', dest ='INIT_TYPE1', required = False, default='NON_ZERO_TAIL', nargs=1)
-        p.add_argument('INIT_TYPE2', dest ='INIT_TYPE2', required = False, default='S_GAUSS', nargs=1)
-        # trapping potential
-        p.add_argument('OMEGA1', dest ='OMEGA1', required = False, default=0.0, nargs=1)
-        p.add_argument('OMEGA2', dest ='OMEGA2', required = False, default=0.0, nargs=1)
-    
-    # breathing mode perturbation
-    p.add_argument('lamb', dest ='lamb', required = False, default=0.0, nargs=1)
-
-    args = p.parse_args()
-"""
