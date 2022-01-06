@@ -65,7 +65,7 @@ def time(json_input):
             if setup['BREATH'] == 1:
                 phi_im = phi_im*np.exp(1.0j*lamb*r**2)
             if setup['ABSORB_BC'] == 1:
-                V = absorb_bc_dens_lck(r,setup['ABS_COEF']) 
+                V = absorb_bc_dens_lck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS']) 
             # real time
             phi_re,mu_re,t_array_re,spacetime_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
        
@@ -124,7 +124,7 @@ def time(json_input):
                 if setup['BREATH2'] == 1:
                     psi2_im = psi2_gs*np.exp(1.0j*lamb*r**2)
                 if setup['ABSORB_BC'] == 1:
-                    V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_COEF'],setup['ABS_COMP']) 
+                    V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
                 # real time
             psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re,E2_array_re \
             = rk4_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
