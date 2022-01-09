@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import pi
-from main.equil_dens import eq_dens_lck
+from main.equil_dens import eq_dens_lck,eq_dens_ulck
 from main.units import units,natural_consts
 
 def params_dens_lck(m1,m2,a11,a22,a12,N):
@@ -70,10 +70,10 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
         a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
         m1 = m1*Da; m2 = m2*Da
         # equilibrium densities equal masses solving coupled equations
-        #n01,n02 = eq_dens_unlck_eqm(m1,m2,a11,a22,a12)
+        n01,n02 = eq_dens_ulck(m1,m2,a11,a22,a12)
         
         # equilibrium densities equal masses with density-lock
-        n01,n02 = eq_dens_lck(m1,m2,a11,a22,a12)
+        #n01,n02 = eq_dens_lck(m1,m2,a11,a22,a12)
         
         delta_a = a12 + np.sqrt(a11*a22)
         

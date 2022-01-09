@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.integrate as integrate
+from scipy import optimize
 from numpy import pi
 from main.units import units,natural_consts
 
@@ -34,7 +35,7 @@ def Ft(t,z,x):
     pet_eq = np.cos(t)**(-2)*(np.tan(t)**2*np.sqrt(0.5*(np.tan(t)**2*(1+x/z) + 0.25*np.tan(t)**4*(1+z**(-2))) + np.sqrt(0.25*((np.tan(t)**2 + 0.25*np.tan(t)**4)-((x/z)*np.tan(t)**2 + 0.25*z**(-2)*np.tan(t)**4))**2 + (x/z)*np.tan(t)**4)) + np.tan(t)**2*np.sqrt(0.5*(np.tan(t)**2*(1+x/z) + 0.25*np.tan(t)**4*(1+z**(-2))) - np.sqrt(0.25*((np.tan(t)**2 + 0.25*np.tan(t)**4)-((x/z)*np.tan(t)**2 + 0.25*z**(-2)*np.tan(t)**4))**2 + (x/z)*np.tan(t)**4))-((1+z)/(2*z))*np.tan(t)**4 - (1+x)*np.tan(t)**2 + (1/(1+z))*((1+x*z)**2 + z*(1+x)**2))
     return pet_eq
 
-def eq_dens_unlck(m1,m2,a11,a22,a12):
+def eq_dens_ulck(m1,m2,a11,a22,a12):
     """
     This function calculates the equilibrium densities for each component of the density-unlocked mixture by 
     solving the coupled equations defined in 'fun' function. To solve these coupled equations the 'optimize.root' 
@@ -50,6 +51,8 @@ def eq_dens_unlck(m1,m2,a11,a22,a12):
         n01_lck = (25*pi/1024)*(a12+np.sqrt(a11*a22))**2/(a11**1.5*a22*(np.sqrt(a11) + np.sqrt(a22))**5)
         n02_lck = (25*pi/1024)*(a12+np.sqrt(a11*a22))**2/(a22**1.5*a11*(np.sqrt(a11) + np.sqrt(a22))**5)
         sol = optimize.root(fun, [n01_lck,n02_lck],args=(a11,a22,a12), jac = jac, method='hybr')
+        n01 = sol.x[0]
+        n02 = sol.x[0]
     elif m1!= m2:
         print('Unequal masses, density-unlocked is not ready yet')
     return n01,n02
