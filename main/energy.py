@@ -41,19 +41,12 @@ def energy_eqm_dens_ulck(psi1,psi2,r,V1,V2,dr,alpha,beta,eta,N1,N2):
     -> N1,N2 - the rescaled atom numbers used to normalise wavefunctions
     """
     dpsi1_dr = np.gradient(psi1,dr)
-    E1_ke = 4*pi*np.trapz(r**2*0.5*np.abs(dpsi1_dr)**2)*dr 
-    E1_pot = 4*pi*np.trapz(r**2*V1*np.abs(psi1)**2)*dr
-    E1_int = 2.0*(4*pi*np.trapz(r**2*(N1*np.abs(psi1)**4 \
-                         + N2*eta*np.abs(psi1)**2*np.abs(psi2)**2))*dr)
-    E1_lhy = 0.4*(4*pi*np.trapz(r**2*(alpha*(N1*np.abs(psi1)**2 \
-                         + N2*beta*np.abs(psi2)**2)**1.5*np.abs(psi1)**2))*dr)
-    
     dpsi2_dr = np.gradient(psi2,dr)
-    E2_ke = 4*pi*np.trapz(r**2*0.5*np.abs(dpsi2_dr)**2)*dr 
-    E2_pot = 4*pi*np.trapz(r**2*V2*np.abs(psi2)**2)*dr
-    E2_int = 2.0*(4*pi*np.trapz(r**2*(N2*beta*np.abs(psi2)**4 \
-                         + N1*eta*beta*np.abs(psi1)**2*np.abs(psi2)**2))*dr)
-    E2_lhy = 0.4*(4*pi*np.trapz(r**2*(alpha*beta**2*(N1*np.abs(psi1)**2 \
-                         + N2*beta*np.abs(psi2)**2)**1.5*np.abs(psi2)**2))*dr)
+    E_coef = 4*alpha**(-1)/(3*pi**2)
     
-    return E1_ke,E1_pot,E1_int,E1_lhy,E2_ke,E2_pot,E2_int,E2_lhy
+    E_ke = E_coef*4*pi*np.trapz(r**2*(0.5*np.abs(dpsi1_dr)**2 + 0.5*beta**(-1)*np.abs(dpsi2_dr)**2))*dr
+    E_pot = 0.0
+    E_int = E_coef*4*pi*np.trapz(r**2*(0.5*np.abs(psi1)**4 + 0.5*np.abs(psi2)**4 + eta*np.abs(psi1)**2*np.abs(psi2)**2))*dr
+    E_lhy = E_coef*4*pi*np.trapz(r**2*(0.4*alpha*(np.abs(psi1)**2 + beta*np.abs(psi2)**2)**2.5))*dr
+    
+    return E_ke,E_pot,E_int,E_lhy

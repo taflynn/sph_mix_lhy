@@ -113,7 +113,7 @@ def time(json_input):
             
             if IM_T_STEPS > 0:
                 # imaginary time
-                psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E1_array_im,E2_array_im \
+                psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E_array_im \
             = rk4_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
@@ -126,7 +126,7 @@ def time(json_input):
                 if setup['ABSORB_BC'] == 1:
                     V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
                 # real time
-            psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re,E2_array_re \
+            psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re \
             = rk4_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
         
         elif m1 != m2:
@@ -144,8 +144,7 @@ def time(json_input):
             'psi2_re' : N2_rescale**0.5*psi2_re,
             'mu1_im' : mu1_im,
             'mu2_im' : mu2_im,
-            'E1_array_im' : E1_array_im,
-            'E2_array_im' : E2_array_im,
+            'E_array_im' : E_array_im,
             'spacetime1_im' : spacetime1_im,
             'spacetime2_im' : spacetime2_im,
             'spacetime1_re' : spacetime1_re,
@@ -159,8 +158,7 @@ def time(json_input):
             'psi2_im' : N2_rescale**0.5*psi2_gs,
             'mu1_im' : mu1_im,
             'mu2_im' : mu2_im,
-            'E1_array_im' : E1_array_im,
-            'E2_array_im' : E2_array_im,
+            'E_array_im' : E_array_im,
             'spacetime1_im' : spacetime1_im,
             'spacetime2_im' : spacetime2_im
             }
@@ -170,8 +168,7 @@ def time(json_input):
             't_array_re' : t_array_re,
             'psi1_re' : N1_rescale**0.5*psi1_re,
             'psi2_re' : N2_rescale**0.5*psi2_re,
-            'E1_array_im' : E1_array_im,
-            'E2_array_im' : E2_array_im,
+            'E_array_re' : E_array_re,
             'spacetime1_re' : spacetime1_re,
             'spacetime2_re' : spacetime2_re
             }

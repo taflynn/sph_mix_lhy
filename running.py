@@ -194,7 +194,7 @@ def run_save_sim(dirarg,fname):
             plt.pcolormesh(T_RE,R,np.abs(spacetime_re)**2,shading='gouraud')
             plt.xlabel(r'$t$')
             plt.ylabel(r'$r$')
-            plt.clim(0.0,None)	
+            plt.clim(0.0,None)
             cbar = plt.colorbar()
             cbar.set_label(r'$|\phi|^2$')
             plt.savefig(path + 'real_spacetime_dens.png',dpi='figure')
@@ -216,8 +216,7 @@ def run_save_sim(dirarg,fname):
             psi2_re = mix_data['psi2_re']
             mu1_im = mix_data['mu1_im']
             mu2_im = mix_data['mu2_im']
-            E1_array_im = mix_data['E1_array_im']
-            E2_array_im = mix_data['E2_array_im']
+            E_array_im = mix_data['E_array_im']
             spacetime1_im = mix_data['spacetime1_im']
             spacetime2_im = mix_data['spacetime2_im']
             spacetime1_re = mix_data['spacetime1_re']
@@ -267,7 +266,7 @@ def run_save_sim(dirarg,fname):
             plt.savefig(path + 'real_fin_dens.png',dpi='figure')
             plt.close()
             # total energy in imaginary time
-            E_tot_im = np.column_stack((t_array_im,E1_array_im + E2_array_im))
+            E_tot_im = np.column_stack((t_array_im,E_array_im))
             np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f')
 
             # meshgrid imaginary time and spatial arrays
@@ -351,8 +350,7 @@ def run_save_sim(dirarg,fname):
             psi2_im = mix_data['psi2_im']
             mu1_im = mix_data['mu1_im']
             mu2_im = mix_data['mu2_im']
-            E1_array_im = mix_data['E1_array_im']
-            E2_array_im = mix_data['E2_array_im']
+            E_array_im = mix_data['E_array_im']
             spacetime1_im = mix_data['spacetime1_im']
             spacetime2_im = mix_data['spacetime2_im']
 
@@ -379,7 +377,7 @@ def run_save_sim(dirarg,fname):
             plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
             plt.close()   
             # total energy in imaginary time
-            E_tot_im = np.column_stack((t_array_im,E1_array_im + E2_array_im))
+            E_tot_im = np.column_stack((t_array_im,E_array_im))
             np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f') 
             plt.close()
 

@@ -190,7 +190,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
     (2) mu1,mu2 - the associated chemical potentials of the density-unlocked mixture
     (3) t_array - a 1D array of the times saved at every T_SAVE time-steps
     (4) spacetime1,spacetime2 - 2D arrays of the wavefunctions saved at every T_SAVE time-steps
-    (5) E1_array,E2_array - 1D arrays of the energy of the mixture saved at every T_SAVE time-steps 
+    (5) E_array - 1D array of the energy of the mixture saved at every T_SAVE time-steps 
     
     This function solves the density-locked GP equation, and takes the following inputs:
     -> r - the spatial array
@@ -247,8 +247,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         
         t = 0.0 + 0.0j
         
-    E1_array = np.zeros((T_STEPS//T_SAVE))  
-    E2_array = np.zeros((T_STEPS//T_SAVE))    
+    E_array = np.zeros((T_STEPS//T_SAVE))   
     t_array = np.zeros((T_STEPS//T_SAVE))
     
     # initialise variables used as counters or for convergence calculations    
@@ -359,10 +358,8 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             previous_mode = current_mode
             
             # convergence of energies
-            E1_ke,E1_pot,E1_int,E1_lhy,E2_ke,E2_pot,E2_int,E2_lhy = energy_eqm_dens_ulck(psi1,psi2,r,V1,V2,dr,alpha,beta,eta,N1,N2)
-            E1_total = E1_ke + E1_pot + E1_int + E1_lhy
-            E2_total = E2_ke + E2_pot + E2_int + E2_lhy
-            E_total = E1_total + E2_total
+            E_ke,E_pot,E_int,E_lhy = energy_eqm_dens_ulck(psi1,psi2,r,V1,V2,dr,alpha,beta,eta,N1,N2)
+            E_total = E_ke + E_pot + E_int + E_lhy
             E_tol = np.abs(E_total - E_prev)/np.abs(E_prev)
             E_prev = E_total
             
@@ -379,9 +376,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             print('Chemical potential of component 2 = ',mu2)
             print('Tolerance of chemical potential 1 = ',mu1_tol)
             print('Tolerance of chemical potential 2 = ',mu2_tol)
-            print('-'*23,'Energy Convergence','-'*23)            
-            print('Total energy of component 1 = ',E1_total)
-            print('Total energy of component 2 = ',E2_total)
+            print('-'*23,'Energy Convergence','-'*23)       
             print('Total combined energies = ',E_total)
             print('Tolerance between successive total energies = ',E_tol)
             print('-'*66)
@@ -397,15 +392,13 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         if (l % T_SAVE == 0):
             if IM_REAL == 0:
                 # save energies
-                E1_array[l//T_SAVE] = E1_total
-                E2_array[l//T_SAVE] = E2_total
+                E_array[l//T_SAVE] = E_total
                 # save current time
                 t_array[l//T_SAVE] = t.real
                 
             elif IM_REAL == 1:
                 # save energies
-                E1_array[l//T_SAVE] = 0.0
-                E2_array[l//T_SAVE] = 0.0
+                E_array[l//T_SAVE] = 0.0
                 # save current time
                 t_array[l//T_SAVE] = t.imag
 
@@ -420,7 +413,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.xlabel(r'$r$')
             plt.ylabel(r'$n_0(r)$')
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.close()    
+            plt.show()    
 
         t = t + dt
         
@@ -429,4 +422,4 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
     if IM_REAL == 1:
         print('Real time finished')
         
-    return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E1_array,E2_array
+    return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E_array
