@@ -16,10 +16,10 @@ def energy_eqm_dens_lck(phi,V,r,dr,N_lck):
     -> N_lck - the effective atom number used to normalise wavefunction
     """
     dphi_dr = np.gradient(phi,dr)
-    E_ke = 4*pi*np.trapz(r**2*0.5*np.abs(dphi_dr)**2)*dr 
-    E_pot = 4*pi*np.trapz(r**2*V*np.abs(phi)**2)*dr
-    E_int = 2.0*(4*pi*np.trapz(r**2*(-3*N_lck*np.abs(phi)**4))*dr)
-    E_lhy = 0.4*(4*pi*np.trapz(r**2*(-2.5*N_lck**1.5*np.abs(phi)**5))*dr)
+    E_ke  = (1/N_lck)*4*pi*np.trapz(r**2*0.5*np.abs(dphi_dr)**2)*dr 
+    E_pot = (1/N_lck)*4*pi*np.trapz(r**2*V*np.abs(phi)**2)*dr
+    E_int = (1/N_lck)*4*pi*np.trapz(r**2*(-1.5*N_lck*np.abs(phi)**4))*dr
+    E_lhy = (1/N_lck)*4*pi*np.trapz(r**2*(N_lck**1.5*np.abs(phi)**5))*dr
                           
     return E_ke,E_pot,E_int,E_lhy
 
