@@ -416,12 +416,12 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.ylabel(r'$n_0(r)$')
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
             plt.close() 
-	
-	# time varying potentials
-	if T_DEPEN_POT:
-	    if ABSORB_BC == 1 and l>=0.5*T_STEPS:
-		V1 = np.zeros(len(psi1))
-		V2 = np.zeros(len(psi2))
+
+    # time varying potentials
+    if IM_REAL == RE and T_DEPEN_POT:
+        if ABSORB_BC == 1 and l>=0.5*T_STEPS:
+            V1 = np.zeros(len(psi1))
+            V2 = np.zeros(len(psi2))
 
         t = t + dt
         
