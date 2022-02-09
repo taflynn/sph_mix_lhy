@@ -223,7 +223,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         
         t = 0.0
 
-	T_DEPEN_POT = False
+    T_DEPEN_POT = False
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
