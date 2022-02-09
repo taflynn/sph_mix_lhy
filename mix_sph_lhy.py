@@ -114,7 +114,7 @@ def time(json_input):
             if IM_T_STEPS > 0:
                 # imaginary time
                 psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E_array_im \
-            = rk4_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
+            = rk4_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,T_DEPEN_POT)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             if RE_T_STEPS > 0:
@@ -127,7 +127,7 @@ def time(json_input):
                     V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
                 # real time
             psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re \
-            = rk4_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
+            = rk4_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,T_DEPEN_POT)
         
         elif m1 != m2:
             print('Density-unlocked, unequal masses is still being worked on!')
