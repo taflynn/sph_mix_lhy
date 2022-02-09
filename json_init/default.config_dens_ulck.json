@@ -26,5 +26,5 @@
 "ABS_SLOPE":4.0,
 "ABS_POS":0.9,
 "ABS_COMP":"FIRST",
-"T_DEPEN_POT":True
+"T_DEPEN_POT":1
 }

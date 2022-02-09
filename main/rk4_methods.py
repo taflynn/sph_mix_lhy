@@ -223,7 +223,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         
         t = 0.0
 
-        T_DEPEN_POT = False
+        T_DEPEN_POT = 0
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
@@ -418,7 +418,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.close() 
 
     # time varying potentials
-    if IM_REAL == RE and T_DEPEN_POT:
+    if IM_REAL == RE and T_DEPEN_POT == 1:
         if ABSORB_BC == 1 and l>=0.5*T_STEPS:
             V1 = np.zeros(len(psi1))
             V2 = np.zeros(len(psi2))
