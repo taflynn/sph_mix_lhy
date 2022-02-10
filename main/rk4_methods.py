@@ -422,6 +422,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             if l>=0.5*T_STEPS:
                 V1 = np.zeros(len(psi1))
                 V2 = np.zeros(len(psi2))
+                print('Turning off absorbing boundary conditions')
 
         t = t + dt
         
