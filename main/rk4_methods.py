@@ -417,13 +417,13 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
             plt.close() 
 
-    	# time varying potentials
+        # time varying potentials
         if IM_REAL == 1 and T_DEPEN_POT == 1:
             if l>=0.5*T_STEPS:
                 V1 = np.zeros(len(psi1))
                 V2 = np.zeros(len(psi2))
-		if l == T_STEPS//2:
-                    print('Turning off absorbing boundary conditions')
+            if l == T_STEPS//2:
+                print('Turning off absorbing boundary conditions')
 
         t = t + dt
         
