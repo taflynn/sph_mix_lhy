@@ -50,11 +50,11 @@ def time(json_input):
         # setup initial wavefunctions 
         phi_0 = init_wavefun_dens_lck(r,dr,setup['GAUSS_SIGMA'],setup['INIT_TYPE'])
         
-        # setup trapping potential
-        V = potential_dens_lck(r,setup['OMEGA'])
-        
         # theoretical parameters
         [N_lck,xi,tau,n01,n02] = params_dens_lck(m1,m2,a11,a22,a12,N)
+        
+        # setup trapping potential
+        V = potential_dens_lck(r,setup['OMEGA'],tau)
 
         if IM_T_STEPS > 0:
             # imaginary time
@@ -104,12 +104,12 @@ def time(json_input):
             # setup initial wavefunctions 
             [psi1_0,psi2_0] = init_wavefun_dens_ulck(r,dr,setup['GAUSS_SIGMA'],setup['INIT_TYPE1'],setup['INIT_TYPE2'])
 
-            # setup trapping potentials
-            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'])
-
             # theoretical parameters
             alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2)
+            
+            # setup trapping potentials
+            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau)
             
             if IM_T_STEPS > 0:
                 # imaginary time
