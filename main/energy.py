@@ -45,7 +45,7 @@ def energy_eqm_dens_ulck(psi1,psi2,r,V1,V2,dr,alpha,beta,eta,N1,N2):
     E_coef = 4*alpha**(-1)/(3*pi**2)
     
     E_ke = E_coef*4*pi*np.trapz(r**2*(0.5*N1*np.abs(dpsi1_dr)**2 + 0.5*N2*beta**(-1)*np.abs(dpsi2_dr)**2))*dr
-    E_pot = E_coef*pi*np.trapz(r**2*(N1*V1*np.abs(psi1)**2 + N2*beta**(-1)*V2*np.abs(psi2)**2))*dr
+    E_pot = E_coef*4*pi*np.trapz(r**2*(N1*V1*np.abs(psi1)**2 + N2*beta**(-1)*V2*np.abs(psi2)**2))*dr
     E_int = E_coef*4*pi*np.trapz(r**2*(0.5*N1**2*np.abs(psi1)**4 + 0.5*N2**2*np.abs(psi2)**4 + N1*N2*eta*np.abs(psi1)**2*np.abs(psi2)**2))*dr
     E_lhy = E_coef*4*pi*np.trapz(r**2*(0.4*alpha*(N1*np.abs(psi1)**2 + N2*beta*np.abs(psi2)**2)**2.5))*dr
     
