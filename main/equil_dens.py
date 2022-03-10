@@ -19,12 +19,23 @@ def eq_dens_lck(m1,m2,a11,a22,a12):
         deltag = g12 + np.sqrt(g11*g22)
         
         # calculate integral f using the t defined integral
-        f = (15/32)*integrate.quadrature(lambda t,z,x: Ft(t,z,x),0,pi/2,args=(m2/m1,np.sqrt(g22/g11)),rtol=1e-06,maxiter=5000)[0]
+        f = f_int(z,x)
         
         # equilibrium densities (unequal masses)
         n01 = (25*pi/1024)*(deltag**2/(f**2*a11**3*g11*g22))
         n02 = n01*np.sqrt(g11/g22)
     return n01,n02
+
+def f_int(z,x):
+    """
+    To calculate the equilibrium densities of the density-locked mixture with a mass imbalance requires the computing of the
+    integral within the function 'f' in the Bose-Bose Lee-Huang-Yang (LHY) term. To solve this integral we use Gaussian
+    quadrature and so this function uses the integrand, defined in Ft(t,z,x), and calculates f(z,1,x). The maxiter and rtol are 
+    set so that the integral converges, otherwise we can end up with divergences in the integral due to the additive convergence 
+    of large terms.
+    """
+    f = (15/32)*integrate.quadrature(lambda t,z,x: Ft(t,z,x),0,pi/2,args=(z,x),rtol=1e-06,maxiter=5000)[0]
+    return f
 
 def Ft(t,z,x):
     """
