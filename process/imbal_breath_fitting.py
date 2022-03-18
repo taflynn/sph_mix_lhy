@@ -7,10 +7,12 @@ import argparse
 from scipy.optimize import curve_fit
 
 def run_ulck_process(dirarg,num_sims,imbal_size):
-    if imbal_size == 'IMBAL':
+    if imbal_size == 'IMBAL': 
         sim_style = 'imbal'
     elif imbal_size == 'SIZE':
-        sim_style == 'size'
+        sim_style = 'size'
+    else:
+        print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
 
     # Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
