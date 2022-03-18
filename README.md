@@ -43,14 +43,14 @@ There are two possibly simulation config files: 1) config_dens_lck.json - for a 
 ### Density-locked:
 * The above experimental parameters for defining the mixture
 * dr - the grid spacing
-* Nr - the number of grid points (hence this also changes the box size, Lr = Nr x dr)
+* Nr - the number of grid points (hence this also changes the box size, Lr = Nr\*dr)
 * BC_TYPE - choice of boundary conditions
     * 0 - Neumann boundary conditions at both r = 0 and r = Lr
     * 1 - Neumann boundary conditions at r = 0 and Dirichlet at r = Lr
 * DENS_LCK - is by default set to 1 in the config_dens_lck.json file
     * 0 - Unlocked mixture
     * 1 - Locked mixture
-* DT_COEF - the size of the time-step set by dt = DT_COEFxdr^2)
+* DT_COEF - the size of the time-step set by dt = DT_COEFx\*dr^2)
 * IM_T_STEPS - the number of imaginary time steps
 * RE_T_STEPS - the number of real time steps
 * T_SAVE - the number of steps between data saving
@@ -86,4 +86,7 @@ As above but with some slight differences, such as:
     * 0 - Do not vary absorbing boundary conditions in real time
     * 1 - Turn off absorbing boundary conditions at some point in real time (this is vague as this feature is due to be removed)
 
-##
+## Simulating mixture on a single process
+In order to run this a single process on a single process, the following command is needed:
+`python3 running.py -wp <path-to-data-dir> -rp <sim_config_file>`
+where `<sim_config_file>` is either config_dens_lck.json or config_dens_ulck.json 
