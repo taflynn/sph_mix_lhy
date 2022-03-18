@@ -9,5 +9,6 @@ slurm*
 *.npy
 config_dens_lck.json
 config_dens_ulck.json
+config_dens_ulck*.json
 texdocs/
 par_param_space/
