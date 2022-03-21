@@ -17,9 +17,9 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         sim_style = 'N/A'
 
     # create directory for data storage
-    path = os.path.join('./data',dirarg+'saved/')
-    if not os.path.isdir(path):
-        os.mkdir(path)
+    #path = os.path.join('../data',dirarg+'saved/')
+    #if not os.path.isdir(path):
+    #    os.mkdir(path)
 
     # Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
@@ -29,7 +29,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         # Initial guess parameters for the curve_fit function
         A = max(centre_dens) # initial guess of amplitude
         B = 0.5 # very rough guess for frequency
-        C = np.pi # default input value for phase shift
+        C = np.pi/2 # default input value for phase shift
         D = centre_dens[0] # initial guess for the y shift of the sine curve
         F = 0.1
     
@@ -71,7 +71,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         centre_n2 = (np.abs(psi2[1,:])**2)
         
         # extract values of density arrays and time arrays after the first max of the oscillating density
-        intofmax = (np.where(dens1==np.max(centre_n1))[0])[0]
+        intofmax = (np.where(centre_n1==np.max(centre_n1))[0])[0]
         cut_n1 = centre_n1[intofmax:]
         cut_n2 = centre_n2[intofmax:]
         cut_t = t_real[intofmax:]
@@ -93,10 +93,10 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     omega02_data = np.column_stack((imb_size_array,omega02_array))
     gamma2_data = np.column_stack((imb_size_array,gamma2_array))
 
-    np.savetxt(path + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
-    np.savetxt(path + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
-    np.savetxt(path + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
-    np.savetxt(path + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
