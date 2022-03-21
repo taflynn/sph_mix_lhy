@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import os
 import matplotlib.animation as animation
 import argparse
 from scipy.optimize import curve_fit
@@ -13,6 +14,12 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         sim_style = 'size'
     else:
         print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
+        sim_style = 'N/A'
+
+    # create directory for data storage
+    path = os.path.join('./data',dirarg+'saved/')
+    if not os.path.isdir(path):
+        os.mkdir(path)
 
     # Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
@@ -62,10 +69,16 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         # extract central density values
         centre_n1 = (np.abs(psi1[1,:])**2)
         centre_n2 = (np.abs(psi2[1,:])**2)
+        
+        # extract values of density arrays and time arrays after the first max of the oscillating density
+        intofmax = (np.where(dens1==np.max(centre_n1))[0])[0]
+	cut_n1 = centre_n1[intofmax:]
+        cut_n2 = centre_n2[intofmax:]
+        cut_t = t_real[intofmax:]	
 
         # fit central density oscillations to damped sine curve
-        fitted_params1 = curve_fitting(t_real,centre_n1)
-        fitted_params2 = curve_fitting(t_real,centre_n2)
+        fitted_params1 = curve_fitting(cut_t,cut_n1)
+        fitted_params2 = curve_fitting(cut_t,cut_n2)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
         omega01_array[i] = fitted_params1[1]
@@ -80,10 +93,10 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     omega02_data = np.column_stack((imb_size_array,omega02_array))
     gamma2_data = np.column_stack((imb_size_array,gamma2_array))
 
-    np.savetxt('../data/' + dirarg + '1/' + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + '1/' + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + '1/' + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + '1/' + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
+    np.savetxt(path + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
+    np.savetxt(path + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
+    np.savetxt(path + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
+    np.savetxt(path + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
