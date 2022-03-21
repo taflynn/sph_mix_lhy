@@ -72,9 +72,9 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         
         # extract values of density arrays and time arrays after the first max of the oscillating density
         intofmax = (np.where(dens1==np.max(centre_n1))[0])[0]
-	cut_n1 = centre_n1[intofmax:]
+        cut_n1 = centre_n1[intofmax:]
         cut_n2 = centre_n2[intofmax:]
-        cut_t = t_real[intofmax:]	
+        cut_t = t_real[intofmax:]
 
         # fit central density oscillations to damped sine curve
         fitted_params1 = curve_fitting(cut_t,cut_n1)
