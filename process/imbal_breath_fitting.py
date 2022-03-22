@@ -27,10 +27,10 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     # function to fit the 
     def curve_fitting(t_array,centre_dens):
         # Initial guess parameters for the curve_fit function
-        A = max(centre_dens) # initial guess of amplitude
+        A = np.max(centre_dens) # initial guess of amplitude
         B = 0.5 # very rough guess for frequency
         C = np.pi/2 # default input value for phase shift
-        D = centre_dens[0] # initial guess for the y shift of the sine curve
+        D = (np.max(centre_dens)-np.min(centre_dens))/2.0 # initial guess for the y shift of the sine curve
         F = 0.1
     
         # Extracting the fitted parameter values from the curve_fit function
@@ -46,6 +46,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     for i in range(0,num_sims):
         # load in simulation parameters
         fname = 'config_dens_ulck' + str(i + 1) + '.json'
+        print(i)
 
         # read in data
         f = open('../data/' + dirarg + str(i + 1)  + '/' + fname,"r")
