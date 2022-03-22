@@ -6,6 +6,17 @@ import os
 import matplotlib.animation as animation
 import argparse
 from scipy.optimize import curve_fit
+class Unbuffered(object):
+    def __init__(self, stream):
+        self.stream = stream
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+    def writelines(self, datas):
+        self.stream.writelines(datas)
+        self.stream.flush()
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
 
 def run_ulck_process(dirarg,num_sims,imbal_size):
     if imbal_size == 'IMBAL': 
@@ -42,6 +53,11 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     gamma1_array = np.empty((num_sims,1))
     gamma2_array = np.empty((num_sims,1))
     imb_size_array = np.empty((num_sims,1))
+    
+    # file to save print outputs to
+    sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
+    sys.stdout = Unbuffered(sys.stdout)
+    shutil.copy2(fname,path)
 
     for i in range(0,num_sims):
         # load in simulation parameters
