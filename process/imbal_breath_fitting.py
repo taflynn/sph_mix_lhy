@@ -89,10 +89,38 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         centre_n2 = (np.abs(psi2[1,:])**2)
         
         # extract values of density arrays and time arrays after the first max of the oscillating density
-        intofmax = (np.where(centre_n1==np.max(centre_n1))[0])[0]
-        cut_n1 = centre_n1[intofmax:]
-        cut_n2 = centre_n2[intofmax:]
-        cut_t = t_real[intofmax:]
+        def turning_points(array):
+            ''' turning_points(array) -> min_indices, max_indices
+            Finds the turning points within an 1D array and returns the indices of the minimum and 
+            maximum turning points in two separate lists.
+            '''
+            idx_max, idx_min = [], []
+            if (len(array) < 3): 
+                return idx_min, idx_max
+
+            NEUTRAL, RISING, FALLING = range(3)
+            def get_state(a, b):
+                if a < b: return RISING
+                if a > b: return FALLING
+                return NEUTRAL
+
+            ps = get_state(array[0], array[1])
+            begin = 1
+            for i in range(2, len(array)):
+                s = get_state(array[i - 1], array[i])
+                if s != NEUTRAL:
+                    if ps != NEUTRAL and ps != s:
+                        if s == FALLING: 
+                            idx_max.append((begin + i - 1) // 2)
+                        else:
+                            idx_min.append((begin + i - 1) // 2)
+                    begin = i
+                    ps = s
+            return idx_min, idx_max
+    
+        cut_n1 = centre_n1[idx_max[0]:]
+        cut_n2 = centre_n2[idx_max[0]:]
+        cut_t = t_real[idx_max[0]:]
 
         # fit central density oscillations to damped sine curve
         fitted_params1 = curve_fitting(cut_t,cut_n1)
