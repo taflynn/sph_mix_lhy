@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 import os
+import sys
+import shutil
 import matplotlib.animation as animation
 import argparse
 from scipy.optimize import curve_fit
@@ -57,7 +59,6 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
     sys.stdout = Unbuffered(sys.stdout)
-    shutil.copy2(fname,path)
 
     for i in range(0,num_sims):
         # load in simulation parameters
