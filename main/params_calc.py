@@ -92,9 +92,38 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
     elif m1 != m2:
         # equilibrium densities unequal masses
         print('Density-unlocked and unequal masses is not yet available')
+        """
+        
+        a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
+        m1 = m1*Da; m2 = m2*Da    
+        
+        # equilibrium densities equal masses with density-lock
+        n01,n02 = eq_dens_lck(m1,m2,a11,a22,a12)
+        
+        # defining effective interaction strenghts
+        g11 = 4*pi*hbar**2*a11/m1
+        g22 = 4*pi*hbar**2*a22/m2
+        g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
+        
+        delta_g = g12 + np.sqrt(g11*g22)
+        
+        gam1 = (np.sqrt(g11) + np.sqrt(g22))/(m1*(np.sqrt(g11)/m2 + np.sqrt(g22)/m1))
+        gam2 = (np.sqrt(g11) + np.sqrt(g22))/(m2*(np.sqrt(g11)/m2 + np.sqrt(g22)/m1))
+        alpha = (8/(15*pi**2))*np.sqrt((2/3)*(m1/hbar**2)**3*(np.abs(delta_g)*g11**2.5*n01)/(np.sqrt(g11) + np.sqrt(g22)))
+        beta = np.sqrt(g22/g11)
+        eta = g12/np.sqrt(g11*g22)
+        
+        xi,tau = units(m1,m2,a11,a22,a12,n01)
+        
+        N1 = N1/(rho1*xi**3)
+        N2 = N2/(rho2*xi**3)
+        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2
+        """
     
     print('Calculating defining parameters and scales for density-unlocked mixture:')
     print('Dimensionless parameters of mixture:')
+    if m1 != m2:
+        print('gamma1 = ',gam1,', gamma2 = ',gam2)
     print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
     print('Lengthscale, xi = ',xi)
     print('Timescale, tau = ',tau)
