@@ -49,6 +49,35 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         # Extracting the fitted parameter values from the curve_fit function
         popt = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])[0]
         return popt
+    # extract values of density arrays and time arrays after the first max of the oscillating density
+    def turning_points(array):
+       ''' turning_points(array) -> min_indices, max_indices
+       Finds the turning points within an 1D array and returns the indices of the minimum and 
+       maximum turning points in two separate lists.
+       '''
+       idx_max, idx_min = [], []
+       if (len(array) < 3): 
+            return idx_min, idx_max
+
+        NEUTRAL, RISING, FALLING = range(3)
+        def get_state(a, b):
+            if a < b: return RISING
+            if a > b: return FALLING
+            return NEUTRAL
+
+        ps = get_state(array[0], array[1])
+        begin = 1
+        for i in range(2, len(array)):
+            s = get_state(array[i - 1], array[i])
+            if s != NEUTRAL:
+                if ps != NEUTRAL and ps != s:
+                    if s == FALLING: 
+                        idx_max.append((begin + i - 1) // 2)
+                    else:
+                        idx_min.append((begin + i - 1) // 2)
+                begin = i
+                ps = s
+        return idx_min, idx_max
 
     omega01_array = np.empty((num_sims,1))
     omega02_array = np.empty((num_sims,1))
@@ -88,36 +117,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         centre_n1 = (np.abs(psi1[1,:])**2)
         centre_n2 = (np.abs(psi2[1,:])**2)
         
-        # extract values of density arrays and time arrays after the first max of the oscillating density
-        def turning_points(array):
-            ''' turning_points(array) -> min_indices, max_indices
-            Finds the turning points within an 1D array and returns the indices of the minimum and 
-            maximum turning points in two separate lists.
-            '''
-            idx_max, idx_min = [], []
-            if (len(array) < 3): 
-                return idx_min, idx_max
-
-            NEUTRAL, RISING, FALLING = range(3)
-            def get_state(a, b):
-                if a < b: return RISING
-                if a > b: return FALLING
-                return NEUTRAL
-
-            ps = get_state(array[0], array[1])
-            begin = 1
-            for i in range(2, len(array)):
-                s = get_state(array[i - 1], array[i])
-                if s != NEUTRAL:
-                    if ps != NEUTRAL and ps != s:
-                        if s == FALLING: 
-                            idx_max.append((begin + i - 1) // 2)
-                        else:
-                            idx_min.append((begin + i - 1) // 2)
-                    begin = i
-                    ps = s
-            return idx_min, idx_max
-    
+        # cutoff the first transient of the oscillations 
+        [idx_min,idx_max] = turning_points(centre_n1) 
         cut_n1 = centre_n1[idx_max[0]:]
         cut_n2 = centre_n2[idx_max[0]:]
         cut_t = t_real[idx_max[0]:]

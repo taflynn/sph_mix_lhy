@@ -1,7 +1,6 @@
 #!/bin/bash
 # 
 #SBATCH -p defq
-#SBATCH -t 00:05:00
 module load Python
 module load matplotlib/3.0.0-foss-2018b-Python-3.6.6
 
