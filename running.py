@@ -38,14 +38,18 @@ def run_save_sim(dirarg,fname):
     f.close()
 
     # run simulation
-    mix_data = time(fname)
+    [mix_data,theory_params] = time(fname)
+
+    # save theoretical parameters dictionary to a json file
+    with open(path + 'theory_params.json', 'w') as f:
+        json.dump(theory_params, f, indent=0)
 
     # extracting data from dictionary
     r = mix_data['r']
     # save spacetime in a format that it is easy to reload into Python
     with open(path + 'r_array.npy', 'wb') as f:
         np.save(f,r)
-
+    
     # data-saving of density-lock mixture
     if setup['DENS_LCK'] == 1:
         # both imaginary and real time simulation

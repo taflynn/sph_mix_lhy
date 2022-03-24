@@ -52,7 +52,16 @@ def time(json_input):
         
         # theoretical parameters
         [N_lck,xi,tau,n01,n02] = params_dens_lck(m1,m2,a11,a22,a12,N)
-        
+       
+        # save theoretical parameters into dictionary
+        theory_params = {
+        'N_lck':N_lck,
+        'xi':xi,
+        'tau':tau,
+        'n01':n01,
+        'n02':n02
+        }
+
         # setup trapping potential
         V = potential_dens_lck(r,setup['OMEGA'],tau)
 
@@ -108,6 +117,21 @@ def time(json_input):
             alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2)
             
+            # save theoretical parameters into dictionary
+            theory_params = {
+            'alpha':alpha,
+            'beta':beta,
+            'eta':eta,
+            'xi':xi,
+            'tau':tau,
+            'n01':n01,
+            'n02':n02,
+            'rho1':rho1,
+            'rho2':rho2,
+            'N1':N1_rescale,
+            'N2':N2_rescale
+            }
+            
             # setup trapping potentials
             [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau)
             
@@ -138,6 +162,23 @@ def time(json_input):
             # theoretical parameters
             gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2)
+            
+            # save theoretical parameters into dictionary
+            theory_params = {
+            'gamma1':gam1,
+            'gamma2':gam2,
+            'alpha':alpha,
+            'beta':beta,
+            'eta':eta,
+            'xi':xi,
+            'tau':tau,
+            'n01':n01,
+            'n02':n02,
+            'rho1':rho1,
+            'rho2':rho2,
+            'N1':N1_rescale,
+            'N2':N2_rescale
+            }
             
             # setup trapping potentials
             [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau)
@@ -202,4 +243,4 @@ def time(json_input):
             'spacetime2_re' : spacetime2_re
             }
         
-    return mix_data
+    return mix_data,theory_params
