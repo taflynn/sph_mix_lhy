@@ -5,9 +5,6 @@
 # give the array a single job name
 #SBATCH -J array_sph_drop
 #
-# Standard error messages are saved in this file
-#SBATCH -e job_array${SLURM_ARRAY_TASK_ID}.err
-#
 # request one core per task
 #SBATCH -c 1
 #
