@@ -51,12 +51,12 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         return popt
     # extract values of density arrays and time arrays after the first max of the oscillating density
     def turning_points(array):
-       ''' turning_points(array) -> min_indices, max_indices
-       Finds the turning points within an 1D array and returns the indices of the minimum and 
-       maximum turning points in two separate lists.
-       '''
-       idx_max, idx_min = [], []
-       if (len(array) < 3): 
+        ''' turning_points(array) -> min_indices, max_indices
+        Finds the turning points within an 1D array and returns the indices of the minimum and 
+        maximum turning points in two separate lists.
+        '''
+        idx_max, idx_min = [], []
+        if (len(array) < 3): 
             return idx_min, idx_max
 
         NEUTRAL, RISING, FALLING = range(3)
