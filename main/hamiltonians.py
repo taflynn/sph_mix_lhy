@@ -166,8 +166,9 @@ def eqm_dens_ulck_ham2(psi1,psi2,V2,r,dr,N1,N2,alpha,beta,eta,mu,im_real):
     H_mu[1:-1] = -mu*psi2[1:-1]
     
     return H_ke,H_trap,H_int,H_lhy,H_mu
-"""
-def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,f,dfdx):
+
+def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,z):
+    """
     The Gross-Pitaevskii (GP) Hamiltonian for the 1st-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
     is split into multiple contributions
@@ -188,6 +189,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     -> mu - the chemical potential, calculated in a separate function, but needed for the H_mu contribution here
     -> IM_REAL - this a 0 or 1 switch used to indicate imaginary or real time as this dictates whether the arrays
                  are designated as real (in imaginary time) or complex (in real time)
+    """
     if im_real == 0:
         # INITIALISE ARRAYS
         H_ke = np.zeros(psi1.size)
@@ -210,8 +212,9 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi1) + Dr2 @ psi1
     H_ke[1:-1] = -0.5*gam1*KE[1:-1] # KE term  
-    
-    H_lhy[1:-1] = alpha*(2.5*f*N1**1.5*np.abs(psi1[1:-1])**3 - dfdx*N1**0.5*N2*np.abs(psi1[1:-1])*np.abs(psi2[1:-1])**2)*psi1[1:-1]
+
+    H_lhy[1:-1] = 1.25*alpha*(1 + z**0.6*((N2*np.abs(psi2[1:-1])**2)/(N1*np.abs(psi1[1:-1])**2)))**1.5*(5*N1**1.5*np.abs(psi1[1:-1])**3 \
+                + 3*z**0.6*N1**0.5*N2*np.abs(psi1[1:-1])*np.abs(psi2[1:-1])**2)*psi1[1:-1]
 
     H_int[1:-1] = (N1*np.abs(psi1[1:-1])**2 + eta*N2*np.abs(psi2[1:-1])**2)*psi1[1:-1]
 
@@ -220,9 +223,9 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     H_mu[1:-1] = -mu*psi1[1:-1]
 
     return H_ke,H_trap,H_int,H_lhy,H_mu
-"""
-""" 
-def ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,f,dfdx):
+
+def ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,z):
+    """
     The Gross-Pitaevskii (GP) Hamiltonian for the 2nd-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
     is split into multiple contributions
@@ -243,6 +246,7 @@ def ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     -> mu - the chemical potential, calculated in a separate function, but needed for the H_mu contribution here
     -> IM_REAL - this a 0 or 1 switch used to indicate imaginary or real time as this dictates whether the arrays
                  are designated as real (in imaginary time) or complex (in real time)
+    """
     if im_real == 0:
         # INITIALISE ARRAYS
         H_ke = np.zeros(psi2.size)
@@ -267,7 +271,7 @@ def ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi2) + Dr2 @ psi2
     H_ke[1:-1] = -0.5*gam2*KE[1:-1] # KE term  
     
-    H_lhy[1:-1] = alpha*beta*dfdx*N1**1.5*np.abs(psi1[1:-1])**3*psi2[1:-1]
+    H_lhy[1:-1] = 2.5*N1**1.5*alpha*beta*z**0.6*(1 + (N2*np.abs(psi2)**2)/(N1*np.abs(psi1)**2))**1.5*np.abs(psi1[1:-1])**3*psi2[1:-1]
 
     H_int[1:-1] = (beta*N2*np.abs(psi2[1:-1])**2 + eta*beta*N1*np.abs(psi1[1:-1])**2)*psi2[1:-1]
 
@@ -276,4 +280,3 @@ def ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     H_mu[1:-1] = -mu*psi2[1:-1]
     
     return H_ke,H_trap,H_int,H_lhy,H_mu
-"""

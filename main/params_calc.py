@@ -88,12 +88,19 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
         
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
+        print('Calculating defining parameters and scales for density-unlocked mixture (equal masses):')
+        print('Dimensionless parameters of mixture:')
+        print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
+        print('Lengthscale, xi = ',xi)
+        print('Timescale, tau = ',tau)
+        print('Equilibrium density of component 1, n01 = ',n01)
+        print('Equilibrium density of component 2, n02 = ',n02)
+        print(67*'-')
+        return alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2
         
     elif m1 != m2:
         # equilibrium densities unequal masses
-        print('Density-unlocked and unequal masses is not yet available')
-        """
-        
+        z = m2/m1
         a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
         m1 = m1*Da; m2 = m2*Da    
         
@@ -117,18 +124,13 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
         
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
-        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2
-        """
-    
-    print('Calculating defining parameters and scales for density-unlocked mixture:')
-    print('Dimensionless parameters of mixture:')
-    if m1 != m2:
+        print('Calculating defining parameters and scales for density-unlocked mixture (mass ratio z = ',z,'):')
+        print('Dimensionless parameters of mixture:')
         print('gamma1 = ',gam1,', gamma2 = ',gam2)
-    print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
-    print('Lengthscale, xi = ',xi)
-    print('Timescale, tau = ',tau)
-    print('Equilibrium density of component 1, n01 = ',n01)
-    print('Equilibrium density of component 2, n02 = ',n02)
-    print(67*'-')
-    
-    return alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2
+        print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
+        print('Lengthscale, xi = ',xi)
+        print('Timescale, tau = ',tau)
+        print('Equilibrium density of component 1, n01 = ',n01)
+        print('Equilibrium density of component 2, n02 = ',n02)
+        print(67*'-')
+        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,z
