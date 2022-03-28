@@ -8,6 +8,10 @@ import shutil
 import matplotlib.animation as animation
 import argparse
 from scipy.optimize import curve_fit
+
+sys.path.insert(1, '../')
+
+from main.params_calc import params_dens_lck
 class Unbuffered(object):
     def __init__(self, stream):
         self.stream = stream
@@ -29,11 +33,6 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
         sim_style = 'N/A'
 
-    # create directory for data storage
-    #path = os.path.join('../data',dirarg+'saved/')
-    #if not os.path.isdir(path):
-    #    os.mkdir(path)
-
     # Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
         return a*np.exp(-f*x)*np.sin(b*x + c) + d
@@ -47,8 +46,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         F = 0.1
     
         # Extracting the fitted parameter values from the curve_fit function
-        popt = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])[0]
-        return popt
+        popt, cov = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])
+        return popt,cov
     # extract values of density arrays and time arrays after the first max of the oscillating density
     def turning_points(array):
         ''' turning_points(array) -> min_indices, max_indices
@@ -78,7 +77,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
                 begin = i
                 ps = s
         return idx_min, idx_max
-
+    
+    # generating empty arrays for saving fitted parameters and confidence intervals
     omega01_array = np.empty((num_sims,1))
     lowconf_omega01 = np.empty((num_sims,1))
     highconf_omega01 = np.empty((num_sims,1))
@@ -117,7 +117,13 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         if imbal_size == 'IMBAL':
             imb_size_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
         elif imbal_size == 'SIZE':
-            imb_size_array[i] = setup['a12']
+            N1 = setup['N1']
+            N2 = setup['N2']
+            perc_diff = np.abs(N1-N2)/N2
+            N1 = N1 - (N2*perc_diff)
+            N_tot = N1 + N2
+            N_lck,xi,tau,n01,n02 = params_dens_lck(setup['m1'],setup['m2'],setup['a11'],setup['a22'],setup['a12'],N_tot) 
+            imb_size_array[i] = (N_lck - 18.65)*0.25
 
         # main data read in from NumPy files
         r = np.load('../data/' + dirarg + str(i+1) + '/r_array.npy')
@@ -131,13 +137,17 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         
         # cutoff the first transient of the oscillations 
         [idx_min,idx_max] = turning_points(centre_n1) 
-        cut_n1 = centre_n1[idx_max[0]:]
-        cut_n2 = centre_n2[idx_max[0]:]
-        cut_t = t_real[idx_max[0]:]
+        if centre_n1[maxs[0]] < centre_n1[0]:
+            extract = maxs[1]
+        else:
+            extract = maxs[0]
+        cut_n1 = centre_n1[extract:]
+        cut_n2 = centre_n2[extract:]
+        cut_t = t_real[extract:]
 
         # fit central density oscillations to damped sine curve
-        fitted_params1,cov1 = curve_fitting(cut_t,cut_n1)
-        fitted_params2,cov1 = curve_fitting(cut_t,cut_n2)
+        [fitted_params1,cov1] = curve_fitting(cut_t,cut_n1)
+        [fitted_params2,cov2] = curve_fitting(cut_t,cut_n2)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
         omega01_array[i] = fitted_params1[1]
@@ -193,7 +203,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_low_' + sim_style + '.csv',lowconf_gamma2_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high_' + sim_style + '.csv',lowconf_gamma2_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high_' + sim_style + '.csv',highconf_gamma2_data,delimiter=',',fmt='%18.16f')
 
     
 if __name__ == '__main__':
