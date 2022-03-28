@@ -120,6 +120,9 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
         beta = np.sqrt(g22/g11)
         eta = g12/np.sqrt(g11*g22)
         
+        rho1 = (2/3)*((np.abs(delta_g)*n01)/(np.sqrt(g11)*(np.sqrt(g11) + np.sqrt(g22))))
+        rho2 = (2/3)*((np.abs(delta_g)*n01)/(np.sqrt(g22)*(np.sqrt(g11) + np.sqrt(g22))))
+
         xi,tau = units(m1,m2,a11,a22,a12,n01)
         
         N1 = N1/(rho1*xi**3)

@@ -11,13 +11,14 @@ def eq_dens_lck(m1,m2,a11,a22,a12):
         n02 = (25*pi/1024)*(a12+np.sqrt(a11*a22))**2/(a22**1.5*a11*(np.sqrt(a11) + np.sqrt(a22))**5)
 
     elif m1 != m2:
+        z = m2/m1
         [hbar,a0,Da] = natural_consts()
         # define interaction strengths
         g11 = 4*pi*hbar**2*a11/m1
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
         deltag = g12 + np.sqrt(g11*g22)
-        
+        x = np.sqrt(g22/g11) 
         # calculate integral f using the t defined integral
         f = f_int(z,x)
         

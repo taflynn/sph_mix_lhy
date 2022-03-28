@@ -4,7 +4,7 @@ import numpy as np
 
 from main.init import grid_setup,potential_dens_lck,potential_dens_ulck,init_wavefun_dens_ulck,init_wavefun_dens_lck
 from main.params_calc import params_dens_lck, params_dens_ulck
-from main.rk4_methods import rk4_dens_lck, rk4_dens_ulck
+from main.rk4_methods import rk4_dens_lck, rk4_eqm_dens_ulck, rk4_uneqm_dens_ulck
 from main.boundary import absorb_bc_dens_lck,absorb_bc_dens_ulck
 
 def time(json_input):
@@ -176,7 +176,7 @@ def time(json_input):
             'rho2':rho2,
             'N1':N1_rescale,
             'N2':N2_rescale,
-            'z',z
+            'z':z
             }
             
             # setup trapping potentials

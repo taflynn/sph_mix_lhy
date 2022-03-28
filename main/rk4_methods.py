@@ -1,8 +1,8 @@
 from main.hamiltonians import ham_dens_lck
-from main.hamiltonians import eqm_dens_ulck_ham1,eqm_dens_ulck_ham2
+from main.hamiltonians import eqm_dens_ulck_ham1,eqm_dens_ulck_ham2,ham1_uneqm_dens_ulck,ham2_uneqm_dens_ulck
 from main.boundary import bc
-from main.chem_pot import mu_dens_lck,mu_eqm_dens_ulck
-from main.energy import energy_eqm_dens_ulck,energy_eqm_dens_lck
+from main.chem_pot import mu_dens_lck,mu_eqm_dens_ulck,mu_uneqm_dens_ulck
+from main.energy import energy_eqm_dens_ulck,energy_eqm_dens_lck,energy_uneqm_dens_ulck
 from numpy import pi
 
 import numpy as np
@@ -180,7 +180,7 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
         print('Real time finished')
     return phi,mu,t_array,spacetime,E_array
 
-def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,T_DEPEN_POT):
+def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,T_DEPEN_POT):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -434,7 +434,7 @@ def rk4_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM
         
     return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E_array
 
-def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,f,dfdx):
+def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,z):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -518,7 +518,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
     
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,IM_REAL,z)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu1,IM_REAL,z)
 
         k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -526,7 +526,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k1_1 = bc(k1_1,BC_TYPE)
 
         # k1 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,IM_REAL,z)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu2,IM_REAL,z)
 
         k1_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
