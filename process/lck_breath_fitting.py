@@ -24,14 +24,7 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-def run_ulck_process(dirarg,num_sims,imbal_size):
-    if imbal_size == 'IMBAL': 
-        sim_style = 'imbal'
-    elif imbal_size == 'SIZE':
-        sim_style = 'size'
-    else:
-        print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
-        sim_style = 'N/A'
+def run_ulck_process(dirarg,num_sims):
 
     # Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
@@ -79,23 +72,15 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         return idx_min, idx_max
     
     # generating empty arrays for saving fitted parameters and confidence intervals
-    omega01_array = np.empty((num_sims,1))
-    lowconf_omega01 = np.empty((num_sims,1))
-    highconf_omega01 = np.empty((num_sims,1))
+    omega0_array = np.empty((num_sims,1))
+    lowconf_omega0 = np.empty((num_sims,1))
+    highconf_omega0 = np.empty((num_sims,1))
     
-    omega02_array = np.empty((num_sims,1))
-    lowconf_omega02 = np.empty((num_sims,1))
-    highconf_omega02 = np.empty((num_sims,1))
+    gamma_array = np.empty((num_sims,1))
+    lowconf_gamma = np.empty((num_sims,1))
+    highconf_gamma = np.empty((num_sims,1))
     
-    gamma1_array = np.empty((num_sims,1))
-    lowconf_gamma1 = np.empty((num_sims,1))
-    highconf_gamma1 = np.empty((num_sims,1))
-    
-    gamma2_array = np.empty((num_sims,1))
-    lowconf_gamma2 = np.empty((num_sims,1))
-    highconf_gamma2 = np.empty((num_sims,1))
-    
-    imb_size_array = np.empty((num_sims,1))
+    size_array = np.empty((num_sims,1))
     
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
@@ -103,7 +88,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
     for i in range(1,num_sims):
         # load in simulation parameters
-        fname = 'config_dens_ulck' + str(i + 1) + '.json'
+        fname = 'config_dens_lck' + str(i + 1) + '.json'
         print(i)
 
         # read in data
@@ -114,100 +99,63 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         # grid spacing
         dr = setup['dr']
 
-        if imbal_size == 'IMBAL':
-            imb_size_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
-        elif imbal_size == 'SIZE':
-            N1 = setup['N1']
-            N2 = setup['N2']
-            perc_diff = np.abs(N1-N2)/N2
-            N1 = N1 - (N2*perc_diff)
-            N_tot = N1 + N2
-            N_lck,xi,tau,n01,n02 = params_dens_lck(setup['m1'],setup['m2'],setup['a11'],setup['a22'],setup['a12'],N_tot) 
-            imb_size_array[i] = (N_lck - 18.65)**0.25
+        # read in theory parameters
+        f = open('../data/' + dirarg + '/theory_params.json',"r")
+        theory = json.loads(f.read())
+        f.close()
+        
+        N_lck = setup['N_lck']
+        imb_size_array[i] = (N_lck - 18.65)**0.25
 
         # main data read in from NumPy files
         r = np.load('../data/' + dirarg + str(i+1) + '/r_array.npy')
         t_real = np.load('../data/' + dirarg + str(i+1) + '/real_t_array.npy')
-        psi1 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav1.npy')
-        psi2 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav2.npy')
+        phi = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav.npy')
         
         # extract central density values
-        centre_n1 = (np.abs(psi1[1,:])**2)
-        centre_n2 = (np.abs(psi2[1,:])**2)
+        centre_n = (np.abs(phi[1,:])**2)
         
         # cutoff the first transient of the oscillations 
-        [idx_min,idx_max] = turning_points(centre_n1) 
-        if centre_n1[idx_max[0]] < centre_n1[0]:
+        [idx_min,idx_max] = turning_points(centre_n) 
+        if centre_n[idx_max[0]] < centre_n[0]:
             extract = idx_max[1]
         else:
             extract = idx_max[0]
-        cut_n1 = centre_n1[extract:]
-        cut_n2 = centre_n2[extract:]
+        cut_n = centre_n[extract:]
         cut_t = t_real[extract:]
 
         # fit central density oscillations to damped sine curve
-        [fitted_params1,cov1] = curve_fitting(cut_t,cut_n1)
-        [fitted_params2,cov2] = curve_fitting(cut_t,cut_n2)
+        [fitted_params,cov] = curve_fitting(cut_t,cut_n)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
-        omega01_array[i] = fitted_params1[1]
-        lowconf_omega01[i] = fitted_params1[1] - 2*np.sqrt(cov1[1,1])
-        highconf_omega01[i] = fitted_params1[1] + 2*np.sqrt(cov1[1,1])
+        omega0_array[i] = fitted_params[1]
+        lowconf_omega0[i] = fitted_params[1] - 2*np.sqrt(cov[1,1])
+        highconf_omega0[i] = fitted_params[1] + 2*np.sqrt(cov[1,1])
         
-        gamma1_array[i] = fitted_params1[-1]
-        lowconf_gamma1[i] = fitted_params1[-1] - 2*np.sqrt(cov1[-1,-1])
-        highconf_gamma1[i] = fitted_params1[-1] + 2*np.sqrt(cov1[-1,-1])
+        gamma_array[i] = fitted_params[-1]
+        lowconf_gamma[i] = fitted_params[-1] - 2*np.sqrt(cov[-1,-1])
+        highconf_gamma[i] = fitted_params[-1] + 2*np.sqrt(cov[-1,-1])
         
-        # extract breathing mode frequency and decay rate of oscillation for component 2
-        omega02_array[i] = fitted_params2[1]
-        lowconf_omega02[i] = fitted_params2[1] - 2*np.sqrt(cov2[1,1])
-        highconf_omega02[i] = fitted_params2[1] + 2*np.sqrt(cov2[1,1])
-        
-        gamma2_array[i] = fitted_params2[-1]
-        lowconf_gamma2[i] = fitted_params2[-1] - 2*np.sqrt(cov2[-1,-1])
-        highconf_gamma2[i] = fitted_params2[-1] + 2*np.sqrt(cov2[-1,-1])
-    
-    # concatenating data into 2D array of omega and gamma for component 1 
-    omega01_data = np.column_stack((imb_size_array,omega01_array))
-    lowconf_omega01_data = np.column_stack((imb_size_array,lowconf_omega01))
-    highconf_omega01_data = np.column_stack((imb_size_array,highconf_omega01))
+    # concatenating data into 2D array of omega and gamma 
+    omega0_data = np.column_stack((imb_size_array,omega0_array))
+    lowconf_omega0_data = np.column_stack((imb_size_array,lowconf_omega0))
+    highconf_omega0_data = np.column_stack((imb_size_array,highconf_omega0))
 
-    gamma1_data = np.column_stack((imb_size_array,gamma1_array))
-    lowconf_gamma1_data = np.column_stack((imb_size_array,lowconf_gamma1))
-    highconf_gamma1_data = np.column_stack((imb_size_array,highconf_gamma1))
-    
-    # concatenating data into 2D array of omega and gamma for component 2
-    omega02_data = np.column_stack((imb_size_array,omega02_array))
-    lowconf_omega02_data = np.column_stack((imb_size_array,lowconf_omega02))
-    highconf_omega02_data = np.column_stack((imb_size_array,highconf_omega02))
-    
-    gamma2_data = np.column_stack((imb_size_array,gamma2_array))
-    lowconf_gamma2_data = np.column_stack((imb_size_array,lowconf_gamma2))
-    highconf_gamma2_data = np.column_stack((imb_size_array,highconf_gamma2))
+    gamma_data = np.column_stack((imb_size_array,gamma_array))
+    lowconf_gamma_data = np.column_stack((imb_size_array,lowconf_gamma))
+    highconf_gamma_data = np.column_stack((imb_size_array,highconf_gamma))
     
     # saving arrays of omega's and confidence intervals
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_low_' + sim_style + '.csv',lowconf_omega01_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_high_' + sim_style + '.csv',highconf_omega01_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_size.csv',omega0_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_low_size.csv',lowconf_omega0_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_high_size.csv',highconf_omega0_data,delimiter=',',fmt='%18.16f')
 
-    
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_low_' + sim_style + '.csv',lowconf_omega02_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_high_' + sim_style + '.csv',highconf_omega02_data,delimiter=',',fmt='%18.16f')
-
-    
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_low_' + sim_style + '.csv',lowconf_gamma1_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_high_' + sim_style + '.csv',highconf_gamma1_data,delimiter=',',fmt='%18.16f')
-
-    
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_low_' + sim_style + '.csv',lowconf_gamma2_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high_' + sim_style + '.csv',highconf_gamma2_data,delimiter=',',fmt='%18.16f')
-
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_size.csv',gamma_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_low_size.csv',lowconf_gamma_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_high_size.csv',highconf_gamma_data,delimiter=',',fmt='%18.16f')
     
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
+    parser = argparse.ArgumentParser(description = 'Process data of density-locked mixture simulation')
     parser.add_argument('--read_path','-rp',
             dest = 'READ_PATH',
             type = str,
@@ -218,10 +166,5 @@ if __name__ == '__main__':
             type = int,
             required = True,
             nargs = 1)
-    parser.add_argument('--sim_type','-st',
-            dest = 'IMBAL_SIZE',
-            type = str,
-            required = True,
-            nargs = 1)
     args = parser.parse_args()
-    run_ulck_process(args.READ_PATH[0],args.NUM_SIMS[0],args.IMBAL_SIZE[0])
+    run_ulck_process(args.READ_PATH[0],args.NUM_SIMS[0])
