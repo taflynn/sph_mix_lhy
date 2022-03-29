@@ -138,7 +138,7 @@ def run_ulck_process(dirarg,num_sims):
         lowconf_gamma[i] = fitted_params[-1] - 2*np.sqrt(cov[-1,-1])
         highconf_gamma[i] = fitted_params[-1] + 2*np.sqrt(cov[-1,-1])
         
-        mu_array[i] = theory['mu']
+        mu_array[i] = -1*theory['mu']
 
     # concatenating data into 2D array of omega and gamma 
     omega0_data = np.column_stack((size_array,omega0_array))
