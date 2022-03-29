@@ -100,12 +100,12 @@ def run_ulck_process(dirarg,num_sims):
         dr = setup['dr']
 
         # read in theory parameters
-        f = open('../data/' + dirarg + '/theory_params.json',"r")
+        f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json',"r")
         theory = json.loads(f.read())
         f.close()
         
-        N_lck = setup['N_lck']
-        imb_size_array[i] = (N_lck - 18.65)**0.25
+        N_lck = theory['N_lck']
+        size_array[i] = (N_lck - 18.65)**0.25
 
         # main data read in from NumPy files
         r = np.load('../data/' + dirarg + str(i+1) + '/r_array.npy')
@@ -137,13 +137,13 @@ def run_ulck_process(dirarg,num_sims):
         highconf_gamma[i] = fitted_params[-1] + 2*np.sqrt(cov[-1,-1])
         
     # concatenating data into 2D array of omega and gamma 
-    omega0_data = np.column_stack((imb_size_array,omega0_array))
-    lowconf_omega0_data = np.column_stack((imb_size_array,lowconf_omega0))
-    highconf_omega0_data = np.column_stack((imb_size_array,highconf_omega0))
+    omega0_data = np.column_stack((size_array,omega0_array))
+    lowconf_omega0_data = np.column_stack((size_array,lowconf_omega0))
+    highconf_omega0_data = np.column_stack((size_array,highconf_omega0))
 
-    gamma_data = np.column_stack((imb_size_array,gamma_array))
-    lowconf_gamma_data = np.column_stack((imb_size_array,lowconf_gamma))
-    highconf_gamma_data = np.column_stack((imb_size_array,highconf_gamma))
+    gamma_data = np.column_stack((size_array,gamma_array))
+    lowconf_gamma_data = np.column_stack((size_array,lowconf_gamma))
+    highconf_gamma_data = np.column_stack((size_array,highconf_gamma))
     
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_size.csv',omega0_data,delimiter=',',fmt='%18.16f')
