@@ -95,13 +95,16 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     lowconf_gamma2 = np.empty((num_sims,1))
     highconf_gamma2 = np.empty((num_sims,1))
     
+    mu1_array = np.empty((num_sims,1))
+    mu2_array = np.empty((num_sims,1))
+    
     imb_size_array = np.empty((num_sims,1))
     
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
     sys.stdout = Unbuffered(sys.stdout)
 
-    for i in range(1,num_sims):
+    for i in range(0,num_sims):
         # load in simulation parameters
         fname = 'config_dens_ulck' + str(i + 1) + '.json'
         print(i)
@@ -113,6 +116,11 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
         # grid spacing
         dr = setup['dr']
+        
+        # read in theory parameters
+        f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json',"r")
+        theory = json.loads(f.read())
+        f.close()
 
         if imbal_size == 'IMBAL':
             imb_size_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
@@ -150,22 +158,25 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         [fitted_params2,cov2] = curve_fitting(cut_t,cut_n2)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
-        omega01_array[i] = fitted_params1[1]
-        lowconf_omega01[i] = fitted_params1[1] - 2*np.sqrt(cov1[1,1])
-        highconf_omega01[i] = fitted_params1[1] + 2*np.sqrt(cov1[1,1])
+        omega01_array[i] = np.abs(fitted_params1[1])
+        lowconf_omega01[i] = np.abs(fitted_params1[1]) - 2*np.sqrt(cov1[1,1])
+        highconf_omega01[i] = np.abs(fitted_params1[1]) + 2*np.sqrt(cov1[1,1])
         
         gamma1_array[i] = fitted_params1[-1]
         lowconf_gamma1[i] = fitted_params1[-1] - 2*np.sqrt(cov1[-1,-1])
         highconf_gamma1[i] = fitted_params1[-1] + 2*np.sqrt(cov1[-1,-1])
         
         # extract breathing mode frequency and decay rate of oscillation for component 2
-        omega02_array[i] = fitted_params2[1]
-        lowconf_omega02[i] = fitted_params2[1] - 2*np.sqrt(cov2[1,1])
-        highconf_omega02[i] = fitted_params2[1] + 2*np.sqrt(cov2[1,1])
+        omega02_array[i] = np.abs(fitted_params2[1])
+        lowconf_omega02[i] = np.abs(fitted_params2[1]) - 2*np.sqrt(cov2[1,1])
+        highconf_omega02[i] = np.abs(fitted_params2[1]) + 2*np.sqrt(cov2[1,1])
         
         gamma2_array[i] = fitted_params2[-1]
         lowconf_gamma2[i] = fitted_params2[-1] - 2*np.sqrt(cov2[-1,-1])
         highconf_gamma2[i] = fitted_params2[-1] + 2*np.sqrt(cov2[-1,-1])
+    
+        mu1_array[i] = theory['mu1']
+        mu2_array[i] = theory['mu2']
     
     # concatenating data into 2D array of omega and gamma for component 1 
     omega01_data = np.column_stack((imb_size_array,omega01_array))
@@ -185,26 +196,28 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     lowconf_gamma2_data = np.column_stack((imb_size_array,lowconf_gamma2))
     highconf_gamma2_data = np.column_stack((imb_size_array,highconf_gamma2))
     
+    mu1_data = np.column_stack((imb_size_array,mu1_array))
+    mu2_data = np.column_stack((imb_size_array,mu2_array))
+
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_' + sim_style + '.csv',omega01_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_low_' + sim_style + '.csv',lowconf_omega01_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega01_high_' + sim_style + '.csv',highconf_omega01_data,delimiter=',',fmt='%18.16f')
-
     
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_' + sim_style + '.csv',omega02_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_low_' + sim_style + '.csv',lowconf_omega02_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega02_high_' + sim_style + '.csv',highconf_omega02_data,delimiter=',',fmt='%18.16f')
-
     
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_' + sim_style + '.csv',gamma1_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_low_' + sim_style + '.csv',lowconf_gamma1_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma1_high_' + sim_style + '.csv',highconf_gamma1_data,delimiter=',',fmt='%18.16f')
-
     
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_' + sim_style + '.csv',gamma2_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_low_' + sim_style + '.csv',lowconf_gamma2_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high_' + sim_style + '.csv',highconf_gamma2_data,delimiter=',',fmt='%18.16f')
 
+    np.savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv',mu1_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv',mu2_data,delimiter=',',fmt='%18.16f')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')

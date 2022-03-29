@@ -80,13 +80,15 @@ def run_ulck_process(dirarg,num_sims):
     lowconf_gamma = np.empty((num_sims,1))
     highconf_gamma = np.empty((num_sims,1))
     
+    mu_array = np.empty((num_sims,1))
+    
     size_array = np.empty((num_sims,1))
     
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
     sys.stdout = Unbuffered(sys.stdout)
 
-    for i in range(1,num_sims):
+    for i in range(0,num_sims):
         # load in simulation parameters
         fname = 'config_dens_lck' + str(i + 1) + '.json'
         print(i)
@@ -127,15 +129,17 @@ def run_ulck_process(dirarg,num_sims):
         # fit central density oscillations to damped sine curve
         [fitted_params,cov] = curve_fitting(cut_t,cut_n)
         
-        # extract breathing mode frequency and decay rate of oscillation for component 1
-        omega0_array[i] = fitted_params[1]
-        lowconf_omega0[i] = fitted_params[1] - 2*np.sqrt(cov[1,1])
-        highconf_omega0[i] = fitted_params[1] + 2*np.sqrt(cov[1,1])
+        # extract breathing mode frequency and decay rate of oscillation
+        omega0_array[i] = np.abs(fitted_params[1])
+        lowconf_omega0[i] = np.abs(fitted_params[1]) - 2*np.sqrt(cov[1,1])
+        highconf_omega0[i] = np.abs(fitted_params[1]) + 2*np.sqrt(cov[1,1])
         
         gamma_array[i] = fitted_params[-1]
         lowconf_gamma[i] = fitted_params[-1] - 2*np.sqrt(cov[-1,-1])
         highconf_gamma[i] = fitted_params[-1] + 2*np.sqrt(cov[-1,-1])
         
+        mu_array[i] = theory['mu']
+
     # concatenating data into 2D array of omega and gamma 
     omega0_data = np.column_stack((size_array,omega0_array))
     lowconf_omega0_data = np.column_stack((size_array,lowconf_omega0))
@@ -144,7 +148,9 @@ def run_ulck_process(dirarg,num_sims):
     gamma_data = np.column_stack((size_array,gamma_array))
     lowconf_gamma_data = np.column_stack((size_array,lowconf_gamma))
     highconf_gamma_data = np.column_stack((size_array,highconf_gamma))
-    
+
+    mu_data = np.column_stack((size_array,mu_array))
+ 
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_size.csv',omega0_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'omega0_low_size.csv',lowconf_omega0_data,delimiter=',',fmt='%18.16f')
@@ -153,6 +159,8 @@ def run_ulck_process(dirarg,num_sims):
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_size.csv',gamma_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_low_size.csv',lowconf_gamma_data,delimiter=',',fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'gamma_high_size.csv',highconf_gamma_data,delimiter=',',fmt='%18.16f')
+    
+    np.savetxt('../data/' + dirarg + 'saved/' + 'mu_size.csv',mu_data,delimiter=',',fmt='%18.16f')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-locked mixture simulation')
