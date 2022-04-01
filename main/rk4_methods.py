@@ -180,7 +180,7 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
         print('Real time finished')
     return phi,mu,t_array,spacetime,E_array
 
-def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,T_DEPEN_POT):
+def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -222,8 +222,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE)))
         
         t = 0.0
-
-        T_DEPEN_POT = 0
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
@@ -417,14 +415,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
             plt.close() 
 
-        # time varying potentials
-        if IM_REAL == 1 and T_DEPEN_POT == 1:
-            if l>=0.5*T_STEPS:
-                V1 = np.zeros(len(psi1))
-                V2 = np.zeros(len(psi2))
-            if l == T_STEPS//2:
-                print('Turning off absorbing boundary conditions')
-
         t = t + dt
         
     if IM_REAL == 0:
@@ -477,8 +467,6 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         
         t = 0.0
 
-        T_DEPEN_POT = 0
-        
     elif IM_REAL == 1:
         # for real time, specify a complex time step
         dt = 1j*dt

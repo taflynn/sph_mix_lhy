@@ -46,7 +46,7 @@ def params_dens_lck(m1,m2,a11,a22,a12,N):
     print(67*'-')
     return N_lck,xi,tau,n01,n02
 
-def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
+def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
     """
     This function calculates the necessary dimensionless parameters for the density-unlocked mixture (though this is 
     currently only for the equal masses mixture). The outputs are hence:
@@ -86,6 +86,13 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
         
         xi,tau = units(m1,m2,a11,a22,a12,n01)
         
+        if BALANCE == 1:
+            print('Balancing N2 to the value of N1')
+            N2 = N1*np.sqrt(a11/a22)
+        elif BALANCE == 2:
+            print('Balancing N1 to the value of N2')
+            N1 = N2*np.sqrt(a22/a11)
+
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
         print('Calculating defining parameters and scales for density-unlocked mixture (equal masses):')
@@ -125,6 +132,13 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2):
 
         xi,tau = units(m1,m2,a11,a22,a12,n01)
         
+        if BALANCE == 1:
+            print('Balancing N2 to the value of N1')
+            N2 = N1*np.sqrt(g11/g22)
+        elif BALANCE == 2:
+            print('Balancing N1 to the value of N2'
+            N1 = N2*np.sqrt(g22/g22)
+
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
         print('Calculating defining parameters and scales for density-unlocked mixture (mass ratio z = ',z,'):')

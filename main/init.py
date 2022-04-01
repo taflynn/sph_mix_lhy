@@ -65,7 +65,7 @@ def init_wavefun_dens_lck(r,dr,GAUSS_SIGMA,INIT_TYPE):
     print(67*'-')
     return phi
 
-def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA,INIT_TYPE1,INIT_TYPE2):
+def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA1,GAUSS_SIGMA2,INIT_TYPE1,INIT_TYPE2):
     """
     This initialisation function defines the initial condition for imaginary time of the density-locked mixture. The
     function inputs are:
@@ -87,15 +87,15 @@ def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA,INIT_TYPE1,INIT_TYPE2):
     # choosing initial condition (1st-component)
     if INIT_TYPE1 == 'GAUSS':
         # Gaussian initial condition (1st-component)
-        psi1 = np.exp(-(r)**2/(2*(GAUSS_SIGMA)**2)) 
+        psi1 = np.exp(-(r)**2/(2*(GAUSS_SIGMA1)**2)) 
         print('Gaussian in 1st component')
     elif INIT_TYPE1 == 'S_GAUSS':
         # Super-Gaussian initial condition
-        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3)
+        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA1)**2))**3)
         print('Super-Gaussian in 1st component')
     elif INIT_TYPE1 == 'NON_ZERO_TAIL':
         # Super-Gaussian initial condition w/ non-zero tail (1st-component)
-        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3) + 0.001*np.ones(len(r))
+        psi1 = np.exp(-((r)**2/(2*(GAUSS_SIGMA1)**2))**3) + 0.001*np.ones(len(r))
         print('Super-Gaussian w/ non-zero density tail in 1st component')
     
     # normalise initial condition (1st-component)
@@ -105,15 +105,15 @@ def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA,INIT_TYPE1,INIT_TYPE2):
     # choosing initial condition (2nd-component)
     if INIT_TYPE2 == 'GAUSS':
         # Gaussian initial condition (2nd-component)
-        psi2 = np.exp(-(r)**2/(2*(GAUSS_SIGMA)**2)) 
+        psi2 = np.exp(-(r)**2/(2*(GAUSS_SIGMA2)**2)) 
         print('Gaussian in 2nd component')
     elif INIT_TYPE2 == 'S_GAUSS':
         # Super-Gaussian initial condition (2nd-component)
-        psi2 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3)
+        psi2 = np.exp(-((r)**2/(2*(GAUSS_SIGMA2)**2))**3)
         print('Super-Gaussian in 2nd component')
     elif INIT_TYPE2 == 'NON_ZERO_TAIL':
         # Super-Gaussian initial condition w/ non-zero tail (2nd-component)
-        psi2 = np.exp(-((r)**2/(2*(GAUSS_SIGMA)**2))**3) + 0.0001*np.ones(len(r))
+        psi2 = np.exp(-((r)**2/(2*(GAUSS_SIGMA2)**2))**3) + 0.001*np.ones(len(r))
         print('Super-Gaussian w/ non-zero density tail in 1st component')
 
     # normalise initial condition (2nd-component)
