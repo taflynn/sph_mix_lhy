@@ -17,6 +17,7 @@
 "OMEGA":0.0,
 "INIT_TYPE":"S_GAUSS",
 "BREATH":1,
+"epsilon":0.0001,
 "ABSORB_BC":0,
 "ABS_HEIGHT":1.0,
 "ABS_SLOPE":4.0,
