@@ -135,9 +135,11 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
         if BALANCE == 1:
             print('Balancing N2 to the value of N1')
             N2 = N1*np.sqrt(g11/g22)
+            print('Experimental N2 = ', N2)
         elif BALANCE == 2:
-            print('Balancing N1 to the value of N2'
-            N1 = N2*np.sqrt(g22/g22)
+            print('Balancing N1 to the value of N2')
+            N1 = N2*np.sqrt(g22/g11)
+            print('Experimental N1 = ',N1)
 
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
