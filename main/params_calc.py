@@ -30,13 +30,18 @@ def params_dens_lck(m1,m2,a11,a22,a12,N):
     # density-locked effective atom number
     if m1 == m2:
         N_lck = (N/(n01*xi**3))*(np.sqrt(a22)/(np.sqrt(a11) + np.sqrt(a22)))
+        print('Balanced experimental N1 = ',N*(np.sqrt(a22)/(np.sqrt(a11) + np.sqrt(a22))))
+        print('Balanced experimental N2 = ',N*(np.sqrt(a11)/(np.sqrt(a11) + np.sqrt(a22))))
+    
     elif m1 != m2:
         # interaction strengths
         g11 = 4*pi*hbar**2*a11/m1
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
         N_lck = (N/(n01*xi**3))*(np.sqrt(g22)/(np.sqrt(g11) + np.sqrt(g22)))
-    
+        print('Balanced experimental N1 = ',N*(np.sqrt(g22)/(np.sqrt(g11) + np.sqrt(g22))))
+        print('Balanced experimental N2 = ',N*(np.sqrt(g11)/(np.sqrt(g11) + np.sqrt(g22))))
+ 
     print('Calculating defining parameters and scales for density locked mixture:')
     print('Effective atom number of density-locked mixture, N_lck = ',N_lck)
     print('Lengthscale, xi = ',xi)
