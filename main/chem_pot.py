@@ -78,8 +78,7 @@ def mu_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam1,gam2,alpha,beta,eta,N1,N2,z):
                          + V1*np.abs(psi1)**2 \
                          + N1*np.abs(psi1)**4 \
                          + N2*eta*np.abs(psi1)**2*np.abs(psi2)**2 \
-                         + 1.25*alpha*(1 + z**0.6*((N2*np.abs(psi2)**2)/(N1*np.abs(psi1)**2)))**1.5 \
-                         *(5*N1**1.5*np.abs(psi1)**3 + 3*N1**0.5*N2*z**0.6*np.abs(psi1)*np.abs(psi2)**2)*np.abs(psi1)**2)) \
+                         + N1**1.5*2.5*alpha*(1 + z**0.6*((N2*abs(psi2)**2)/(N1*np.abs(psi1)**2))**1.5*np.abs(psi1)**5
                          /np.trapz(r**2*np.abs(psi1)**2)
     
     dpsi2_dr = np.gradient(psi2,dr)
