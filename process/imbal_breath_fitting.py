@@ -34,19 +34,18 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         sim_style = 'N/A'
 
     # Define a general damped sine function
-    def damp_sin_func(x,a,b,c,d,f):
-        return a*np.exp(-f*x)*np.sin(b*x + c) + d
-    # function to fit the 
+    def damp_sin_func(x,a,b,c,d):
+        return a*np.exp(-d*x)*np.sin(b*x) + c
+    # function to fit the data
     def curve_fitting(t_array,centre_dens):
         # Initial guess parameters for the curve_fit function
-        A = np.max(centre_dens) # initial guess of amplitude
-        B = 0.5 # very rough guess for frequency
-        C = np.pi/2 # default input value for phase shift
-        D = (np.max(centre_dens)-np.min(centre_dens))/2.0 # initial guess for the y shift of the sine curve
-        F = 0.1
+        A = np.max(centre_dens) - centre_dens[0] # initial guess of amplitude
+        B = 0.3 # very rough guess for frequency
+        C =  centre_dens[0] # initial guess for the y shift of the sine curve
+        D = 0.01
     
         # Extracting the fitted parameter values from the curve_fit function
-        popt, cov = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])
+        popt, cov = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D])
         return popt,cov
     # extract values of density arrays and time arrays after the first max of the oscillating density
     def turning_points(array):
@@ -144,14 +143,15 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         centre_n2 = (np.abs(psi2[1,:])**2)
         
         # cutoff the first transient of the oscillations 
-        [idx_min,idx_max] = turning_points(centre_n1) 
-        if centre_n1[idx_max[0]] < centre_n1[0]:
-            extract = idx_max[1]
-        else:
-            extract = idx_max[0]
+        #[idx_min,idx_max] = turning_points(centre_n1) 
+        #if centre_n1[idx_max[0]] < centre_n1[0]:
+        #    extract = idx_max[1]
+        #else:
+        #    extract = idx_max[0]
+        extract = (np.where(dens2>dens2[0]))[0][0]
         cut_n1 = centre_n1[extract:]
-        cut_n2 = centre_n2[extract:]
-        cut_t = t_real[extract:]
+        cue_n2 = centre_n2[extract:]
+        cut_t = t_real[extract:]- t_real[extract]
 
         # fit central density oscillations to damped sine curve
         [fitted_params1,cov1] = curve_fitting(cut_t,cut_n1)
