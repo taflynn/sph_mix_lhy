@@ -160,7 +160,7 @@ def time(json_input):
         elif m1 != m2:
             # theoretical parameters
             gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z \
-            = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2)
+            = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
             
             # save theoretical parameters into dictionary
             theory_params = {
