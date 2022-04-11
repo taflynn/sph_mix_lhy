@@ -98,19 +98,19 @@ def run_save_sim(dirarg,fname):
             np.savetxt(path + 'energy_imag.csv',E_im,delimiter=',',fmt='%18.16f')
 
             # meshgrid imaginary time and spatial arrays
-            [T_IM,R] = np.meshgrid(t_array_im,r)
+            #[T_IM,R] = np.meshgrid(t_array_im,r)
             # save total image of snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\phi|^2$')
-            plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\phi|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav.npy', 'wb') as f:
-                np.save(f, spacetime_im)
+            #with open(path + 'imag_spacetime_wav.npy', 'wb') as f:
+            #    np.save(f, spacetime_im)
             # meshgrid real time and spatial arrays
             [T_RE,R] = np.meshgrid(t_array_re,r)
             # save total image of snapshots from real time
@@ -155,19 +155,19 @@ def run_save_sim(dirarg,fname):
             np.savetxt(path + 'energy_imag.csv',E_im,delimiter=',',fmt='%18.16f')
 
             # meshgrid imaginary time and spatial arrays
-            [T_IM,R] = np.meshgrid(t_array_im,r)
+            #[T_IM,R] = np.meshgrid(t_array_im,r)
             # save total image of snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\phi|^2$')
-            plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\phi|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens.png',dpi='figure')
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav.npy', 'wb') as f:
-                np.save(f, spacetime_im)
+            #with open(path + 'imag_spacetime_wav.npy', 'wb') as f:
+            #    np.save(f, spacetime_im)
 
         # only real time simulation
         elif setup['IM_T_STEPS'] == 0 and setup['RE_T_STEPS'] > 0:
@@ -274,41 +274,41 @@ def run_save_sim(dirarg,fname):
             np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f')
 
             # meshgrid imaginary time and spatial arrays
-            [T_IM,R] = np.meshgrid(t_array_im,r)
+            #[T_IM,R] = np.meshgrid(t_array_im,r)
             # save image of component 1 density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)		
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_1|^2$')
-            plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)		
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_1|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav1.npy', 'wb') as f:
-                np.save(f, spacetime1_im)
+            #with open(path + 'imag_spacetime_wav1.npy', 'wb') as f:
+            #    np.save(f, spacetime1_im)
             # save image of component 2 density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_2|^2$')
-            plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
-            cbar = plt.colorbar()
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_2|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
+            #cbar = plt.colorbar()
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav2.npy', 'wb') as f:
-                np.save(f, spacetime2_im)
+            #with open(path + 'imag_spacetime_wav2.npy', 'wb') as f:
+            #    np.save(f, spacetime2_im)
             # save image of total density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_{1+2}|^2$')
-            plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_{1+2}|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
+            #plt.close()    
 
             # meshgrid real time and spatial arrays
             [T_RE,R] = np.meshgrid(t_array_re,r)
@@ -386,40 +386,40 @@ def run_save_sim(dirarg,fname):
             plt.close()
 
             # meshgrid imaginary time and spatial arrays
-            [T_IM,R] = np.meshgrid(t_array_im,r)
+            #[T_IM,R] = np.meshgrid(t_array_im,r)
             # save image of component 1 density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_1|^2$')
-            plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_1|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens1.png',dpi='figure')
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav1.npy', 'wb') as f:
-                np.save(f, spacetime1_im)
+            #with open(path + 'imag_spacetime_wav1.npy', 'wb') as f:
+            #    np.save(f, spacetime1_im)
             # save image of component 2 density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_2|^2$')
-            plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime2_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_2|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens2.png',dpi='figure')
+            #plt.close()    
             # save spacetime in a format that it is easy to reload into Python
-            with open(path + 'imag_spacetime_wav2.npy', 'wb') as f:
-                np.save(f, spacetime2_im)
+            #with open(path + 'imag_spacetime_wav2.npy', 'wb') as f:
+            #    np.save(f, spacetime2_im)
             # save image of total density snapshots from imaginary time 
-            plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
-            plt.xlabel(r'$t$')
-            plt.ylabel(r'$r$')
-            plt.clim(0.0,None)
-            cbar = plt.colorbar()
-            cbar.set_label(r'$|\psi_{1+2}|^2$')
-            plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
-            plt.close()    
+            #plt.pcolormesh(T_IM,R,np.abs(spacetime1_im)**2 + np.abs(spacetime2_im)**2,shading='gouraud')
+            #plt.xlabel(r'$t$')
+            #plt.ylabel(r'$r$')
+            #plt.clim(0.0,None)
+            #cbar = plt.colorbar()
+            #cbar.set_label(r'$|\psi_{1+2}|^2$')
+            #plt.savefig(path + 'imag_spacetime_dens_tot.png',dpi='figure')
+            #plt.close()    
 
         # only real time simulation
         elif setup['IM_T_STEPS'] == 0 and setup['RE_T_STEPS'] > 0:    
