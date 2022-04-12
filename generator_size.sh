@@ -8,12 +8,15 @@ do
     cp ./config_dens_ulck.json ./config_dens_ulck$x.json
     touch ./config_dens_ulcktemp1.json
     touch ./config_dens_ulcktemp2.json
+    touch ./config_dens_ulcktemp3.json
     awk -v val=$gauss_sig '{ gsub("\"GAUSS_SIGMA1\":[0-9]+.0","\"GAUSS_SIGMA1\":"val,$0);print $0}' ./config_dens_ulck.json > ./config_dens_ulcktemp1.json
+    awk -v val=$gauss_sig '{ gsub("\"GAUSS_SIGMA2\":[0-9]+.0","\"GAUSS_SIGMA2\":"val,$0);print $0}' ./config_dens_ulcktemp1.json > ./config_dens_ulcktemp2.json
     let "imb = $i / $6 + $i"
-    awk -v val=$imb '{ gsub("\"N1\":[0-9]+","\"N1\":"val,$0);print $0}' ./config_dens_ulcktemp1.json > ./config_dens_ulcktemp2.json
-    awk -v val=$i '{ gsub("\"N2\":[0-9]+","\"N2\":"val,$0);print $0}' ./config_dens_ulcktemp2.json > ./config_dens_ulck$x.json
+    awk -v val=$imb '{ gsub("\"N1\":[0-9]+","\"N1\":"val,$0);print $0}' ./config_dens_ulcktemp2.json > ./config_dens_ulcktemp3.json
+    awk -v val=$i '{ gsub("\"N2\":[0-9]+","\"N2\":"val,$0);print $0}' ./config_dens_ulcktemp3.json > ./config_dens_ulck$x.json
     ((x = x + 1)) 
     gauss_sig=$(bc <<<"scale=2; $gauss_sig + $sig_step")
 done
 rm ./config_dens_ulcktemp1.json
 rm ./config_dens_ulcktemp2.json
+rm ./config_dens_ulcktemp3.json

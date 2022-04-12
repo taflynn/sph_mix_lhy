@@ -148,9 +148,9 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         #    extract = idx_max[1]
         #else:
         #    extract = idx_max[0]
-        extract = (np.where(dens2>dens2[0]))[0][0]
+        extract = (np.where(centre_n2>centre_n2[0]))[0][0]
         cut_n1 = centre_n1[extract:]
-        cue_n2 = centre_n2[extract:]
+        cut_n2 = centre_n2[extract:]
         cut_t = t_real[extract:]- t_real[extract]
 
         # fit central density oscillations to damped sine curve
