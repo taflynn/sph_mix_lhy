@@ -29,6 +29,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         sim_style = 'imbal'
     elif imbal_size == 'SIZE':
         sim_style = 'size'
+    elif imbal_size == 'BIG_IMBAL':
+        sim_style = 'big_imbal'
     else:
         print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
         sim_style = 'N/A'
@@ -40,7 +42,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     def curve_fitting(t_array,centre_dens):
         # Initial guess parameters for the curve_fit function
         A = np.max(centre_dens) - centre_dens[0] # initial guess of amplitude
-        B = 0.3 # very rough guess for frequency
+        B = 0.4 # very rough guess for frequency
         C =  centre_dens[0] # initial guess for the y shift of the sine curve
         D = 0.01
     
@@ -121,8 +123,17 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         theory = json.loads(f.read())
         f.close()
 
+
+        # main data read in from NumPy files
+        r = np.load('../data/' + dirarg + str(i+1) + '/r_array.npy')
+        t_real = np.load('../data/' + dirarg + str(i+1) + '/real_t_array.npy')
+        psi1 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav1.npy')
+        psi2 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav2.npy')
+        
         if imbal_size == 'IMBAL':
             imb_size_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
+        elif imbal_size == 'BIG_IMBAL':
+            imb_size_array[i] = np.abs(psi1[-1,0])**2
         elif imbal_size == 'SIZE':
             N1 = setup['N1']
             N2 = setup['N2']
@@ -131,12 +142,6 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
             N_tot = N1 + N2
             N_lck,xi,tau,n01,n02 = params_dens_lck(setup['m1'],setup['m2'],setup['a11'],setup['a22'],setup['a12'],N_tot) 
             imb_size_array[i] = (N_lck - 18.65)**0.25
-
-        # main data read in from NumPy files
-        r = np.load('../data/' + dirarg + str(i+1) + '/r_array.npy')
-        t_real = np.load('../data/' + dirarg + str(i+1) + '/real_t_array.npy')
-        psi1 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav1.npy')
-        psi2 = np.load('../data/' + dirarg + str(i+1) + '/real_spacetime_wav2.npy')
         
         # extract central density values
         centre_n1 = (np.abs(psi1[1,:])**2)
@@ -148,7 +153,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         #    extract = idx_max[1]
         #else:
         #    extract = idx_max[0]
-        extract = (np.where(centre_n2>centre_n2[0]))[0][0]
+        extract = (np.where(centre_n1>centre_n1[0]))[0][0]
         cut_n1 = centre_n1[extract:]
         cut_n2 = centre_n2[extract:]
         cut_t = t_real[extract:]- t_real[extract]

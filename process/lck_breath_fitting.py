@@ -25,22 +25,22 @@ class Unbuffered(object):
         return getattr(self.stream, attr)
 
 def run_ulck_process(dirarg,num_sims):
-
-    # Define a general damped sine function
+# Define a general damped sine function
     def damp_sin_func(x,a,b,c,d,f):
         return a*np.exp(-f*x)*np.sin(b*x + c) + d
     # function to fit the 
     def curve_fitting(t_array,centre_dens):
         # Initial guess parameters for the curve_fit function
-        A = np.max(centre_dens) # initial guess of amplitude
-        B = 0.5 # very rough guess for frequency
-        C = np.pi/2 # default input value for phase shift
-        D = (np.max(centre_dens)-np.min(centre_dens))/2.0 # initial guess for the y shift of the sine curve
-        F = 0.1
+        A = np.max(centre_dens) - centre_dens[0]  # initial guess of amplitude
+        B = 0.3 # very rough guess for frequency
+        C = 0.0 # default input value for phase shift
+        D =  centre_dens[0] # initial guess for the y shift of the sine curve
+        F = 0.01
     
         # Extracting the fitted parameter values from the curve_fit function
-        popt, cov = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])
-        return popt,cov
+        popt,pcov = curve_fit(damp_sin_func,t_array[0:-1],centre_dens[0:-1],p0=[A,B,C,D,F])
+        # Return only the second parameter as this is the breathing mode frequency
+        return popt,pcov
     # extract values of density arrays and time arrays after the first max of the oscillating density
     def turning_points(array):
         ''' turning_points(array) -> min_indices, max_indices
@@ -118,13 +118,17 @@ def run_ulck_process(dirarg,num_sims):
         centre_n = (np.abs(phi[1,:])**2)
         
         # cutoff the first transient of the oscillations 
-        [idx_min,idx_max] = turning_points(centre_n) 
-        if centre_n[idx_max[0]] < centre_n[0]:
-            extract = idx_max[1]
-        else:
-            extract = idx_max[0]
+        #[idx_min,idx_max] = turning_points(centre_n) 
+        #if centre_n[idx_max[0]] < centre_n[0]:
+        #    extract = idx_max[1]
+        #else:
+        #    extract = idx_max[0]
+        if i == 0:
+            extract = 0
+        elif i > 0:
+            extract = (np.where(centre_n>centre_n[0]))[0][0]
         cut_n = centre_n[extract:]
-        cut_t = t_real[extract:]
+        cut_t = t_real[extract:] - t_real[extract]
 
         # fit central density oscillations to damped sine curve
         [fitted_params,cov] = curve_fitting(cut_t,cut_n)
