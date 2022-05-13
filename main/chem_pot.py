@@ -86,6 +86,6 @@ def mu_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam1,gam2,alpha,beta,eta,N1,N2,z):
                          + V2*np.abs(psi2)**2 \
                          + N2*beta*np.abs(psi2)**4 \
                          + N1*eta*beta*np.abs(psi1)**2*np.abs(psi2)**2 \
-                         + 2.5*alpha*beta**2*z**0.6*(N1*np.abs(psi1)**2 + N2*beta*z**0.6*np.abs(psi2)**2)**1.5*np.abs(psi2)**2)) \
+                         + 2.5*alpha*beta*z**0.6*(N1*np.abs(psi1)**2 + N2*beta*z**0.6*np.abs(psi2)**2)**1.5*np.abs(psi2)**2)) \
                          /np.trapz(r**2*np.abs(psi2)**2)
     return mu1,mu2

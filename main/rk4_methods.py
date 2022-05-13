@@ -42,7 +42,11 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
         k4 = np.zeros(phi.size)
         
         # initialise array to save wavefunction snapshots
-        spacetime = np.zeros((r.size,(T_STEPS//T_SAVE)))
+        spacetime = np.zeros((r.size,100))
+    
+        # initialise data saving arrays
+        t_array = np.zeros((100))
+        E_array = np.zeros((100))
         
     elif IM_REAL == 1:
         # for real time, specify a complex time step
@@ -58,9 +62,9 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
         # initialise array to save wavefunction snapshots
         spacetime = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
-    # initialise data saving arrays
-    t_array = np.zeros((T_STEPS//T_SAVE))
-    E_array = np.zeros((T_STEPS//T_SAVE))
+        # initialise data saving arrays
+        t_array = np.zeros((T_STEPS//T_SAVE))
+        E_array = np.zeros((T_STEPS//T_SAVE))
     
     # initialise variables used as counters or for convergence calculations
     t = 0.0
@@ -122,7 +126,7 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             # iterate chemical potential
             mu_prev = mu
         
-        if (IM_REAL == 0 and l % T_SAVE == 0): 
+        if (IM_REAL == 0 and l % (T_STEPS//100)  == 0): 
             # convergence of max density
             current_mode = N_lck*np.abs(phi[1])**2
             tol_mode = np.abs((current_mode - previous_mode)/previous_mode)
@@ -135,9 +139,11 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             E_prev = E_total
             
             # save energy
-            E_array[l//T_SAVE] = E_total
+            E_array[l//(T_STEPS//100)] = E_total
             # save current time
-            t_array[l//T_SAVE] = t.real
+            t_array[l//(T_STEPS//100)] = t.real
+            # save wavefunction
+            spacetime[:,l//(T_STEPS//100)] = np.sqrt(N_lck)*phi
             
             # printed output
             print('-'*21,'Max Densty Convergence','-'*21)
@@ -156,20 +162,19 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             E_array[l//T_SAVE] = 0.0
             # save current time
             t_array[l//T_SAVE] = t.imag
+            # save wavefunction
+            spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             
         # data output
-        if (l % T_SAVE == 0):
-            # save wavefunction
-            spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
-            
+        #if (l % T_SAVE == 0):
             # plotting density
-            plt.plot(r,N_lck*np.abs(phi)**2)
-            plt.xlim((0,np.max(r)))
-            plt.ylim(0,1.2*N_lck*np.abs(phi[1])**2)
-            plt.xlabel(r'$r$')
-            plt.ylabel(r'$n_0(r)$')
-            plt.close()    
+            #plt.plot(r,N_lck*np.abs(phi)**2)
+            #plt.xlim((0,np.max(r)))
+            #plt.ylim(0,1.2*N_lck*np.abs(phi[1])**2)
+            #plt.xlabel(r'$r$')
+            #plt.ylabel(r'$n_0(r)$')
+            #plt.close()    
         
         # iterate time
         t = t + dt
@@ -218,8 +223,11 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         k4_2 = np.zeros(psi2.size)
         
         # initialise array to save wavefunction snapshots
-        spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE)))
-        spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE)))
+        spacetime1 = np.zeros((r.size,100))
+        spacetime2 = np.zeros((r.size,100))
+        
+        E_array = np.zeros(100)   
+        t_array = np.zeros(100)
         
         t = 0.0
         
@@ -245,11 +253,11 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
+        E_array = np.zeros((T_STEPS//T_SAVE))   
+        t_array = np.zeros((T_STEPS//T_SAVE))
+        
         t = 0.0 + 0.0j
         
-    E_array = np.zeros((T_STEPS//T_SAVE))   
-    t_array = np.zeros((T_STEPS//T_SAVE))
-    
     # initialise variables used as counters or for convergence calculations    
     previous_mode = 1.0
     mu1 = 0.0
@@ -351,7 +359,7 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             mu1_prev = mu1
             mu2_prev = mu2
          
-        if (IM_REAL == 0 and l % T_SAVE == 0):    
+        if (IM_REAL == 0 and l % (T_STEPS//100) == 0):    
             # convgerence of max densities
             current_mode = N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2
             tol_mode = np.abs((current_mode - previous_mode)/previous_mode)
@@ -362,6 +370,15 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             E_total = E_ke + E_pot + E_int + E_lhy
             E_tol = np.abs(E_total - E_prev)/np.abs(E_prev)
             E_prev = E_total
+            
+            # save energies
+            E_array[l//(T_STEPS//100)] = E_total
+            # save current time
+            t_array[l//(T_STEPS//100)] = t.real
+            
+            # save wavefunctions
+            spacetime1[:,l//(T_STEPS//100)] = np.sqrt(N1)*psi1
+            spacetime2[:,l//(T_STEPS//100)] = np.sqrt(N2)*psi2
             
             # print convergence outputs
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
@@ -382,38 +399,31 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             print('-'*66)
             
         elif (IM_REAL == 1 and l % T_SAVE == 0):
+            # save energies
+            E_array[l//T_SAVE] = 0.0
+            # save current time
+            t_array[l//T_SAVE] = t.imag
+            # save wavefunctions
+            spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
+            spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
+            
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             print('-'*21,'Max Densities','-'*21)
             print('Max density of component 1 = ',N1*np.abs(psi1[1])**2)
             print('Max density of component 2 = ',N2*np.abs(psi2[1])**2)
             print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
             print('Density at max radius of component 2 = ',N2*np.abs(psi2[-1])**2)
+        
         # save data
-        if (l % T_SAVE == 0):
-            if IM_REAL == 0:
-                # save energies
-                E_array[l//T_SAVE] = E_total
-                # save current time
-                t_array[l//T_SAVE] = t.real
-                
-            elif IM_REAL == 1:
-                # save energies
-                E_array[l//T_SAVE] = 0.0
-                # save current time
-                t_array[l//T_SAVE] = t.imag
-
-            # save wavefunctions
-            spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
-            spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
-
+        #if (l % T_SAVE == 0):
             # plotting densities
-            plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
-            plt.xlim((0,np.max(r)))
-            plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
-            plt.xlabel(r'$r$')
-            plt.ylabel(r'$n_0(r)$')
-            plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.close() 
+            #plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
+            #plt.xlim((0,np.max(r)))
+            #plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
+            #plt.xlabel(r'$r$')
+            #plt.ylabel(r'$n_0(r)$')
+            #plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
+            #plt.close() 
 
         t = t + dt
         
@@ -462,9 +472,12 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k4_2 = np.zeros(psi2.size)
         
         # initialise array to save wavefunction snapshots
-        spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE)))
-        spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE)))
+        spacetime1 = np.zeros((r.size,100))
+        spacetime2 = np.zeros((r.size,100))
         
+        E_array = np.zeros(100)   
+        t_array = np.zeros(100)
+
         t = 0.0
 
     elif IM_REAL == 1:
@@ -489,10 +502,10 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
-        t = 0.0 + 0.0j
+        E_array = np.zeros((T_STEPS//T_SAVE))   
+        t_array = np.zeros((T_STEPS//T_SAVE))
         
-    E_array = np.zeros((T_STEPS//T_SAVE))   
-    t_array = np.zeros((T_STEPS//T_SAVE))
+        t = 0.0 + 0.0j
     
     # initialise variables used as counters or for convergence calculations    
     previous_mode = 1.0
@@ -595,7 +608,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             mu1_prev = mu1
             mu2_prev = mu2
          
-        if (IM_REAL == 0 and l % T_SAVE == 0):    
+        if (IM_REAL == 0 and l % (T_STEPS//100) == 0):    
             # convgerence of max densities
             current_mode = N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2
             tol_mode = np.abs((current_mode - previous_mode)/previous_mode)
@@ -606,6 +619,15 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             E_total = E_ke + E_pot + E_int + E_lhy
             E_tol = np.abs(E_total - E_prev)/np.abs(E_prev)
             E_prev = E_total
+            
+            # save energies
+            E_array[l//(T_STEPS//100)] = E_total
+            # save current time
+            t_array[l//(T_STEPS//100)] = t.real
+
+            # save wavefunctions
+            spacetime1[:,l//(T_STEPS//100)] = np.sqrt(N1)*psi1
+            spacetime2[:,l//(T_STEPS//100)] = np.sqrt(N2)*psi2
             
             # print convergence outputs
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
@@ -626,6 +648,14 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             print('-'*66)
             
         elif (IM_REAL == 1 and l % T_SAVE == 0):
+            # save energies
+            E_array[l//(T_STEPS//100)] = 0.0
+            # save current time
+            t_array[l//(T_STEPS//100)] = t.imag
+            # save wavefunctions
+            spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
+            spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
+            
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             print('-'*21,'Max Densities','-'*21)
             print('Max density of component 1 = ',N1*np.abs(psi1[1])**2)
@@ -633,31 +663,15 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
             print('Density at max radius of component 2 = ',N2*np.abs(psi2[-1])**2)
         # save data
-        if (l % T_SAVE == 0):
-            if IM_REAL == 0:
-                # save energies
-                E_array[l//T_SAVE] = E_total
-                # save current time
-                t_array[l//T_SAVE] = t.real
-                
-            elif IM_REAL == 1:
-                # save energies
-                E_array[l//T_SAVE] = 0.0
-                # save current time
-                t_array[l//T_SAVE] = t.imag
-
-            # save wavefunctions
-            spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
-            spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
-
+        #if (l % T_SAVE == 0):
             # plotting densities
-            plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
-            plt.xlim((0,np.max(r)))
-            plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
-            plt.xlabel(r'$r$')
-            plt.ylabel(r'$n_0(r)$')
-            plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            plt.close() 
+            #plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
+            #plt.xlim((0,np.max(r)))
+            #plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
+            #plt.xlabel(r'$r$')
+            #plt.ylabel(r'$n_0(r)$')
+            #plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
+            #plt.close() 
 
         t = t + dt
         
