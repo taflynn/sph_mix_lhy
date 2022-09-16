@@ -2,6 +2,7 @@
 #
 # set up a job array with tasks numbered 1 to n.
 #
+#SBATCH -p defq
 # give the array a single job name
 #SBATCH -J array_sph_drop
 #

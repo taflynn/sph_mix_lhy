@@ -38,7 +38,7 @@ def run_save_sim(dirarg,fname):
     f.close()
 
     # run simulation
-    [mix_data,theory_params] = time(fname)
+    [mix_data,theory_params] = time(fname,path)
 
     # save theoretical parameters dictionary to a json file
     with open(path + 'theory_params.json', 'w') as f:
