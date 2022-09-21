@@ -13,3 +13,5 @@ config_dens_ulck.json
 config_dens_ulck*.json
 texdocs/
 par_param_space/
+
+main/.ipynb_checkpoints/
