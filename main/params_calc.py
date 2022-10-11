@@ -29,6 +29,9 @@ def params_dens_lck(m1,m2,a11,a22,a12,N):
     
     # density-locked effective atom number
     if m1 == m2:
+    	
+        dim_pot = 1.0
+    
         N_lck = (N/(n01*xi**3))*(np.sqrt(a22)/(np.sqrt(a11) + np.sqrt(a22)))
         print('Balanced experimental N1 = ',N*(np.sqrt(a22)/(np.sqrt(a11) + np.sqrt(a22))))
         print('Balanced experimental N2 = ',N*(np.sqrt(a11)/(np.sqrt(a11) + np.sqrt(a22))))
@@ -38,6 +41,9 @@ def params_dens_lck(m1,m2,a11,a22,a12,N):
         g11 = 4*pi*hbar**2*a11/m1
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
+        
+        dim_pot = (np.sqrt(g11) + np.sqrt(g22))**(-1)*(np.sqrt(g22)/m1 + np.sqrt(g11)/m2)*(2*m1*m2/(m1 + m2))
+        
         N_lck = (N/(n01*xi**3))*(np.sqrt(g22)/(np.sqrt(g11) + np.sqrt(g22)))
         print('Balanced experimental N1 = ',N*(np.sqrt(g22)/(np.sqrt(g11) + np.sqrt(g22))))
         print('Balanced experimental N2 = ',N*(np.sqrt(g11)/(np.sqrt(g11) + np.sqrt(g22))))
@@ -49,7 +55,7 @@ def params_dens_lck(m1,m2,a11,a22,a12,N):
     print('Equilibrium density of component 1, n01 = ',n01)
     print('Equilibrium density of component 2, n02 = ',n02)
     print(67*'-')
-    return N_lck,xi,tau,n01,n02
+    return N_lck,xi,tau,n01,n02,dim_pot
 
 def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
     """
@@ -98,6 +104,8 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
             print('Balancing N1 to the value of N2')
             N1 = N2*np.sqrt(a22/a11)
 
+        dim_pot = 1.0
+
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
         print('Calculating defining parameters and scales for density-unlocked mixture (equal masses):')
@@ -108,7 +116,7 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
         print('Equilibrium density of component 1, n01 = ',n01)
         print('Equilibrium density of component 2, n02 = ',n02)
         print(67*'-')
-        return alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2
+        return alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,dim_pot
         
     elif m1 != m2:
         # equilibrium densities unequal masses
@@ -146,6 +154,9 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
             N1 = N2*np.sqrt(g22/g11)
             print('Experimental N1 = ',N1)
 
+        dim_pot1 = (np.sqrt(g22) + (m1/m2)*np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
+        dim_pot2 = ((m2/m1)*np.sqrt(g22) + np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
+
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
         print('Calculating defining parameters and scales for density-unlocked mixture (mass ratio z = ',z,'):')
@@ -157,4 +168,4 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
         print('Equilibrium density of component 1, n01 = ',n01)
         print('Equilibrium density of component 2, n02 = ',n02)
         print(67*'-')
-        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,z
+        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,z,dim_pot1,dim_pot2

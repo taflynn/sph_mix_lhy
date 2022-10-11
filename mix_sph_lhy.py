@@ -51,10 +51,10 @@ def time(json_input,path):
         phi_0 = init_wavefun_dens_lck(r,dr,setup['GAUSS_SIGMA'],setup['INIT_TYPE'])
         
         # theoretical parameters
-        [N_lck,xi,tau,n01,n02] = params_dens_lck(m1,m2,a11,a22,a12,N)
+        [N_lck,xi,tau,n01,n02,dim_pot] = params_dens_lck(m1,m2,a11,a22,a12,N)
        
         # setup trapping potential
-        V = potential_dens_lck(r,setup['OMEGA'],tau)
+        V = potential_dens_lck(r,setup['OMEGA'],tau,dim_pot)
 
         if IM_T_STEPS > 0:
             # imaginary time
@@ -115,11 +115,11 @@ def time(json_input,path):
         if m1 == m2:
 
             # theoretical parameters
-            alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale \
+            alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,dim_pot \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
             
             # setup trapping potentials
-            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau)
+            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot,dim_pot)
             
             if IM_T_STEPS > 0:
                 # imaginary time
@@ -159,7 +159,7 @@ def time(json_input,path):
         
         elif m1 != m2:
             # theoretical parameters
-            gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z \
+            gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z,dim_pot1,dim_pot2 \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
             
             # save theoretical parameters into dictionary
@@ -181,7 +181,7 @@ def time(json_input,path):
             }
             
             # setup trapping potentials
-            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau)
+            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot1,dim_pot2)
             
             if IM_T_STEPS > 0:
                 # imaginary time

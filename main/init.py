@@ -123,14 +123,14 @@ def init_wavefun_dens_ulck(r,dr,GAUSS_SIGMA1,GAUSS_SIGMA2,INIT_TYPE1,INIT_TYPE2)
     print(67*'-')
     return psi1,psi2
 
-def potential_dens_lck(r,OMEGA,tau):
+def potential_dens_lck(r,OMEGA,tau,dim_pot):
     """
     In the density-locked regime we can only impose one trapping potential on the combined densities. 
     Here there is only one option and that is a spherically symmetric harmonic trap in which the 
     trapping can be varied by OMEGA. If no trap is desired, simply set OMEGA = 0.
     """
   
-    OMEGA = 2*pi*OMEGA*tau
+    OMEGA = 2*pi*OMEGA*tau*np.sqrt(dim_pot)
     
     V = 0.5*OMEGA**2*r**2
     
@@ -141,14 +141,15 @@ def potential_dens_lck(r,OMEGA,tau):
     print(67*'-')
     return V
 
-def potential_dens_ulck(r,OMEGA1,OMEGA2,tau):
+def potential_dens_ulck(r,OMEGA1,OMEGA2,tau,dim_pot1,dim_pot2):
     """
     In the density-unlocked regime we can imposed separate trapping potential on each component. 
     Here there is only one option and that is spherically symmetric harmonic traps in which the 
     trapping can be varied by OMEGA1 and OMEGA2. If no trap is desired, simply set OMEGA1 = OMEGA2 = 0.
     """
-    OMEGA1 = 2*pi*OMEGA1*tau
-    OMEGA2 = 2*pi*OMEGA2*tau
+    
+    OMEGA1 = 2*pi*OMEGA1*tau*np.sqrt(dim_pot1)
+    OMEGA2 = 2*pi*OMEGA2*tau*np.sqrt(dim_pot2)
     
     V1 = 0.5*OMEGA1**2*r**2
     V2 = 0.5*OMEGA2**2*r**2
