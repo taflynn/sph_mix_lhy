@@ -56,6 +56,8 @@ def time(json_input,path):
         # setup trapping potential
         V = potential_dens_lck(r,setup['OMEGA'],tau,dim_pot)
 
+        np.savetxt(path + 'potential.txt',V,delimiter=',',fmt='%18.16f')
+
         if IM_T_STEPS > 0:
             # imaginary time
             phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
@@ -121,6 +123,9 @@ def time(json_input,path):
             # setup trapping potentials
             [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot,dim_pot)
             
+            np.savetxt(path + 'potential1.txt',V1,delimiter=',',fmt='%18.16f')
+            np.savetxt(path + 'potential2.txt',V2,delimiter=',',fmt='%18.16f')
+            
             if IM_T_STEPS > 0:
                 # imaginary time
                 psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E_array_im \
@@ -182,6 +187,9 @@ def time(json_input,path):
             
             # setup trapping potentials
             [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot1,dim_pot2)
+
+            np.savetxt(path + 'potential1.txt',V1,delimiter=',',fmt='%18.16f')
+            np.savetxt(path + 'potential2.txt',V2,delimiter=',',fmt='%18.16f')
             
             if IM_T_STEPS > 0:
                 # imaginary time
