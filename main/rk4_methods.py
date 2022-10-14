@@ -9,7 +9,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
+def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -72,6 +72,7 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
     mu = 0.0
     mu_prev = 1.0
     E_prev = 1.0
+    frame = 1   
     
     for l in range(0,T_STEPS):
         # k1 calculation
@@ -166,6 +167,9 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
             spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             
+            np.savetxt(path + 'phi_re_t' + str(frame) + '.txt',np.sqrt(N_lck)*phi,delimiter=',',fmt='%18.16f')
+
+            frame = frame + 1
         # data output
         #if (l % T_SAVE == 0):
             # plotting density

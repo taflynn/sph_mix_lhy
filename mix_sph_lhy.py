@@ -60,7 +60,7 @@ def time(json_input,path):
 
         if IM_T_STEPS > 0:
             # imaginary time
-            phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
+            phi_im,mu_im,t_array_im,spacetime_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,path)
         
             # save theoretical parameters into dictionary
             theory_params = {
@@ -79,7 +79,7 @@ def time(json_input,path):
             if setup['ABSORB_BC'] == 1:
                 V = absorb_bc_dens_lck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS']) 
             # real time
-            phi_re,mu_re,t_array_re,spacetime_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
+            phi_re,mu_re,t_array_re,spacetime_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,path)
        
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:
