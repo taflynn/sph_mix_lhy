@@ -3,7 +3,7 @@ from numpy import pi
 
 def units(m1,m2,a11,a22,a12,n01):
     """
-    
+    time and length scales
     """
     # natural constants
     [hbar,a0,Da] = natural_consts()

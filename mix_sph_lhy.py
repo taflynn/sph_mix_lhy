@@ -164,13 +164,12 @@ def time(json_input,path):
         
         elif m1 != m2:
             # theoretical parameters
-            gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z,dim_pot1,dim_pot2 \
+            gam,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z,dim_pot1,dim_pot2 \
             = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
             
             # save theoretical parameters into dictionary
             theory_params = {
-            'gamma1':gam1,
-            'gamma2':gam2,
+            'gamma':gam,
             'alpha':alpha,
             'beta':beta,
             'eta':eta,
@@ -194,14 +193,13 @@ def time(json_input,path):
             if IM_T_STEPS > 0:
                 # imaginary time
                 psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,spacetime1_im,spacetime2_im,E_array_im \
-            = rk4_uneqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,gam1,gam2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,z)
+            = rk4_uneqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,gam,z,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             
             # save theoretical parameters into dictionary
             theory_params = {
-            'gamma1':gam1,
-            'gamma2':gam2,
+            'gamma':gam,
             'alpha':alpha,
             'beta':beta,
             'eta':eta,
@@ -228,7 +226,7 @@ def time(json_input,path):
                     V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
                 # real time
             psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,spacetime1_re,spacetime2_re,E1_array_re \
-            = rk4_uneqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,gam1,gam2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,z)
+            = rk4_uneqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,gam,z,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE)
 
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:

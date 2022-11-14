@@ -445,7 +445,7 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         
     return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E_array
 
-def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,z):
+def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -530,7 +530,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
     
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu1,IM_REAL,z)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
 
         k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -538,7 +538,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k1_1 = bc(k1_1,BC_TYPE)
 
         # k1 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu2,IM_REAL,z)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu2,IM_REAL)
 
         k1_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -546,7 +546,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k1_2 = bc(k1_2,BC_TYPE)
 
         # k2 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu1,IM_REAL,z)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
 
         k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -554,7 +554,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k2_1 = bc(k2_1,BC_TYPE)
 
         # k2 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V2,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu2,IM_REAL,z)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu2,IM_REAL)
 
         k2_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -562,7 +562,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k2_2 = bc(k2_2,BC_TYPE)
 
         # k3 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu1,IM_REAL,z)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
 
         k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -570,7 +570,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k3_1 = bc(k3_1,BC_TYPE)
 
         # k3 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V2,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu2,IM_REAL,z)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu2,IM_REAL)
 
         k3_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -578,7 +578,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k3_2 = bc(k3_2,BC_TYPE)
 
         # k4 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu1,IM_REAL,z)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
 
         k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -586,7 +586,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
         k4_1 = bc(k4_1,BC_TYPE)
 
         # k4 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V2,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu2,IM_REAL,z)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu2,IM_REAL)
 
         k4_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -613,7 +613,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             psi2 = psi2/np.sqrt(Norm2) 
             
             # convergence of chemical potentials
-            mu1, mu2 = mu_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam1,gam2,alpha,beta,eta,N1,N2,z)
+            mu1, mu2 = mu_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam,z,alpha,beta,eta,N1,N2)
             mu1_tol = np.abs(mu1 - mu1_prev)/np.abs(mu1_prev)
             mu2_tol = np.abs(mu2 - mu2_prev)/np.abs(mu2_prev)
             mu1_prev = mu1
@@ -626,7 +626,7 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam1,gam2,alpha,beta,eta,N1,N2,dr,dt,T
             previous_mode = current_mode
             
             # convergence of energies
-            E_ke,E_pot,E_int,E_lhy = energy_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam1,gam2,alpha,beta,eta,N1,N2,z)
+            E_ke,E_pot,E_int,E_lhy = energy_uneqm_dens_ulck(psi1,psi2,r,V1,V2,dr,gam,z,alpha,beta,eta,N1,N2)
             E_total = E_ke + E_pot + E_int + E_lhy
             E_tol = np.abs(E_total - E_prev)/np.abs(E_prev)
             E_prev = E_total

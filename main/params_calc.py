@@ -134,8 +134,7 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
         
         delta_g = g12 + np.sqrt(g11*g22)
         
-        gam1 = (np.sqrt(g11) + np.sqrt(g22))/(m1*(np.sqrt(g11)/m2 + np.sqrt(g22)/m1))
-        gam2 = (np.sqrt(g11) + np.sqrt(g22))/(m2*(np.sqrt(g11)/m2 + np.sqrt(g22)/m1))
+        gam = (np.sqrt(g11) + np.sqrt(g22))/(m1*(np.sqrt(g11)/m2 + np.sqrt(g22)/m1))
         alpha = (8/(15*pi**2))*np.sqrt((2/3)*(m1/hbar**2)**3*(np.abs(delta_g)*g11**2.5*n01)/(np.sqrt(g11) + np.sqrt(g22)))
         beta = np.sqrt(g22/g11)
         eta = g12/np.sqrt(g11*g22)
@@ -161,11 +160,11 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
         N2 = N2/(rho2*xi**3)
         print('Calculating defining parameters and scales for density-unlocked mixture (mass ratio z = ',z,'):')
         print('Dimensionless parameters of mixture:')
-        print('gamma1 = ',gam1,', gamma2 = ',gam2)
+        print('gamma = ',gam)
         print('alpha = ',alpha, ', beta = ',beta,', eta = ',eta)
         print('Lengthscale, xi = ',xi)
         print('Timescale, tau = ',tau)
         print('Equilibrium density of component 1, n01 = ',n01)
         print('Equilibrium density of component 2, n02 = ',n02)
         print(67*'-')
-        return gam1,gam2,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,z,dim_pot1,dim_pot2
+        return gam,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1,N2,z,dim_pot1,dim_pot2

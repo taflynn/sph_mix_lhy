@@ -167,7 +167,7 @@ def eqm_dens_ulck_ham2(psi1,psi2,V2,r,dr,N1,N2,alpha,beta,eta,mu,im_real):
     
     return H_ke,H_trap,H_int,H_lhy,H_mu
 
-def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,z):
+def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real):
     """
     The Gross-Pitaevskii (GP) Hamiltonian for the 1st-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
@@ -211,7 +211,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     Dr2 =  (1/dr**2)*(eye(psi1.size-2,psi1.size,k=0,dtype=float) -2*eye(psi1.size-2,psi1.size,k=1,dtype=float) + eye(psi1.size-2,psi1.size,k=2,dtype=float))
 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi1) + Dr2 @ psi1
-    H_ke[1:-1] = -0.5*gam1*KE[1:-1] # KE term  
+    H_ke[1:-1] = -0.5*gam*KE[1:-1] # KE term  
 
     H_lhy[1:-1] = 2.5*alpha*(N1*np.abs(psi1[1:-1])**2 + N2*z**0.6*beta*np.abs(psi2[1:-1])**2)**1.5*psi1[1:-1]
 
@@ -223,7 +223,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
 
     return H_ke,H_trap,H_int,H_lhy,H_mu
 
-def ham2_uneqm_dens_ulck(psi1,psi2,V2,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_real,z):
+def ham2_uneqm_dens_ulck(psi1,psi2,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real):
     """
     The Gross-Pitaevskii (GP) Hamiltonian for the 2nd-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
@@ -268,7 +268,7 @@ def ham2_uneqm_dens_ulck(psi1,psi2,V2,r,dr,N1,N2,gam1,gam2,alpha,beta,eta,mu,im_
     Dr2 =  (1/dr**2)*(eye(psi2.size-2,psi2.size,k=0,dtype=float) -2*eye(psi2.size-2,psi2.size,k=1,dtype=float) + eye(psi2.size-2,psi2.size,k=2,dtype=float))
 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi2) + Dr2 @ psi2
-    H_ke[1:-1] = -0.5*gam2*KE[1:-1] # KE term  
+    H_ke[1:-1] = -0.5*(gam/z)*KE[1:-1] # KE term  
     
     H_lhy[1:-1] = 2.5*alpha*beta*z**0.6*(N1*np.abs(psi1[1:-1])**2 + N2*z**0.6*beta*np.abs(psi2[1:-1])**2)**1.5*psi2[1:-1]
 
