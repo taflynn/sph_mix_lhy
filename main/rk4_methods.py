@@ -9,7 +9,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
+def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -40,9 +40,6 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
         k2 = np.zeros(phi.size)
         k3 = np.zeros(phi.size)
         k4 = np.zeros(phi.size)
-        
-        # initialise array to save wavefunction snapshots
-        spacetime = np.zeros((r.size,100))
     
         # initialise data saving arrays
         t_array = np.zeros((100))
@@ -58,9 +55,6 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
         k2 = np.zeros(phi.size).astype(complex)
         k3 = np.zeros(phi.size).astype(complex)
         k4 = np.zeros(phi.size).astype(complex)
-        
-        # initialise array to save wavefunction snapshots
-        spacetime = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
         # initialise data saving arrays
         t_array = np.zeros((T_STEPS//T_SAVE))
@@ -143,8 +137,6 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
             E_array[l//(T_STEPS//100)] = E_total
             # save current time
             t_array[l//(T_STEPS//100)] = t.real
-            # save wavefunction
-            spacetime[:,l//(T_STEPS//100)] = np.sqrt(N_lck)*phi
             
             # printed output
             print('-'*21,'Max Densty Convergence','-'*21)
@@ -163,33 +155,21 @@ def rk4_dens_lck(r,phi,V,N_lck,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
             E_array[l//T_SAVE] = 0.0
             # save current time
             t_array[l//T_SAVE] = t.imag
-            # save wavefunction
-            spacetime[:,l//T_SAVE] = np.sqrt(N_lck)*phi
+
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             
-            np.savetxt(path + 'phi_re_t' + str(frame) + '.txt',np.sqrt(N_lck)*phi,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'phi_re_t' + str(frame) + '.txt',np.sqrt(N_lck)*phi,delimiter=',',fmt='%18.16f')
 
             frame = frame + 1
-        # data output
-        #if (l % T_SAVE == 0):
-            # plotting density
-            #plt.plot(r,N_lck*np.abs(phi)**2)
-            #plt.xlim((0,np.max(r)))
-            #plt.ylim(0,1.2*N_lck*np.abs(phi[1])**2)
-            #plt.xlabel(r'$r$')
-            #plt.ylabel(r'$n_0(r)$')
-            #plt.close()    
-        
-        # iterate time
         t = t + dt
     
     if IM_REAL == 0:
         print('Imaginary time finished')
     if IM_REAL == 1:
         print('Real time finished')
-    return phi,mu,t_array,spacetime,E_array
+    return phi,mu,t_array,E_array
 
-def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,path):
+def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -226,10 +206,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         k3_2 = np.zeros(psi2.size)
         k4_2 = np.zeros(psi2.size)
         
-        # initialise array to save wavefunction snapshots
-        spacetime1 = 1#np.zeros((r.size,100))
-        spacetime2 = 1#np.zeros((r.size,100))
-        
         E_array = np.zeros(100)   
         t_array = np.zeros(100)
         
@@ -253,10 +229,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         k3_2 = np.zeros(psi2.size).astype(complex)
         k4_2 = np.zeros(psi2.size).astype(complex)
         
-        # initialise array to save wavefunction snapshots
-        spacetime1 = 1#np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
-        spacetime2 = 1#np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
-        
         E_array = np.zeros((T_STEPS//T_SAVE))   
         t_array = np.zeros((T_STEPS//T_SAVE))
         
@@ -272,7 +244,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
     mu2_tol = 1.0
     E_prev = 1.0
     frame = 1   
-
  
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
@@ -382,10 +353,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             # save current time
             t_array[l//(T_STEPS//100)] = t.real
             
-            # save wavefunctions
-            #spacetime1[:,l//(T_STEPS//100)] = np.sqrt(N1)*psi1
-            #spacetime2[:,l//(T_STEPS//100)] = np.sqrt(N2)*psi2
-            
             # print convergence outputs
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
             print('-'*21,'Max Density Convergence','-'*21)
@@ -409,12 +376,9 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             E_array[l//T_SAVE] = 0.0
             # save current time
             t_array[l//T_SAVE] = t.imag
-            # save wavefunctions
-            #spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
-            #spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
             
-            np.savetxt(path + 'psi1_re_t' + str(frame) + '.txt',np.sqrt(N1)*psi1,delimiter=',',fmt='%18.16f')
-            np.savetxt(path + 'psi2_re_t' + str(frame) + '.txt',np.sqrt(N2)*psi2,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'psi1_re_t' + str(frame) + '.txt',np.sqrt(N1)*psi1,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'psi2_re_t' + str(frame) + '.txt',np.sqrt(N2)*psi2,delimiter=',',fmt='%18.16f')
                        
             frame = frame + 1
 
@@ -425,17 +389,6 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
             print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
             print('Density at max radius of component 2 = ',N2*np.abs(psi2[-1])**2)
         
-        # save data
-        #if (l % T_SAVE == 0):
-            # plotting densities
-            #plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
-            #plt.xlim((0,np.max(r)))
-            #plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
-            #plt.xlabel(r'$r$')
-            #plt.ylabel(r'$n_0(r)$')
-            #plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            #plt.close() 
-
         t = t + dt
         
     if IM_REAL == 0:
@@ -443,9 +396,9 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
     if IM_REAL == 1:
         print('Real time finished')
         
-    return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E_array
+    return psi1,psi2,mu1,mu2,t_array,E_array
 
-def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE):
+def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -482,10 +435,6 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
         k3_2 = np.zeros(psi2.size)
         k4_2 = np.zeros(psi2.size)
         
-        # initialise array to save wavefunction snapshots
-        spacetime1 = np.zeros((r.size,100))
-        spacetime2 = np.zeros((r.size,100))
-        
         E_array = np.zeros(100)   
         t_array = np.zeros(100)
 
@@ -508,10 +457,6 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
         k2_2 = np.zeros(psi2.size).astype(complex)
         k3_2 = np.zeros(psi2.size).astype(complex)
         k4_2 = np.zeros(psi2.size).astype(complex)
-        
-        # initialise array to save wavefunction snapshots
-        spacetime1 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
-        spacetime2 = np.zeros((r.size,(T_STEPS//T_SAVE))).astype(complex)
         
         E_array = np.zeros((T_STEPS//T_SAVE))   
         t_array = np.zeros((T_STEPS//T_SAVE))
@@ -635,10 +580,6 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
             E_array[l//(T_STEPS//100)] = E_total
             # save current time
             t_array[l//(T_STEPS//100)] = t.real
-
-            # save wavefunctions
-            spacetime1[:,l//(T_STEPS//100)] = np.sqrt(N1)*psi1
-            spacetime2[:,l//(T_STEPS//100)] = np.sqrt(N2)*psi2
             
             # print convergence outputs
             print('l = ',l,'(Percentage of imaginary time done = ',100*(l/T_STEPS),'%)')
@@ -663,9 +604,9 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
             E_array[l//(T_STEPS//100)] = 0.0
             # save current time
             t_array[l//(T_STEPS//100)] = t.imag
-            # save wavefunctions
-            spacetime1[:,l//T_SAVE] = np.sqrt(N1)*psi1
-            spacetime2[:,l//T_SAVE] = np.sqrt(N2)*psi2
+
+            np.savetxt(PATH + 'psi1_re_t' + str(frame) + '.txt',np.sqrt(N1)*psi1,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'psi2_re_t' + str(frame) + '.txt',np.sqrt(N2)*psi2,delimiter=',',fmt='%18.16f')
             
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             print('-'*21,'Max Densities','-'*21)
@@ -673,16 +614,6 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
             print('Max density of component 2 = ',N2*np.abs(psi2[1])**2)
             print('Density at max radius of component 1 = ',N1*np.abs(psi1[-1])**2)
             print('Density at max radius of component 2 = ',N2*np.abs(psi2[-1])**2)
-        # save data
-        #if (l % T_SAVE == 0):
-            # plotting densities
-            #plt.plot(r,N1*np.abs(psi1)**2,r,N2*np.abs(psi2)**2,r,N1*np.abs(psi1)**2 + N2*np.abs(psi2)**2)
-            #plt.xlim((0,np.max(r)))
-            #plt.ylim(0,1.2*(N1*np.abs(psi1[1])**2 + N2*np.abs(psi2[1])**2))
-            #plt.xlabel(r'$r$')
-            #plt.ylabel(r'$n_0(r)$')
-            #plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$',r'$|\psi_1|^2 + |\psi_2|^2$'))
-            #plt.close() 
 
         t = t + dt
         
@@ -691,4 +622,4 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
     if IM_REAL == 1:
         print('Real time finished')
         
-    return psi1,psi2,mu1,mu2,t_array,spacetime1,spacetime2,E_array
+    return psi1,psi2,mu1,mu2,t_array,E_array
