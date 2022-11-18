@@ -398,7 +398,7 @@ def rk4_eqm_dens_ulck(r,psi1,psi2,V1,V2,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAV
         
     return psi1,psi2,mu1,mu2,t_array,E_array
 
-def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,PATH):
+def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,K_3bl,N1,N2,dr,dt,T_STEPS,T_SAVE,IM_REAL,BC_TYPE,PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -472,12 +472,13 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
     mu1_tol = 1.0
     mu2_tol = 1.0
     E_prev = 1.0
+    frame = 1
     
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1,H_3bl] = ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu1,IM_REAL)
 
-        k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
+        k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
         # BOUNDARY CONDITION
         k1_1 = bc(k1_1,BC_TYPE)
@@ -491,9 +492,9 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
         k1_2 = bc(k1_2,BC_TYPE)
 
         # k2 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1,H_3bl] = ham1_uneqm_dens_ulck(psi1+k1_1/2.0,psi2+k1_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu1,IM_REAL)
 
-        k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
+        k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
         # BOUNDARY CONDITION
         k2_1 = bc(k2_1,BC_TYPE)
@@ -507,9 +508,9 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
         k2_2 = bc(k2_2,BC_TYPE)
 
         # k3 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1,H_3bl] = ham1_uneqm_dens_ulck(psi1+k2_1/2.0,psi2+k2_2/2.0,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu1,IM_REAL)
 
-        k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
+        k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
         # BOUNDARY CONDITION
         k3_1 = bc(k3_1,BC_TYPE)
@@ -523,9 +524,9 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
         k3_2 = bc(k3_2,BC_TYPE)
 
         # k4 CALCULATION FOR PSI1
-        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1] = ham1_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu1,IM_REAL)
+        [H_ke1,H_trap1,H_int1,H_lhy1,H_mu1,H_3bl] = ham1_uneqm_dens_ulck(psi1+k3_1,psi2+k3_2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu1,IM_REAL)
 
-        k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
+        k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
         # BOUNDARY CONDITION
         k4_1 = bc(k4_1,BC_TYPE)
@@ -607,6 +608,8 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,N1,N2,dr,dt,T_STE
 
             np.savetxt(PATH + 'psi1_re_t' + str(frame) + '.txt',np.sqrt(N1)*psi1,delimiter=',',fmt='%18.16f')
             np.savetxt(PATH + 'psi2_re_t' + str(frame) + '.txt',np.sqrt(N2)*psi2,delimiter=',',fmt='%18.16f')
+
+            frame = frame + 1
             
             print('l = ',l,'(Percentage of real time done = ',100*(l/T_STEPS),'%)')
             print('-'*21,'Max Densities','-'*21)

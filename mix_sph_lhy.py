@@ -189,7 +189,7 @@ def time(json_input,PATH):
             if IM_T_STEPS > 0:
                 # imaginary time
                 psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,E_array_im \
-            = rk4_uneqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,gam,z,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,PATH)
+            = rk4_uneqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,gam,z,alpha,beta,eta,0,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,PATH)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             
@@ -221,8 +221,9 @@ def time(json_input,PATH):
                 if setup['ABSORB_BC'] == 1:
                     V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
                 # real time
-            psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,E1_array_re \
-            = rk4_uneqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,gam,z,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,PATH)
+                K_3bl = setup['K_3bl']
+                psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,E1_array_re \
+                = rk4_uneqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,gam,z,alpha,beta,eta,K_3bl,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,PATH)
 
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:
