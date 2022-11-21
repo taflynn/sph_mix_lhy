@@ -167,7 +167,7 @@ def eqm_dens_ulck_ham2(psi1,psi2,V2,r,dr,N1,N2,alpha,beta,eta,mu,im_real):
     
     return H_ke,H_trap,H_int,H_lhy,H_mu
 
-def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real):
+def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu,im_real):
     """
     The Gross-Pitaevskii (GP) Hamiltonian for the 1st-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
@@ -197,6 +197,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real
         H_int = np.zeros(psi1.size)
         H_trap = np.zeros(psi1.size)
         H_mu = np.zeros(psi1.size)
+        H_3bl = np.zeros(psi1.size)
         KE = np.zeros(psi1.size)
     elif im_real == 1:
         H_ke = np.zeros(psi1.size).astype(complex)
@@ -204,6 +205,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real
         H_int = np.zeros(psi1.size).astype(complex)
         H_trap = np.zeros(psi1.size).astype(complex)
         H_mu = np.zeros(psi1.size).astype(complex)
+        H_3bl = np.zeros(psi1.size).astype(complex)
         KE = np.zeros(psi1.size).astype(complex)
 
     # DIFFERENTIAL OPERATORS
@@ -221,7 +223,12 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real
     
     H_mu[1:-1] = -mu*psi1[1:-1]
 
-    return H_ke,H_trap,H_int,H_lhy,H_mu
+    if im_real == 0:
+        H_3bl[1:-1] = 0.0
+    elif im_real == 1:
+        H_3bl[1:-1] = -1.0j*K_3bl*((1.0/2.0)*np.abs(psi1[1:-1])**4.0)*psi1[1:-1]
+
+    return H_ke,H_trap,H_int,H_lhy,H_mu,H_3bl
 
 def ham2_uneqm_dens_ulck(psi1,psi2,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real):
     """
