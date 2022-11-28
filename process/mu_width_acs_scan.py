@@ -46,6 +46,7 @@ def run_ulck_process(dirarg,num_sims):
         f.close()
       
         dr = setup['dr']
+        Nr = setup['Nr']
 
         # read in theory parameters
         f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json',"r")
@@ -64,8 +65,14 @@ def run_ulck_process(dirarg,num_sims):
         r_dens2 = np.loadtxt('../data/' + dirarg + str(i + 1) + '/imag_fin_dens2.csv', delimiter=",")
         dens2 = r_dens2[:,1]
 
-        width_cs_array[i] = 4*pi*np.trapz(dens1*r**4)*dr
-        width_yb_array[i] = 4*pi*np.trapz(dens2*r**4)*dr
+        if r[dens1<(0.01*np.max(dens1))].size == 0:
+            width_cs_array[i] = Nr*dr
+        elif r[dens1<(0.01*np.max(dens1))].size > 0:
+            width_cs_array[i] = r[dens1<(0.01*np.max(dens1))][0]
+        if r[dens2<(0.01*np.max(dens2))].size == 0:
+            width_yb_array[i] = Nr*dr
+        elif r[dens2<(0.01*np.max(dens2))].size > 0:
+            width_yb_array[i] = r[dens2<(0.01*np.max(dens2))][0]
  
     # concatenating arrays of mu_cs, mu_yb, width_cs, width_yb
     mu_cs_data = np.column_stack((acs_array,mu_cs_array))

@@ -277,7 +277,7 @@ def ham2_uneqm_dens_ulck(psi1,psi2,V2,r,dr,N1,N2,gam,z,alpha,beta,eta,mu,im_real
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi2) + Dr2 @ psi2
     H_ke[1:-1] = -0.5*(gam/z)*KE[1:-1] # KE term  
     
-    H_lhy[1:-1] = 2.5*alpha*beta*z**0.6*(N1*np.abs(psi1[1:-1])**2 + N2*z**0.6*beta*np.abs(psi2[1:-1])**2)**1.5*psi2[1:-1]
+    H_lhy[1:-1] = 2.5*alpha*beta**2.0*z**0.6*(N1*np.abs(psi1[1:-1])**2 + N2*z**0.6*beta*np.abs(psi2[1:-1])**2)**1.5*psi2[1:-1]
 
     H_int[1:-1] = (beta*N2*np.abs(psi2[1:-1])**2 + eta*beta*N1*np.abs(psi1[1:-1])**2)*psi2[1:-1]
 
