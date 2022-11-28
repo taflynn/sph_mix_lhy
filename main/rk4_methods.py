@@ -602,9 +602,9 @@ def rk4_uneqm_dens_ulck(r,psi1,psi2,V1,V2,gam,z,alpha,beta,eta,K_3bl,N1,N2,dr,dt
             
         elif (IM_REAL == 1 and l % T_SAVE == 0):
             # save energies
-            E_array[l//(T_STEPS//100)] = 0.0
+            E_array[l//T_SAVE] = 0.0
             # save current time
-            t_array[l//(T_STEPS//100)] = t.imag
+            t_array[l//T_SAVE] = t.imag
 
             np.savetxt(PATH + 'psi1_re_t' + str(frame) + '.txt',np.sqrt(N1)*psi1,delimiter=',',fmt='%18.16f')
             np.savetxt(PATH + 'psi2_re_t' + str(frame) + '.txt',np.sqrt(N2)*psi2,delimiter=',',fmt='%18.16f')

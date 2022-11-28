@@ -226,7 +226,7 @@ def ham1_uneqm_dens_ulck(psi1,psi2,V1,r,dr,N1,N2,gam,z,alpha,beta,eta,K_3bl,mu,i
     if im_real == 0:
         H_3bl[1:-1] = 0.0
     elif im_real == 1:
-        H_3bl[1:-1] = -1.0j*K_3bl*((1.0/2.0)*np.abs(psi1[1:-1])**4.0)*psi1[1:-1]
+        H_3bl[1:-1] = (-1.0j*(K_3bl/2.0)*np.abs(psi1[1:-1])**4.0)*psi1[1:-1]
 
     return H_ke,H_trap,H_int,H_lhy,H_mu,H_3bl
 
