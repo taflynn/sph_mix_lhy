@@ -153,8 +153,8 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
             N1 = N2*np.sqrt(g22/g11)
             print('Experimental N1 = ',N1)
 
-        dim_pot1 = (np.sqrt(g22) + (m1/m2)*np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
-        dim_pot2 = ((m2/m1)*np.sqrt(g22) + np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
+        dim_pot1 = (m1*xi**2*tau)/hbar#(np.sqrt(g22) + (m1/m2)*np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
+        dim_pot2 = (m2*xi**2*tau)/hbar#((m2/m1)*np.sqrt(g22) + np.sqrt(g11))/(np.sqrt(g11) + np.sqrt(g22))
 
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)

@@ -148,8 +148,8 @@ def potential_dens_ulck(r,OMEGA1,OMEGA2,tau,dim_pot1,dim_pot2):
     trapping can be varied by OMEGA1 and OMEGA2. If no trap is desired, simply set OMEGA1 = OMEGA2 = 0.
     """
     
-    OMEGA1 = 2*pi*OMEGA1*tau*np.sqrt(dim_pot1)
-    OMEGA2 = 2*pi*OMEGA2*tau*np.sqrt(dim_pot2)
+    OMEGA1 = 2*pi*OMEGA1*np.sqrt(dim_pot1)
+    OMEGA2 = 2*pi*OMEGA2*np.sqrt(dim_pot2)
     
     V1 = 0.5*OMEGA1**2*r**2
     V2 = 0.5*OMEGA2**2*r**2
