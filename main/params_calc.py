@@ -104,7 +104,7 @@ def params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,BALANCE):
             print('Balancing N1 to the value of N2')
             N1 = N2*np.sqrt(a22/a11)
 
-        dim_pot = 1.0
+        dim_pot = (m1*tau*xi**2)/hbar
 
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)

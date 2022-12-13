@@ -51,6 +51,7 @@ def centre_dens(dirarg,job_no):
         psi2 = np.loadtxt('../data/' + dirarg + '/psi2_re_t' + str(i+1) + '.txt',dtype=complex)
         n01[i] = np.abs(psi1[1])**2
         n02[i] = np.abs(psi2[1])**2
+        print(i)
         times[i] = dt*i*setup['T_SAVE']
     
     # use central density values to extract breathing mode frequencies

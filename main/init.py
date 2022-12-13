@@ -130,7 +130,7 @@ def potential_dens_lck(r,OMEGA,tau,dim_pot):
     trapping can be varied by OMEGA. If no trap is desired, simply set OMEGA = 0.
     """
   
-    OMEGA = 2*pi*OMEGA*tau*np.sqrt(dim_pot)
+    OMEGA = 2*pi*OMEGA*np.sqrt(dim_pot)
     
     V = 0.5*OMEGA**2*r**2
     
