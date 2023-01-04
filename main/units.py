@@ -1,7 +1,6 @@
-import numpy as np
-from numpy import pi
+from numpy import pi, sqrt, absolute
 
-def units(m1,m2,a11,a22,a12,n01):
+def units(m1, m2, a11, a22, a12, n01):
     """
     time and length scales
     """
@@ -10,24 +9,24 @@ def units(m1,m2,a11,a22,a12,n01):
 
     if m1 == m2:
         m = m1
-        delta_a = a12 + np.sqrt(a11*a22)
+        delta_a = a12 + sqrt(a11*a22)
         
         # length and time scaling
-        xi = np.sqrt((3/(8*pi))*((np.sqrt(a11) + np.sqrt(a22))/(np.abs(delta_a)*np.sqrt(a11)*n01)))
-        tau = (3*m/(8*pi*hbar))*((np.sqrt(a11) + np.sqrt(a22))/(np.abs(delta_a)*np.sqrt(a11)*n01))
+        xi = sqrt((3/(8*pi))*((sqrt(a11) + sqrt(a22))/(absolute(delta_a)*sqrt(a11)*n01)))
+        tau = (3*m/(8*pi*hbar))*((sqrt(a11) + sqrt(a22))/(absolute(delta_a)*sqrt(a11)*n01))
         
     elif m1 != m2:
         # interaction strengths
         g11 = 4*pi*hbar**2*a11/m1
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
-        deltag = g12 + np.sqrt(g11*g22)
+        deltag = g12 + sqrt(g11*g22)
         
         # length and time scaling
-        xi = hbar*np.sqrt(1.5*(np.sqrt(g22)/m1 + np.sqrt(g11)/m2)/(np.abs(deltag)*np.sqrt(g11)*n01))
-        tau = hbar*1.5*(np.sqrt(g11) + np.sqrt(g22))/(np.abs(deltag)*np.sqrt(g11)*n01)
+        xi = hbar*sqrt(1.5*(sqrt(g22)/m1 + sqrt(g11)/m2)/(absolute(deltag)*sqrt(g11)*n01))
+        tau = hbar*1.5*(sqrt(g11) + sqrt(g22))/(absolute(deltag)*sqrt(g11)*n01)
         
-    return xi,tau
+    return xi, tau
 
 def natural_consts():
     """
@@ -40,4 +39,4 @@ def natural_consts():
     hbar = 1.054571817*1e-34
     a0 = 5.29177210903*1e-11
     Da = 1.66053906660*1e-27
-    return hbar,a0,Da
+    return hbar, a0, Da

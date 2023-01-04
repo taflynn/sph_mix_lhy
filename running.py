@@ -1,7 +1,7 @@
 from mix_sph_lhy import time
 
 import matplotlib.pyplot as plt
-import numpy as np
+from numpy import save, absolute, amax, column_stack, savetxt, maximum
 import json
 import os
 import sys
@@ -21,7 +21,7 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-def run_save_sim(dirarg,fname):
+def main(dirarg,fname):
     # create directory for data storage
     path = os.path.join('./data',dirarg+'/')
     if not os.path.isdir(path):
@@ -48,7 +48,7 @@ def run_save_sim(dirarg,fname):
     r = mix_data['r']
     # save spacetime in a format that it is easy to reload into Python
     with open(path + 'r_array.npy', 'wb') as f:
-        np.save(f,r)
+        save(f,r)
     
     # data-saving of density-lock mixture
     if setup['DENS_LCK'] == 1:
@@ -62,22 +62,22 @@ def run_save_sim(dirarg,fname):
 
             # save spacetime in a format that it is easy to reload into Python
             with open(path + 'imag_t_array.npy', 'wb') as f:
-                np.save(f,t_array_im)
+                save(f,t_array_im)
 
             # imaginary time final density
-            plt.plot(r,np.abs(phi_im)**2)
+            plt.plot(r,abs(phi_im)**2)
             plt.xlabel(r'$r$')
             plt.ylabel(r'$|\phi|^2$')
             plt.xlim((0,setup['Nr']*setup['dr']))
-            plt.ylim((0,1.2*np.max(np.abs(phi_im)**2)))
+            plt.ylim((0,1.2*amax(absolute(phi_im)**2)))
             plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
             plt.close()    
             # save final imaginary time density in csv file
-            im_dens = np.column_stack((r,np.abs(phi_im)**2))
-            np.savetxt(path + 'imag_fin_dens.csv',im_dens,delimiter=',',fmt='%18.16f')
+            im_dens = column_stack((r,absolute(phi_im)**2))
+            savetxt(path + 'imag_fin_dens.csv',im_dens,delimiter=',',fmt='%18.16f')
             # total energy in imaginary time 
-            E_im = np.column_stack((t_array_im,E_array_im))
-            np.savetxt(path + 'energy_imag.csv',E_im,delimiter=',',fmt='%18.16f')
+            E_im = column_stack((t_array_im,E_array_im))
+            savetxt(path + 'energy_imag.csv',E_im,delimiter=',',fmt='%18.16f')
 
         # only real time simulation
         elif setup['RE_T_STEPS'] > 0:
@@ -87,19 +87,19 @@ def run_save_sim(dirarg,fname):
 
             # save spacetime in a format that it is easy to reload into Python
             with open(path + 'real_t_array.npy', 'wb') as f:
-                np.save(f,t_array_re)
+                save(f,t_array_re)
 
             # real time final density
-            plt.plot(r,np.abs(phi_re)**2)
+            plt.plot(r,absolute(phi_re)**2)
             plt.xlabel(r'$r$')
             plt.ylabel(r'$|\phi|^2$')
             plt.xlim((0,setup['Nr']*setup['dr']))
-            plt.ylim((0,1.2*np.max(np.abs(phi_re)**2)))
+            plt.ylim((0,1.2*amax(absolute(phi_re)**2)))
             plt.savefig(path + 'real_fin_dens.png',dpi='figure')
             plt.close()   
             # save final real time density in csv file
-            re_dens = np.column_stack((r,np.abs(phi_re)**2))
-            np.savetxt(path + 'real_fin_dens.csv',re_dens,delimiter=',',fmt='%18.16f')
+            re_dens = column_stack((r,absolute(phi_re)**2))
+            savetxt(path + 'real_fin_dens.csv',re_dens,delimiter=',',fmt='%18.16f')
 
     # data saving of density-unlocked mixture
     elif setup['DENS_LCK'] == 0:
@@ -115,26 +115,26 @@ def run_save_sim(dirarg,fname):
 
             # save spacetime in a format that it is easy to reload into Python
             with open(path + 'imag_t_array.npy', 'wb') as f:
-                np.save(f,t_array_im)
+                save(f,t_array_im)
 
             # imaginary time final density of component 1
-            im_dens1 = np.column_stack((r,np.abs(psi1_im)**2))
-            np.savetxt(path + 'imag_fin_dens1.csv',im_dens1,delimiter=',',fmt='%18.16f')
+            im_dens1 = column_stack((r,absolute(psi1_im)**2))
+            savetxt(path + 'imag_fin_dens1.csv',im_dens1,delimiter=',',fmt='%18.16f')
             # imaginary time final density of component 2
-            im_dens2 = np.column_stack((r,np.abs(psi2_im)**2))
-            np.savetxt(path + 'imag_fin_dens2.csv',im_dens2,delimiter=',',fmt='%18.16f')
+            im_dens2 = column_stack((r,absolute(psi2_im)**2))
+            savetxt(path + 'imag_fin_dens2.csv',im_dens2,delimiter=',',fmt='%18.16f')
             # imaginary time final density
-            plt.plot(r,np.abs(psi1_im)**2,r,np.abs(psi2_im)**2)
+            plt.plot(r,absolute(psi1_im)**2,r,absolute(psi2_im)**2)
             plt.xlabel(r'$r$')
             plt.ylabel(r'$|\psi|^2$')
             plt.xlim((0,setup['Nr']*setup['dr']))
-            plt.ylim((0,1.2*np.maximum(np.abs(psi1_im[1])**2,np.abs(psi2_im[1])**2)))
+            plt.ylim((0,1.2*maximum(absolute(psi1_im[1])**2,absolute(psi2_im[1])**2)))
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$'))
             plt.savefig(path + 'imag_fin_dens.png',dpi='figure')
             plt.close()   
             # total energy in imaginary time
-            E_tot_im = np.column_stack((t_array_im,E_array_im))
-            np.savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f') 
+            E_tot_im = column_stack((t_array_im,E_array_im))
+            savetxt(path + 'tot_energy_imag.csv',E_tot_im,delimiter=',',fmt='%18.16f') 
 
         # real time simulation
         elif setup['RE_T_STEPS'] > 0:    
@@ -145,20 +145,20 @@ def run_save_sim(dirarg,fname):
 
             # save spacetime in a format that it is easy to reload into Python
             with open(path + 'real_t_array.npy', 'wb') as f:
-                np.save(f,t_array_re)
+                save(f,t_array_re)
 
             # real time final density of component 1
-            re_dens1 = np.column_stack((r,np.abs(psi1_re)**2))
-            np.savetxt(path + 'real_fin_dens1.csv',re_dens1,delimiter=',',fmt='%18.16f')
+            re_dens1 = column_stack((r,absolute(psi1_re)**2))
+            savetxt(path + 'real_fin_dens1.csv',re_dens1,delimiter=',',fmt='%18.16f')
             # real time final density of component 2
-            re_dens2 = np.column_stack((r,np.abs(psi2_re)**2))
-            np.savetxt(path + 'real_fin_dens2.csv',re_dens2,delimiter=',',fmt='%18.16f')
+            re_dens2 = column_stack((r,absolute(psi2_re)**2))
+            savetxt(path + 'real_fin_dens2.csv',re_dens2,delimiter=',',fmt='%18.16f')
             # real time final density
-            plt.plot(r,np.abs(psi1_re)**2,r,np.abs(psi2_re)**2)
+            plt.plot(r,absolute(psi1_re)**2,r,absolute(psi2_re)**2)
             plt.xlabel(r'$r$')
             plt.ylabel(r'$|\psi|^2$')
             plt.xlim((0,setup['Nr']*setup['dr']))
-            plt.ylim((0,1.2*np.maximum(np.abs(psi1_re[1])**2,np.abs(psi2_re[1])**2)))
+            plt.ylim((0,1.2*maximum(absolute(psi1_re[1])**2,absolute(psi2_re[1])**2)))
             plt.legend((r'$|\psi_1|^2$',r'$|\psi_2|^2$'))
             plt.savefig(path + 'real_fin_dens.png',dpi='figure')
             plt.close()
@@ -178,5 +178,5 @@ if __name__ == '__main__':
             required = True,
             nargs = 1)
     args = parser.parse_args()
-    run_save_sim(args.WRITE_PATH[0],args.READ_PATH[0])
+    main(args.WRITE_PATH[0],args.READ_PATH[0])
    

@@ -51,7 +51,7 @@ def time(json_input,PATH):
         phi_0 = init_wavefun_dens_lck(r,dr,setup['GAUSS_SIGMA'],setup['INIT_TYPE'])
         
         # theoretical parameters
-        [N_lck,xi,tau,n01,n02,dim_pot] = params_dens_lck(m1,m2,a11,a22,a12,N)
+        [N_lck, xi, tau, n01, n02, dim_pot] = params_dens_lck(m1, m2, a11, a22, a12, N)
        
         # setup trapping potential
         V = potential_dens_lck(r,setup['OMEGA'],tau,dim_pot)
@@ -60,7 +60,7 @@ def time(json_input,PATH):
 
         if IM_T_STEPS > 0:
             # imaginary time
-            phi_im,mu_im,t_array_im,E_array_im = rk4_dens_lck(r,phi_0,V,N_lck,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,PATH)
+            phi_im, mu_im, t_array_im, E_array_im = rk4_dens_lck(r, phi_0, V, N_lck, dr, dt, IM_T_STEPS, T_SAVE, 0, BC_TYPE, PATH)
         
             # save theoretical parameters into dictionary
             theory_params = {
@@ -77,9 +77,9 @@ def time(json_input,PATH):
             if setup['BREATH'] == 1:
                 phi_im = phi_im*np.exp(1.0j*epsilon*r**2)
             if setup['ABSORB_BC'] == 1:
-                V = absorb_bc_dens_lck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS']) 
+                V = absorb_bc_dens_lck(r, setup['ABS_HEIGHT'], setup['ABS_SLOPE'], setup['ABS_POS']) 
             # real time
-            phi_re,mu_re,t_array_re,E_array_re = rk4_dens_lck(r,phi_im,V,N_lck,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,PATH)
+            phi_re, mu_re, t_array_re, E_array_re = rk4_dens_lck(r, phi_im, V, N_lck, dr, dt, RE_T_STEPS, T_SAVE, 1, BC_TYPE, PATH)
        
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:
@@ -109,23 +109,23 @@ def time(json_input,PATH):
 
     elif DENS_LCK == 0:
         # setup initial wavefunctions 
-        [psi1_0,psi2_0] = init_wavefun_dens_ulck(r,dr,setup['GAUSS_SIGMA1'],setup['GAUSS_SIGMA2'],setup['INIT_TYPE1'],setup['INIT_TYPE2'])
+        [psi1_0, psi2_0] = init_wavefun_dens_ulck(r, dr, setup['GAUSS_SIGMA1'], setup['GAUSS_SIGMA2'], setup['INIT_TYPE1'], setup['INIT_TYPE2'])
         if m1 == m2:
 
             # theoretical parameters
-            alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,dim_pot \
-            = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
+            alpha, beta, eta, xi, tau, n01, n02, rho1, rho2, N1_rescale, N2_rescale, dim_pot \
+            = params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, setup['BALANCE'])
             
             # setup trapping potentials
-            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot,dim_pot)
+            [V1, V2] = potential_dens_ulck(r, setup['OMEGA1'], setup['OMEGA2'], tau, dim_pot, dim_pot)
             
-            np.savetxt(PATH + 'potential1.txt',V1,delimiter=',',fmt='%18.16f')
-            np.savetxt(PATH + 'potential2.txt',V2,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'potential1.txt', V1, delimiter=',', fmt='%18.16f')
+            np.savetxt(PATH + 'potential2.txt', V2, delimiter=',', fmt='%18.16f')
             
             if IM_T_STEPS > 0:
                 # imaginary time
-                psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,E_array_im \
-            = rk4_eqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,PATH)
+                psi1_gs, psi2_gs, mu1_im, mu2_im, t_array_im, E_array_im \
+            = rk4_eqm_dens_ulck(r, psi1_0, psi2_0, V1, V2, alpha, beta, eta, N1_rescale, N2_rescale, dr, dt, IM_T_STEPS, T_SAVE, 0, BC_TYPE, PATH)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             
@@ -153,15 +153,15 @@ def time(json_input,PATH):
                 if setup['BREATH2'] == 1:
                     psi2_im = psi2_gs*np.exp(1.0j*epsilon*r**2)
                 if setup['ABSORB_BC'] == 1:
-                    V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
+                    V1, V2 = absorb_bc_dens_ulck(r, setup['ABS_HEIGHT'], setup['ABS_SLOPE'], setup['ABS_POS'], setup['ABS_COMP']) 
                 # real time
             psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,E1_array_re \
-            = rk4_eqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,alpha,beta,eta,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,PATH)
+            = rk4_eqm_dens_ulck(r, psi1_im, psi2_im, V1, V2, alpha, beta, eta, N1_rescale, N2_rescale, dr, dt, RE_T_STEPS, T_SAVE, 1, BC_TYPE, PATH)
         
         elif m1 != m2:
             # theoretical parameters
-            gam,alpha,beta,eta,xi,tau,n01,n02,rho1,rho2,N1_rescale,N2_rescale,z,dim_pot1,dim_pot2 \
-            = params_dens_ulck(m1,m2,a11,a22,a12,N1,N2,setup['BALANCE'])
+            gam, alpha, beta, eta, xi, tau, n01, n02, rho1, rho2, N1_rescale, N2_rescale, z, dim_pot1, dim_pot2 \
+            = params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, setup['BALANCE'])
             
             # save theoretical parameters into dictionary
             theory_params = {
@@ -181,15 +181,15 @@ def time(json_input,PATH):
             }
             
             # setup trapping potentials
-            [V1,V2] = potential_dens_ulck(r,setup['OMEGA1'],setup['OMEGA2'],tau,dim_pot1,dim_pot2)
+            [V1, V2] = potential_dens_ulck(r, setup['OMEGA1'], setup['OMEGA2'], tau, dim_pot1, dim_pot2)
 
-            np.savetxt(PATH + 'potential1.txt',V1,delimiter=',',fmt='%18.16f')
-            np.savetxt(PATH + 'potential2.txt',V2,delimiter=',',fmt='%18.16f')
+            np.savetxt(PATH + 'potential1.txt', V1, delimiter=',', fmt='%18.16f')
+            np.savetxt(PATH + 'potential2.txt', V2, delimiter=',', fmt='%18.16f')
             
             if IM_T_STEPS > 0:
                 # imaginary time
-                psi1_gs,psi2_gs,mu1_im,mu2_im,t_array_im,E_array_im \
-            = rk4_uneqm_dens_ulck(r,psi1_0,psi2_0,V1,V2,gam,z,alpha,beta,eta,0,N1_rescale,N2_rescale,dr,dt,IM_T_STEPS,T_SAVE,0,BC_TYPE,PATH)
+                psi1_gs, psi2_gs, mu1_im, mu2_im, t_array_im, E_array_im \
+            = rk4_uneqm_dens_ulck(r, psi1_0, psi2_0, V1, V2, gam, z, alpha, beta, eta, 0, N1_rescale, N2_rescale, dr, dt, IM_T_STEPS, T_SAVE, 0, BC_TYPE, PATH)
             psi1_im = psi1_gs
             psi2_im = psi2_gs
             
@@ -219,11 +219,14 @@ def time(json_input,PATH):
                 if setup['BREATH2'] == 1:
                     psi2_im = psi2_gs*np.exp(1.0j*epsilon*r**2)
                 if setup['ABSORB_BC'] == 1:
-                    V1,V2 = absorb_bc_dens_ulck(r,setup['ABS_HEIGHT'],setup['ABS_SLOPE'],setup['ABS_POS'],setup['ABS_COMP']) 
+                    V1, V2 = absorb_bc_dens_ulck(r, setup['ABS_HEIGHT'], setup['ABS_SLOPE'], setup['ABS_POS'], setup['ABS_COMP']) 
                 # real time
-                K_3bl = setup['K_3bl']
-                psi1_re,psi2_re,mu1_re,mu2_re,t_array_re,E1_array_re \
-                = rk4_uneqm_dens_ulck(r,psi1_im,psi2_im,V1,V2,gam,z,alpha,beta,eta,K_3bl,N1_rescale,N2_rescale,dr,dt,RE_T_STEPS,T_SAVE,1,BC_TYPE,PATH)
+                if "K_3bl" in setup:
+                    K_3bl = setup['K_3bl']
+                else:
+                    K_3bl = 0.0
+                psi1_re, psi2_re, mu1_re, mu2_re, t_array_re, E1_array_re \
+                = rk4_uneqm_dens_ulck(r, psi1_im, psi2_im, V1, V2, gam, z, alpha, beta, eta, K_3bl, N1_rescale, N2_rescale, dr, dt, RE_T_STEPS, T_SAVE, 1, BC_TYPE, PATH)
 
         # writing data into dictionary
         if IM_T_STEPS > 0 and RE_T_STEPS > 0:
@@ -258,4 +261,4 @@ def time(json_input,PATH):
             'E_array_re' : E_array_re
             }
         
-    return mix_data,theory_params
+    return mix_data, theory_params

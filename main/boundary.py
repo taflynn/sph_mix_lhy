@@ -1,6 +1,6 @@
-import numpy as np
+from numpy import tanh, amax, zeros
 
-def bc(x,BC_TYPE):
+def bc(x, BC_TYPE):
     """
     This function applies boundary conditions to the radial box. The function takes two inputs:
     (1) x - The array to apply the boundary conditions too (e.g. the wavefunction)
@@ -17,12 +17,12 @@ def bc(x,BC_TYPE):
         x[0] = x[1]
         x[-1] = x[-2]
     # Neumann boundary condition at centre with zero at far end
-    if BC_TYPE == 1:
+    elif BC_TYPE == 1:
         x[0] = x[1]
         x[-1] = 0
     return x
 
-def absorb_bc_dens_lck(r,ABS_HEIGHT,ABS_SLOPE,ABS_POS):
+def absorb_bc_dens_lck(r, ABS_HEIGHT, ABS_SLOPE, ABS_POS):
     """
     This function calculates the imaginary potential needed to apply absorbing boundary conditions to the density-locked mixture.
     There function takes 2 inputs:
@@ -31,10 +31,10 @@ def absorb_bc_dens_lck(r,ABS_HEIGHT,ABS_SLOPE,ABS_POS):
 
     The function then just outputs one potential, V.
     """
-    V = -1.0j*ABS_HEIGHT*(np.tanh((r - ABS_POS*r[-2])/ABS_SLOPE)+1)
+    V = -1.0j*ABS_HEIGHT*(tanh((r - ABS_POS*r[-2])/ABS_SLOPE) + 1)
     return V
 
-def absorb_bc_dens_ulck(r,ABS_HEIGHT,ABS_SLOPE,ABS_POS,ABS_COMP):
+def absorb_bc_dens_ulck(r, ABS_HEIGHT, ABS_SLOPE, ABS_POS, ABS_COMP):
     """
     This function calculates the imaginary potential needed to apply absorbing boundary conditions to the density-unlocked mixture.
     There function takes 3 inputs:
@@ -48,12 +48,12 @@ def absorb_bc_dens_ulck(r,ABS_HEIGHT,ABS_SLOPE,ABS_POS,ABS_COMP):
     The function then just outputs two potentials, V1 and V2.
     """
     if ABS_COMP == 'BOTH':
-        V1 = -1.0j*ABS_HEIGHT*(np.tanh((r - ABS_POS*np.max(r))/ABS_SLOPE)+1)
-        V2 = -1.0j*ABS_HEIGHT*(np.tanh((r - ABS_POS*np.max(r))/ABS_SLOPE)+1)
+        V1 = -1.0j*ABS_HEIGHT*(tanh((r - ABS_POS*amax(r))/ABS_SLOPE) + 1)
+        V2 = -1.0j*ABS_HEIGHT*(tanh((r - ABS_POS*amax(r))/ABS_SLOPE) + 1)
     if ABS_COMP == 'FIRST':
-        V1 = -1.0j*ABS_HEIGHT*(np.tanh((r - ABS_POS*np.max(r))/ABS_SLOPE)+1)
-        V2 = np.zeros(len(r))
+        V1 = -1.0j*ABS_HEIGHT*(tanh((r - ABS_POS*amax(r))/ABS_SLOPE) + 1)
+        V2 = zeros(len(r))
     if ABS_COMP == 'SECOND':
-        V1 = np.zeros(len(r))
-        V2 = -1.0j*ABS_HEIGHT*(np.tanh((r - ABS_POS*np.max(r))/ABS_SLOPE)+1)
-    return V1,V2
+        V1 = zeros(len(r))
+        V2 = -1.0j*ABS_HEIGHT*(tanh((r - ABS_POS*amax(r))/ABS_SLOPE) + 1)
+    return V1, V2
