@@ -33,7 +33,11 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
     # generating empty arrays for saving fitted parameters and confidence intervals
     del_dens_out_array = np.empty((num_sims,1))
+    end_dens1_out_array = np.empty((num_sims,1))
+    end_dens2_out_array = np.empty((num_sims,1))
     energy_out_array = np.empty((num_sims,1))
+    mu1_out_array = np.empty((num_sims,1))
+    mu2_out_array = np.empty((num_sims,1))
     Nr_or_perc_array = np.empty((num_sims,1))
     
     # file to save print outputs to
@@ -70,15 +74,27 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         t_eng = np.loadtxt('../data/' + dirarg + str(i + 1) + '/tot_energy_imag.csv', delimiter=",")
 
         del_dens_out_array[i] = dens1[1] - dens2[1]        
+        end_dens1_out_array[i] = dens1[-2]    
+        end_dens2_out_array[i] = dens2[-2]    
         energy_out_array[i] = t_eng[-1,1]
+        mu1_out_array[i] = theory['mu1']
+        mu2_out_array[i] = theory['mu2']
  
     # concatenating data into 2D array of omega and gamma for component 1 
-    dens_data = np.column_stack((Nr_or_perc_array,del_dens_out_array))
-    eng_data = np.column_stack((Nr_or_perc_array,energy_out_array))
+    dens_data = np.column_stack((Nr_or_perc_array, del_dens_out_array))
+    dens1_end_data = np.column_stack((Nr_or_perc_array, end_dens1_out_array))
+    dens2_end_data = np.column_stack((Nr_or_perc_array, end_dens2_out_array))
+    eng_data = np.column_stack((Nr_or_perc_array, energy_out_array))
+    mu1_data = np.column_stack((Nr_or_perc_array, mu1_out_array))
+    mu2_data = np.column_stack((Nr_or_perc_array, mu2_out_array))
     
     # saving arrays of omega's and confidence intervals
-    np.savetxt('../data/' + dirarg + 'saved/' + 'del_dens_' + sim_style + '.csv',dens_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'energy_' + sim_style + '.csv',eng_data,delimiter=',',fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'del_dens_' + sim_style + '.csv', dens_data, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'end_dens1_' + sim_style + '.csv', dens1_end_data, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'end_dens2_' + sim_style + '.csv', dens2_end_data, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'energy_' + sim_style + '.csv', eng_data, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv', mu1_data, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv', mu2_data, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
