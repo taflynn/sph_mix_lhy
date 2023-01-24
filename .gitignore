@@ -1,17 +1,25 @@
+# jupyter notebook jobs (for interactive analysis)
 *.ipynb
+# cache related files
 __pycache__
 .ipynb_checkpoints/*
-mix_time_step.py
+main/.ipynb_checkpoints/
+# simulation data
 data/
+# old junk files
 old_files/
+# hpc slurm queue files
 slurm*
+# any other out files from hpc
 *.out
+# any produced numpy files
 *.npy
+# non-default simulation config files
 config_dens_lck.json
 config_dens_lck*.json
 config_dens_ulck.json
 config_dens_ulck*.json
+# directory for related LaTeX documents
 texdocs/
-par_param_space/
-
-main/.ipynb_checkpoints/
+# virtual environment directory
+sph_drop/
