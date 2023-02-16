@@ -55,7 +55,7 @@ def centre_dens(dirarg,job_no):
         times[i] = dt*i*setup['T_SAVE']
     
     # use central density values to extract breathing mode frequencies
-    extract = (np.where(n01>n01[0]))[0][0]
+    extract = 0#(np.where(n01>n01[0]))[0][0]
     upper = -1
 
     filter_n1 = n01[extract:upper] - np.mean(n01[extract:upper])
