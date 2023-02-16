@@ -29,7 +29,8 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
     # density-locked effective atom number
     if m1 == m2:
     	
-        dim_pot = 1.0
+        delta_a = a12 + sqrt(a11*a22)
+        dim_pot = (m1*tau*xi**2)/hbar
     
         N_lck = (N/(n01*xi**3))*(sqrt(a22)/(sqrt(a11) + sqrt(a22)))
         print('Balanced experimental N1 = ', N*(sqrt(a22)/(sqrt(a11) + sqrt(a22))))
@@ -41,7 +42,7 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
         
-        dim_pot = (sqrt(g11) + sqrt(g22))**(-1)*(sqrt(g22)/m1 + sqrt(g11)/m2)*(2*m1*m2/(m1 + m2))
+        dim_pot = (m1*m2/(m1 + m2))*(tau*xi**2)/hbar
         
         N_lck = (N/(n01*xi**3))*(sqrt(g22)/(sqrt(g11) + sqrt(g22)))
         print('Balanced experimental N1 = ', N*(sqrt(g22)/(sqrt(g11) + sqrt(g22))))
