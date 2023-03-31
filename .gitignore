@@ -23,3 +23,5 @@ config_dens_ulck*.json
 texdocs/
 # virtual environment directory
 sph_drop/
+# pdf files
+process/*.pdf
