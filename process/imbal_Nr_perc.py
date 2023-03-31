@@ -32,13 +32,21 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         sim_style = 'N/A'
 
     # generating empty arrays for saving fitted parameters and confidence intervals
+    ## difference in densities
     del_dens_out_array = np.empty((num_sims,1))
+    ## end densities
     end_dens1_out_array = np.empty((num_sims,1))
     end_dens2_out_array = np.empty((num_sims,1))
+    near_end_dens1_out_array = np.empty((num_sims,1))
+    near_end_dens2_out_array = np.empty((num_sims,1))
+    ## energies
     energy_out_array = np.empty((num_sims,1))
+    ## chemical potentials
     mu1_out_array = np.empty((num_sims,1))
     mu2_out_array = np.empty((num_sims,1))
+    ## independent variables
     Nr_or_perc_array = np.empty((num_sims,1))
+    N1_array = np.empty((num_sims,1))
     
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
@@ -63,20 +71,30 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
         if imbal_size == 'perc':
             Nr_or_perc_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
+            N1_array[i] = theory['N1'] - theory['N2']
         elif imbal_size == 'Nr':
             Nr_or_perc_array[i] = 1/(dr*setup['Nr'])
         
         # reading in ground states
         r_dens1 = np.loadtxt('../data/' + dirarg + str(i + 1) +  '/imag_fin_dens1.csv', delimiter=",")
-        dens1 = r_dens1[:,1]
+        r_array = r_dens1[:, 0]
+        dens1 = r_dens1[:, 1]
         r_dens2 = np.loadtxt('../data/' + dirarg + str(i + 1) + '/imag_fin_dens2.csv', delimiter=",")
-        dens2 = r_dens2[:,1]
+        dens2 = r_dens2[:, 1]
         t_eng = np.loadtxt('../data/' + dirarg + str(i + 1) + '/tot_energy_imag.csv', delimiter=",")
 
+        ## difference in central densities
         del_dens_out_array[i] = dens1[1] - dens2[1]        
-        end_dens1_out_array[i] = dens1[-2]    
+        ## end densities
+        end_dens1_out_array[i] = dens1[-2] 
         end_dens2_out_array[i] = dens2[-2]    
+        ## densities at 0.75Lr
+        near_edge = np.where(r_array>=(0.75*dr*setup['Nr']))[0][0]
+        near_end_dens1_out_array[i] = dens1[near_edge]    
+        near_end_dens2_out_array[i] = dens2[near_edge]    
+        ## energies
         energy_out_array[i] = t_eng[-1,1]
+        ## chemical potentials
         mu1_out_array[i] = theory['mu1']
         mu2_out_array[i] = theory['mu2']
  
@@ -88,6 +106,10 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     mu1_data = np.column_stack((Nr_or_perc_array, mu1_out_array))
     mu2_data = np.column_stack((Nr_or_perc_array, mu2_out_array))
     
+    # new outputs, as function of N1
+    del_dens_v_N1 = np.column_stack((N1_array, del_dens_out_array))
+    near_end1_v_N1 = np.column_stack((N1_array, near_end_dens1_out_array))
+
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'del_dens_' + sim_style + '.csv', dens_data, delimiter=',', fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'end_dens1_' + sim_style + '.csv', dens1_end_data, delimiter=',', fmt='%18.16f')
@@ -95,6 +117,9 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     np.savetxt('../data/' + dirarg + 'saved/' + 'energy_' + sim_style + '.csv', eng_data, delimiter=',', fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv', mu1_data, delimiter=',', fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv', mu2_data, delimiter=',', fmt='%18.16f')
+
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N1_v_del_dens_' + sim_style + '.csv', del_dens_v_N1, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N1_v_near_end1_' + sim_style + '.csv', near_end1_v_N1, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
