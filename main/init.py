@@ -1,4 +1,5 @@
 from numpy import pi, arange, exp, trapz, sqrt, ones, absolute
+from scipy.sparse import eye
 
 def grid_setup(dr, Nr, DT_COEF):
     """
@@ -30,6 +31,19 @@ def grid_setup(dr, Nr, DT_COEF):
     print(67*'-')
     
     return Lr, r, dt
+
+def derivatives(dr, r):
+    # first order derivative in the form of a sparse matrix (centrally defined)
+    Dr = (1/(2*dr))*(-1*eye(r.size-2, r.size, k=0, dtype=float) 
+                     + eye(r.size-2, r.size, k=2, dtype=float))
+    
+    # second order derivative in the form of a sparse matrix (centrally defined 3-point formula)
+    Dr2 =  (1/dr**2)*(eye(r.size-2, r.size, k=0, dtype=float) 
+                      - 2*eye(r.size-2, r.size, k=1, dtype=float) 
+                      + eye(r.size-2, r.size, k=2, dtype=float))
+    return Dr, Dr2
+
+
 
 def init_wavefun_dens_lck(r, dr, GAUSS_SIGMA, INIT_TYPE):
     """

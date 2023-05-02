@@ -12,7 +12,7 @@ from numpy import pi, trapz, absolute, zeros, sqrt, savetxt
 
 import matplotlib.pyplot as plt
 
-def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
+def rk4_dens_lck(r, phi, V, N_lck, Dr, Dr2, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -59,7 +59,7 @@ def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PA
     
     for l in range(0,T_STEPS):
         # k1 calculation
-        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi, V, r, dr, N_lck, mu, IM_REAL)
+        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi, V, r, Dr, Dr2, dr, N_lck, mu, IM_REAL)
 
         k1[1:-1] = -dt*(H_ke[1:-1] + H_trap[1:-1] + H_lhy[1:-1] + H_int[1:-1] + H_mu[1:-1])
 
@@ -67,7 +67,7 @@ def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PA
         k1 = bc(k1, BC_TYPE)
 
         # k2 calculation
-        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k1/2.0, V, r, dr, N_lck, mu, IM_REAL)
+        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k1/2.0, V, r, Dr, Dr2, dr, N_lck, mu, IM_REAL)
         
         k2[1:-1] = -dt*(H_ke[1:-1] + H_trap[1:-1] + H_lhy[1:-1] + H_int[1:-1] + H_mu[1:-1])
 
@@ -75,7 +75,7 @@ def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PA
         k2 = bc(k2, BC_TYPE)
 
         # k3 calculation
-        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k2/2.0, V, r, dr, N_lck, mu, IM_REAL)
+        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k2/2.0, V, r, Dr, Dr2, dr, N_lck, mu, IM_REAL)
 
         k3[1:-1] = -dt*(H_ke[1:-1] + H_trap[1:-1] + H_lhy[1:-1] + H_int[1:-1] + H_mu[1:-1])
 
@@ -83,7 +83,7 @@ def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PA
         k3 = bc(k3, BC_TYPE)
 
         #k4 calculation
-        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k3, V, r, dr, N_lck, mu, IM_REAL)
+        [H_ke, H_trap, H_int, H_lhy, H_mu] = ham_dens_lck(phi + k3, V, r, Dr, Dr2, dr, N_lck, mu, IM_REAL)
         
         k4[1:-1] = -dt*(H_ke[1:-1] + H_trap[1:-1] + H_lhy[1:-1] + H_int[1:-1] + H_mu[1:-1])
 
@@ -158,7 +158,7 @@ def rk4_dens_lck(r, phi, V, N_lck, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PA
         print('Real time finished')
     return phi, mu, t_array, E_array
 
-def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
+def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, Dr, Dr2, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -221,7 +221,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
  
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1, psi2, V1, r, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1, psi2, V1, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
 
         k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -229,7 +229,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k1_1 = bc(k1_1, BC_TYPE)
 
         # k1 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1, psi2, V2, r, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1, psi2, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
 
         k1_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -237,7 +237,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k1_2 = bc(k1_2, BC_TYPE)
 
         # k2 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V1, r, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V1, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
 
         k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -245,7 +245,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k2_1 = bc(k2_1, BC_TYPE)
 
         # k2 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V2, r, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
 
         k2_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -253,7 +253,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k2_2 = bc(k2_2, BC_TYPE)
 
         # k3 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k2_1/2.0, psi2 + k2_2/2.0, V1, r, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k2_1/2.0, psi2 + k2_2/2.0, V1, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
 
         k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -261,7 +261,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k3_1 = bc(k3_1, BC_TYPE)
 
         # k3 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k2_1/2.0, psi2 + k2_2/2.0, V2, r, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k2_1/2.0, psi2 + k2_2/2.0, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
 
         k3_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -269,7 +269,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k3_2 = bc(k3_2, BC_TYPE)
 
         # k4 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k3_1, psi2 + k3_2, V1, r, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = eqm_dens_ulck_ham1(psi1 + k3_1, psi2 + k3_2, V1, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu1, IM_REAL)
 
         k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
@@ -277,7 +277,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         k4_1 = bc(k4_1, BC_TYPE)
 
         # k4 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k3_1, psi2 + k3_2, V2, r, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = eqm_dens_ulck_ham2(psi1 + k3_1, psi2 + k3_2, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu2, IM_REAL)
 
         k4_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -372,7 +372,7 @@ def rk4_eqm_dens_ulck(r, psi1, psi2, V1, V2, alpha, beta, eta, N1, N2, dr, dt, T
         
     return psi1, psi2, mu1, mu2, t_array, E_array
 
-def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, N1, N2, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
+def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, N1, N2, Dr, Dr2, dr, dt, T_STEPS, T_SAVE, IM_REAL, BC_TYPE, PATH):
     """
     The rk4* functions are the main body of this package. They contain the Runge-Kutta 4th-order time-stepping methods
     for solving the Gross-Pitaevskii (GP) equations. 
@@ -435,7 +435,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
     
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1, psi2, V1 , r, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1, psi2, V1 , r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
 
         k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
@@ -443,7 +443,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k1_1 = bc(k1_1, BC_TYPE)
 
         # k1 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1, psi2, V1, r, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1, psi2, V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
 
         k1_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -452,7 +452,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
 
         # k2 CALCULATION FOR PSI1
         [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k1_1/2.0, psi2 + k1_2/2.0, 
-                                                                              V1, r, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
 
         k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
@@ -460,7 +460,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k2_1 = bc(k2_1, BC_TYPE)
 
         # k2 CALCULATION FOR PSI2
-        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V2, r, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2,H_trap2,H_int2,H_lhy2,H_mu2] = ham2_uneqm_dens_ulck(psi1 + k1_1/2.0, psi2 + k1_2/2.0, V2, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
 
         k2_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -469,7 +469,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
 
         # k3 CALCULATION FOR PSI1
         [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k2_1/2.0, psi2 + k2_2/2.0,
-                                                                              V1, r, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
 
         k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
@@ -477,7 +477,8 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k3_1 = bc(k3_1, BC_TYPE)
 
         # k3 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1 + k2_1/2.0, psi2 + k2_2/2.0, V2, r, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1 + k2_1/2.0, psi2 + k2_2/2.0, 
+                                                                       V2, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
 
         k3_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
@@ -485,7 +486,8 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k3_2 = bc(k3_2, BC_TYPE)
 
         # k4 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2, V1, r, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2,
+                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
 
         k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
 
@@ -493,7 +495,7 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k4_1 = bc(k4_1, BC_TYPE)
 
         # k4 CALCULATION FOR PSI2
-        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2, V2, r, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
+        [H_ke2, H_trap2, H_int2, H_lhy2, H_mu2] = ham2_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2, V2, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu2, IM_REAL)
 
         k4_2[1:-1] = -dt*(H_ke2[1:-1] + H_trap2[1:-1] + H_lhy2[1:-1] + H_int2[1:-1] + H_mu2[1:-1])
 
