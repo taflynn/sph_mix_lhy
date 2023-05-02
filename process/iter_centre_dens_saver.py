@@ -22,12 +22,12 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-def main(dirarg, no_jobs):
+def main(dirarg, no_jobs, no_frames):
 
     for i in range(1, no_jobs + 1):
         dirarg_job = dirarg + str(i)
         print("job directory is: ", dirarg_job)
-        centre_dens(dirarg_job, i)
+        centre_dens(dirarg_job, i, no_frames)
         print("Finished job", i)
     return 0
 
@@ -43,5 +43,10 @@ if __name__ == '__main__':
             type = int,
             required = True,
             nargs = 1)
+    parser.add_argument('--no_of_frames','-nf',
+            dest = 'FRAME_NO',
+            type = int,
+            required = True,
+            nargs = 1)
     args = parser.parse_args()
-    main(args.READ_PATH[0], args.JOB_NO[0])
+    main(args.READ_PATH[0], args.JOB_NO[0], args.FRAME_NO[0])

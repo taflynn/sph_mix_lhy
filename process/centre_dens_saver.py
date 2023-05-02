@@ -23,11 +23,12 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-def centre_dens(dirarg,job_no):
+def centre_dens(dirarg, job_no, job_frames):
     if job_no > 0:
         fname = 'config_dens_ulck' + str(job_no) + '.json'
     if job_no == 0:
         fname = 'config_dens_ulck.json'
+
     # load in data for simulation
     f = open('../data/' + dirarg + '/' + fname,"r")
     setup = json.loads(f.read())
@@ -39,7 +40,12 @@ def centre_dens(dirarg,job_no):
 
     r = np.arange(-1/2,(Nr + 3/2),1)*dr
 
-    frames = setup['RE_T_STEPS']//setup['T_SAVE']
+    if job_frames == 0:
+        # if input the number of frames as 0, then use config.json
+        frames = setup['RE_T_STEPS']//setup['T_SAVE']
+    else:
+        # otherwise use the specified number of frames
+        frames = job_frames
 
     n01 = np.empty(frames)
     n02 = np.empty(frames)
@@ -82,5 +88,10 @@ if __name__ == '__main__':
             type = int,
             required = True,
             nargs = 1)
+    parser.add_argument('--frames_no','-fn',
+            dest = 'FRAMES',
+            type = int,
+            required = True,
+            nargs = 1)
     args = parser.parse_args()
-    centre_dens(args.READ_PATH[0],args.JOB_NO[0])
+    centre_dens(args.READ_PATH[0], args.JOB_NO[0], args.FRAMES[0])
