@@ -1,6 +1,5 @@
 ## Import packages
-import numpy as np
-from numpy import fft
+from numpy import empty, absolute, fft, loadtxt, mean, column_stack, arange, savetxt
 import json
 import os
 import sys
@@ -26,7 +25,7 @@ class Unbuffered(object):
 def centre_dens(dirarg, job_no, job_frames):
     if job_no > 0:
         fname = 'config_dens_ulck' + str(job_no) + '.json'
-    if job_no == 0:
+    elif job_no == 0:
         fname = 'config_dens_ulck.json'
 
     # load in data for simulation
@@ -38,7 +37,7 @@ def centre_dens(dirarg, job_no, job_frames):
     Nr = setup['Nr']
     dt = setup['DT_COEF']*dr**2
 
-    r = np.arange(-1/2,(Nr + 3/2),1)*dr
+    r = arange(-1/2, (Nr + 3/2), 1)*dr
 
     if job_frames == 0:
         # if input the number of frames as 0, then use config.json
@@ -47,32 +46,45 @@ def centre_dens(dirarg, job_no, job_frames):
         # otherwise use the specified number of frames
         frames = job_frames
 
-    n01 = np.empty(frames)
-    n02 = np.empty(frames)
-    times = np.empty(frames)
+    n01 = empty(frames)
+    n02 = empty(frames)
+    del_n = empty(frames)
+    times = empty(frames)
     
     # load in and save relevant data from each time slice 
-    for i in range(0,frames):
-        psi1 = np.loadtxt('../data/' + dirarg + '/psi1_re_t' + str(i+1) + '.txt',dtype=complex)
-        psi2 = np.loadtxt('../data/' + dirarg + '/psi2_re_t' + str(i+1) + '.txt',dtype=complex)
-        n01[i] = np.abs(psi1[1])**2
-        n02[i] = np.abs(psi2[1])**2
-        print(i)
+    for i in range(0, frames):
+        psi1 = loadtxt('../data/' + dirarg + '/psi1_re_t' + str(i+1) + '.txt', dtype=complex)
+        psi2 = loadtxt('../data/' + dirarg + '/psi2_re_t' + str(i+1) + '.txt', dtype=complex)
+        n01[i] = absolute(psi1[1])**2
+        n02[i] = absolute(psi2[1])**2
+        del_n[i] = absolute(psi1[1])**2 - absolute(psi2[1])**2
         times[i] = dt*i*setup['T_SAVE']
     
     # use central density values to extract breathing mode frequencies
-    extract = 0#(np.where(n01>n01[0]))[0][0]
+    extract = 0 #(np.where(n01>n01[0]))[0][0]
     upper = -1
 
-    filter_n1 = n01[extract:upper] - np.mean(n01[extract:upper])
-    filter_n2 = n02[extract:upper] - np.mean(n02[extract:upper])
-    filter_t = times[extract:upper]# - t_real[extract]
-    
-    psi1_data = np.column_stack((filter_t,filter_n1))
-    psi2_data = np.column_stack((filter_t,filter_n2))
-    # saving arrays of omega's and confidence intervals
-    np.savetxt('../data/' + dirarg + '/n01.csv',psi1_data,delimiter=',',fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + '/n02.csv',psi2_data,delimiter=',',fmt='%18.16f')
+    # the raw central density data
+    n1_data = column_stack((times, n01))
+    n2_data = column_stack((times, n02))
+    del_n_data = column_stack((times, del_n))    
+
+    # shifted central density data (by the means)
+    filter_n1 = n01[extract:upper] - mean(n01[extract:upper])
+    filter_n2 = n02[extract:upper] - mean(n02[extract:upper])
+    filter_t = times[extract:upper] # - t_real[extract]
+
+    centred_n1_data = column_stack((filter_t, filter_n1))
+    centred_n2_data = column_stack((filter_t, filter_n2))
+
+    # saving arrays of central densities
+    savetxt('../data/' + dirarg + '/n01_uncentred.csv', n1_data, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + '/n02_uncentred.csv', n2_data, delimiter=',', fmt='%18.16f')
+
+    savetxt('../data/' + dirarg + '/del_n0s.csv', del_n_data, delimiter=',', fmt='%18.16f')
+
+    savetxt('../data/' + dirarg + '/n01_centred.csv', centred_n1_data, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + '/n02_centred.csv', centred_n2_data, delimiter=',', fmt='%18.16f')
 
     return 0
 
