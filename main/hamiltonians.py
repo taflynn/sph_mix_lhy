@@ -150,7 +150,7 @@ def eqm_dens_ulck_ham2(psi1, psi2, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta,
     
     return H_ke, H_trap, H_int, H_lhy, H_mu
 
-def ham1_uneqm_dens_ulck(psi1, psi2, V1, r, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu, im_real):
+def ham1_uneqm_dens_ulck(psi1, psi2, V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu, im_real):
     """
     The Gross-Pitaevskii (GP) Hamiltonian for the 1st-component of the density-unlocked mixture is defined here. 
     This is to be called within  either imaginary time (IM_REAL = 0) or real time(IM_REAL = 1). The Hamiltonian 
@@ -182,13 +182,13 @@ def ham1_uneqm_dens_ulck(psi1, psi2, V1, r, dr, N1, N2, gam, z, alpha, beta, eta
 
     # DIFFERENTIAL OPERATORS
     # first order derivative in the form of a sparse matrix (centrally defined)
-    Dr = (1/(2*dr))*(-1*eye(psi2.size-2, psi2.size, k=0, dtype=float) 
-                     + eye(psi2.size-2, psi2.size, k=2, dtype=float))
+    #Dr = (1/(2*dr))*(-1*eye(psi2.size-2, psi2.size, k=0, dtype=float) 
+    #                 + eye(psi2.size-2, psi2.size, k=2, dtype=float))
 
     # second order derivative in the form of a sparse matrix (centrally defined 3-point formula)
-    Dr2 =  (1/dr**2)*(eye(psi2.size-2,psi2.size,k=0,dtype=float) 
-                      - 2*eye(psi2.size-2, psi2.size, k=1, dtype=float) 
-                      + eye(psi2.size-2, psi2.size, k=2, dtype=float))
+    #Dr2 =  (1/dr**2)*(eye(psi2.size-2,psi2.size,k=0,dtype=float) 
+    #                  - 2*eye(psi2.size-2, psi2.size, k=1, dtype=float) 
+    #                  + eye(psi2.size-2, psi2.size, k=2, dtype=float))
 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi1) + (Dr2 @ psi1)
     H_ke[1:-1] = -0.5*gam*KE[1:-1] # KE term  
