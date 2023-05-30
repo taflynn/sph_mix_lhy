@@ -57,13 +57,13 @@ def omg_norms_iter(dirarg, no_of_sims):
     deln_r0_vs_len = column_stack((harm_len_1_dat, deln_r0_lim))
 
     # saving arrays of omega's and confidence intervals
-    savetxt('../data/' + dirarg + '/saved/norms1_vs_omg.csv', norms1_vs_omg, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + '/saved/norms2_vs_omg.csv', norms2_vs_omg, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + '/saved/deln_r0_vs_omg.csv', deln_r0_vs_omg, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/norms1_vs_omg.csv', norms1_vs_omg, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/norms2_vs_omg.csv', norms2_vs_omg, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/deln_r0_vs_omg.csv', deln_r0_vs_omg, delimiter=',', fmt='%18.16f')
 
-    savetxt('../data/' + dirarg + '/saved/norms1_vs_len.csv', norms1_vs_len, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + '/saved/norms2_vs_len.csv', norms2_vs_len, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + '/saved/deln_r0_vs_len.csv', deln_r0_vs_len, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/norms1_vs_len.csv', norms1_vs_len, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/norms2_vs_len.csv', norms2_vs_len, delimiter=',', fmt='%18.16f')
+    savetxt('../data/' + dirarg + 'saved/deln_r0_vs_len.csv', deln_r0_vs_len, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Extract norms and central density difference in real time')
