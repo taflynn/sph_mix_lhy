@@ -33,44 +33,44 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
     # generating empty arrays for saving fitted parameters and confidence intervals
     ## difference in densities
-    del_dens_out_array = np.empty((num_sims,1))
+    del_dens_out_array = np.empty((num_sims, 1))
     ## end densities
-    end_dens1_out_array = np.empty((num_sims,1))
-    end_dens2_out_array = np.empty((num_sims,1))
-    near_end_dens1_out_array = np.empty((num_sims,1))
-    near_end_dens2_out_array = np.empty((num_sims,1))
+    end_dens1_out_array = np.empty((num_sims, 1))
+    end_dens2_out_array = np.empty((num_sims, 1))
+    near_end_dens1_out_array = np.empty((num_sims, 1))
+    near_end_dens2_out_array = np.empty((num_sims, 1))
     ## energies
-    energy_out_array = np.empty((num_sims,1))
+    energy_out_array = np.empty((num_sims, 1))
     ## chemical potentials
-    mu1_out_array = np.empty((num_sims,1))
-    mu2_out_array = np.empty((num_sims,1))
+    mu1_out_array = np.empty((num_sims, 1))
+    mu2_out_array = np.empty((num_sims, 1))
     ## independent variables
-    Nr_or_perc_array = np.empty((num_sims,1))
-    N1_array = np.empty((num_sims,1))
+    Nr_or_perc_array = np.empty((num_sims, 1))
+    N1_array = np.empty((num_sims, 1))
     
     # file to save print outputs to
-    sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out',"w")
+    sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out', "w")
     sys.stdout = Unbuffered(sys.stdout)
 
-    for i in range(0,num_sims):
+    for i in range(0, num_sims):
         # load in simulation parameters
         fname = 'config_dens_ulck' + str(i + 1) + '.json'
         print(i)
 
         # read in data
-        f = open('../data/' + dirarg + str(i + 1)  + '/' + fname,"r")
+        f = open('../data/' + dirarg + str(i + 1)  + '/' + fname, "r")
         setup = json.loads(f.read())
         f.close()
       
         dr = setup['dr']
 
         # read in theory parameters
-        f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json',"r")
+        f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json', "r")
         theory = json.loads(f.read())
         f.close()
 
         if imbal_size == 'perc':
-            Nr_or_perc_array[i] = ((setup['N1']-setup['N2'])/setup['N2'])*100.0
+            Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
             N1_array[i] = theory['N1'] - theory['N2']
         elif imbal_size == 'Nr':
             Nr_or_perc_array[i] = 1/(dr*setup['Nr'])
@@ -93,7 +93,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         near_end_dens1_out_array[i] = dens1[near_edge]    
         near_end_dens2_out_array[i] = dens2[near_edge]    
         ## energies
-        energy_out_array[i] = t_eng[-1,1]
+        energy_out_array[i] = t_eng[-1, 1]
         ## chemical potentials
         mu1_out_array[i] = theory['mu1']
         mu2_out_array[i] = theory['mu2']
@@ -139,4 +139,4 @@ if __name__ == '__main__':
             required = True,
             nargs = 1)
     args = parser.parse_args()
-    run_ulck_process(args.READ_PATH[0],args.NUM_SIMS[0],args.IMBAL_SIZE[0])
+    run_ulck_process(args.READ_PATH[0], args.NUM_SIMS[0], args.IMBAL_SIZE[0])
