@@ -1,17 +1,15 @@
 ## Import packages
-from numpy import savetxt, empty, exp, sin, load, loadtxt, absolute, column_stack, sqrt
-import matplotlib.pyplot as plt
+from numpy import savetxt, empty, exp, sin, load, loadtxt, absolute, column_stack, sqrt, pi, mean
 import json
 import os
 import sys
 import shutil
-import matplotlib.animation as animation
 import argparse
 from scipy.optimize import curve_fit
 
 sys.path.insert(1, '../')
 
-from main.params_calc import params_dens_lck
+from main.params_calc import params_dens_ulck
 class Unbuffered(object):
     def __init__(self, stream):
         self.stream = stream
@@ -25,15 +23,6 @@ class Unbuffered(object):
         return getattr(self.stream, attr)
 
 def run_ulck_process(dirarg,num_sims,imbal_size):
-    if imbal_size == 'IMBAL': 
-        sim_style = 'imbal'
-    elif imbal_size == 'SIZE':
-        sim_style = 'size'
-    elif imbal_size == 'BIG_IMBAL':
-        sim_style = 'big_imbal'
-    else:
-        print('Error: Need to specify style of simulation, i.e., imbalance or droplet size')
-        sim_style = 'N/A'
 
     # Define a general damped sine function
     def damp_sin_func(x, a, b, c, d, f):
@@ -103,11 +92,11 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
     for i in range(0, num_sims):
         # load in simulation parameters
-        fname = 'config_dens_ulck' + str(i + 1) + '.json'
+        fname = 'config_dens_ulck' + str(i+1) + '.json'
         print(i)
 
         # read in data
-        f = open('../data/' + dirarg + str(i + 1)  + '/' + fname, "r")
+        f = open('../data/' + dirarg + str(i+1)  + '/' + fname, "r")
         setup = json.loads(f.read())
         f.close()
 
@@ -115,19 +104,28 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         dr = setup['dr']
         
         # read in theory parameters
-        f = open('../data/' + dirarg + str(i + 1) + '/theory_params.json', "r")
+        f = open('../data/' + dirarg + str(i+1) + '/theory_params.json', "r")
         theory = json.loads(f.read())
         f.close()
+        [alpha, beta, eta, xi, tau, _, _, _, _, N1, N2, dim_pot] = params_dens_ulck(setup['m1'], setup['m2'], 
+                                                                                    setup['a11'], setup['a22'], setup['a12'],
+                                                                                    setup['N1'], setup['N2'], setup['BALANCE'])
 
-        # main data read in from NumPy files
-        r = load('../data/' + dirarg + str(i+1) + '/r_array.npy')
+        theory_omg1 = 2*pi*setup['OMEGA1']*sqrt(dim_pot)
+        theory_omg2 = 2*pi*setup['OMEGA2']*sqrt(dim_pot)
+        
+        print('Theoretical omega 1 = ', theory_omg1)
+        print('Theoretical omega 2 = ', theory_omg2)
+        
+        t_cutoff = 0.5 # could add this is an input variable if necessary!
+        cut_trap_period = t_cutoff*0.5*(2*pi/theory_omg1)
+
+        # read in data
         t_centre_n1 = loadtxt('../data/' + dirarg + str(i+1) + '/n01.csv', delimiter=",")
         t_centre_n2 = loadtxt('../data/' + dirarg + str(i+1) + '/n02.csv', delimiter=",")
         
         if imbal_size == 'IMBAL':
-            imb_size_array[i] = setup['N1']-setup['N2']
-        elif imbal_size == 'BIG_IMBAL':
-            imb_size_array[i] = absolute(psi1[-1,0])**2
+            imb_size_array[i] = theory['N1']-theory['N2']
         elif imbal_size == 'SIZE':
             N1 = setup['N1']
             N2 = setup['N2']
@@ -139,14 +137,19 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
                                                        setup['a12'],N_tot) 
             imb_size_array[i] = (N_lck - 18.65)**0.25
 
-        extract = 0 #extract = (np.where(centre_n1>centre_n1[0]))[0][0]
-        cut_n1 = centre_n1[extract:, 1]
-        cut_n2 = centre_n2[extract:, 1]
-        cut_t = t_real[extract:, 0]
+        #extract = (np.where(centre_n1>centre_n1[0]))[0][0]
+        t_real = t_centre_n1[:, 0]
+        cut_n1 = t_centre_n1[t_real < cut_trap_period, 1]
+        cut_n2 = t_centre_n2[t_real < cut_trap_period, 1]
+        cut_t = t_centre_n1[t_real < cut_trap_period, 0]
 
         # fit central density oscillations to damped sine curve
-        [fitted_params1, cov1] = curve_fitting(cut_t, cut_n1)
-        [fitted_params2, cov2] = curve_fitting(cut_t, cut_n2)
+        [fitted_params1, cov1] = curve_fitting(cut_t, cut_n1,
+                                               absolute(cut_n1.max() - cut_n1.min()),
+                                               0.3, pi, mean(cut_n1), 0.01)
+        [fitted_params2, cov2] = curve_fitting(cut_t, cut_n2,
+                                               absolute(cut_n2.max() - cut_n2.min()),
+                                               0.3, pi, mean(cut_n1), 0.01)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
         omega01_array[i] = absolute(fitted_params1[1])
@@ -158,7 +161,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         highconf_gamma1[i] = fitted_params1[-1] + 2*sqrt(cov1[-1, -1])
         
         # extract breathing mode frequency and decay rate of oscillation for component 2
-        omega02_array[i] = absolutefitted_params2[1])
+        omega02_array[i] = absolute(fitted_params2[1])
         lowconf_omega02[i] = absolute(fitted_params2[1]) - 2*sqrt(cov2[1, 1])
         highconf_omega02[i] = absolute(fitted_params2[1]) + 2*sqrt(cov2[1, 1])
         
@@ -192,41 +195,41 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
 
     # saving arrays of omega's and confidence intervals
     ## omega 1's
-    savetxt('../data/' + dirarg + 'saved/' + 'omega01_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega01.csv',
             omega01_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'omega01_low_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega01_low.csv',
             lowconf_omega01_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'omega01_high_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega01_high.csv',
             highconf_omega01_data, delimiter=',', fmt='%18.16f')
     
     ## omega 2's
-    savetxt('../data/' + dirarg + 'saved/' + 'omega02_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega02.csv',
             omega02_data,delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'omega02_low_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega02_low.csv',
             lowconf_omega02_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'omega02_high_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'omega02_high.csv',
             highconf_omega02_data, delimiter=',', fmt='%18.16f')
     
     ## gamma 1's
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma1_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma1.csv',
             gamma1_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma1_low_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma1_low.csv',
             lowconf_gamma1_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma1_high_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma1_high.csv',
             highconf_gamma1_data, delimiter=',', fmt='%18.16f')
     
     ## gamma 2's
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma2_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma2.csv',
             gamma2_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma2_low_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma2_low.csv',
             lowconf_gamma2_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high_' + sim_style + '.csv',
+    savetxt('../data/' + dirarg + 'saved/' + 'gamma2_high.csv',
             highconf_gamma2_data, delimiter=',', fmt='%18.16f')
 
     ## mu's
-    savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv', 
+    savetxt('../data/' + dirarg + 'saved/' + 'mu1.csv', 
             mu1_data, delimiter=',', fmt='%18.16f')
-    savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv', 
+    savetxt('../data/' + dirarg + 'saved/' + 'mu2.csv', 
             mu2_data, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
