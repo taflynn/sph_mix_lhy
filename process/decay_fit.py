@@ -231,7 +231,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
             mu1_data, delimiter=',', fmt='%18.16f')
     savetxt('../data/' + dirarg + 'saved/' + 'mu2.csv', 
             mu2_data, delimiter=',', fmt='%18.16f')
-    
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Fitting decay rate of breathing modes')
     parser.add_argument('--read_path','-rp',

@@ -97,7 +97,7 @@ def eqm_dens_ulck_ham1(psi1, psi2, V1, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta,
     H_mu[1:-1] = -mu*psi1[1:-1]
 
     return H_ke, H_trap, H_int, H_lhy, H_mu
-    
+
 def eqm_dens_ulck_ham2(psi1, psi2, V2, r, Dr, Dr2, dr, N1, N2, alpha, beta, eta, mu, im_real):
     """
     The Gross-Pitaevskii (GP) Hamiltonian for the 2nd-component of the density-unlocked mixture is defined here. 

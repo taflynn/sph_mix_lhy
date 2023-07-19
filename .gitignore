@@ -4,6 +4,7 @@
 __pycache__
 .ipynb_checkpoints/*
 main/.ipynb_checkpoints/
+process/.ipynb_checkpoints/
 # simulation data
 data/
 # old junk files
