@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-#SBATCH -p defq
+#SBATCH -p short
 module load Python
 
 mkdir ../data/${1}saved

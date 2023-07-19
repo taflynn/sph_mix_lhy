@@ -31,7 +31,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     def curve_fitting(t_array, centre_dens, A, B, C, D, F):
         # Extracting the fitted parameter values from the curve_fit function
         popt, popv = curve_fit(damp_sin_func, t_array[0:-1], centre_dens[0:-1],
-                               method='dogbox', p0=[A, B, C, D, F])
+                               p0=[A, B, C, D, F])
         return popt, popv
 
     # extract values of density arrays and time arrays after the first max of the oscillating density
@@ -121,8 +121,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         cut_trap_period = t_cutoff*0.5*(2*pi/theory_omg1)
 
         # read in data
-        t_centre_n1 = loadtxt('../data/' + dirarg + str(i+1) + '/n01.csv', delimiter=",")
-        t_centre_n2 = loadtxt('../data/' + dirarg + str(i+1) + '/n02.csv', delimiter=",")
+        t_centre_n1 = loadtxt('../data/' + dirarg + str(i+1) + '/n01_centred.csv', delimiter=",")
+        t_centre_n2 = loadtxt('../data/' + dirarg + str(i+1) + '/n02_centred.csv', delimiter=",")
         
         if imbal_size == 'IMBAL':
             imb_size_array[i] = theory['N1']-theory['N2']
@@ -146,10 +146,10 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         # fit central density oscillations to damped sine curve
         [fitted_params1, cov1] = curve_fitting(cut_t, cut_n1,
                                                absolute(cut_n1.max() - cut_n1.min()),
-                                               0.3, pi, mean(cut_n1), 0.01)
+                                               0.3, pi, mean(cut_n1), 0.03)
         [fitted_params2, cov2] = curve_fitting(cut_t, cut_n2,
                                                absolute(cut_n2.max() - cut_n2.min()),
-                                               0.3, pi, mean(cut_n1), 0.01)
+                                               0.3, pi, mean(cut_n1), 0.03)
         
         # extract breathing mode frequency and decay rate of oscillation for component 1
         omega01_array[i] = absolute(fitted_params1[1])
