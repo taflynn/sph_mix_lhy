@@ -202,6 +202,6 @@ def ham2_uneqm_dens_ulck(psi1, psi2, V2, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, 
 
     H_trap[1:-1] = V2[1:-1]*psi2[1:-1]
 
-    H_mu[1:-1] = -mu*psi2[1:-1]
+    H_mu[1:-1] = -beta*mu*psi2[1:-1]
     
     return H_ke, H_trap, H_int, H_lhy, H_mu

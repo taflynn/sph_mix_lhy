@@ -435,9 +435,9 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
     
     for l in range(0,T_STEPS):
         # k1 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1, psi2, V1 , r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = ham1_uneqm_dens_ulck(psi1, psi2, V1 , r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu1, IM_REAL)
 
-        k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
+        k1_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
         # BOUNDARY CONDITION
         k1_1 = bc(k1_1, BC_TYPE)
@@ -451,10 +451,10 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k1_2 = bc(k1_2, BC_TYPE)
 
         # k2 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k1_1/2.0, psi2 + k1_2/2.0, 
-                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = ham1_uneqm_dens_ulck(psi1 + k1_1/2.0, psi2 + k1_2/2.0, 
+                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu1, IM_REAL)
 
-        k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
+        k2_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
         # BOUNDARY CONDITION
         k2_1 = bc(k2_1, BC_TYPE)
@@ -468,10 +468,10 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k2_2 = bc(k2_2, BC_TYPE)
 
         # k3 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k2_1/2.0, psi2 + k2_2/2.0,
-                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = ham1_uneqm_dens_ulck(psi1 + k2_1/2.0, psi2 + k2_2/2.0,
+                                                                       V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu1, IM_REAL)
 
-        k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
+        k3_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
         # BOUNDARY CONDITION
         k3_1 = bc(k3_1, BC_TYPE)
@@ -486,10 +486,10 @@ def rk4_uneqm_dens_ulck(r, psi1, psi2, V1, V2, gam, z, alpha, beta, eta, K_3bl, 
         k3_2 = bc(k3_2, BC_TYPE)
 
         # k4 CALCULATION FOR PSI1
-        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1, H_3bl] = ham1_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2,
-                                                                              V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, K_3bl, mu1, IM_REAL)
+        [H_ke1, H_trap1, H_int1, H_lhy1, H_mu1] = ham1_uneqm_dens_ulck(psi1 + k3_1, psi2 + k3_2,
+                                                                       V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, beta, eta, mu1, IM_REAL)
 
-        k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1] + H_3bl[1:-1])
+        k4_1[1:-1] = -dt*(H_ke1[1:-1] + H_trap1[1:-1] + H_lhy1[1:-1] + H_int1[1:-1] + H_mu1[1:-1])
 
         # BOUNDARY CONDITION
         k4_1 = bc(k4_1, BC_TYPE)
