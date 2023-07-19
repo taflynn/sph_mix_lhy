@@ -25,6 +25,7 @@ class Unbuffered(object):
 def centre_dens(dirarg, job_no, job_frames):
     if job_no > 0:
         fname = 'config_dens_ulck' + str(job_no) + '.json'
+        dirarg = dirarg + str(job_no)
     elif job_no == 0:
         fname = 'config_dens_ulck.json'
 
