@@ -22,7 +22,7 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
-def run_ulck_process(dirarg,num_sims,imbal_size):
+def run_ulck_process(dirarg, num_sims, imbal_size, which_maj):
     if imbal_size == 'Nr': 
         sim_style = 'box_size'
     elif imbal_size == 'perc':
@@ -46,7 +46,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     mu2_out_array = np.empty((num_sims, 1))
     ## independent variables
     Nr_or_perc_array = np.empty((num_sims, 1))
-    N1_array = np.empty((num_sims, 1))
+    Ns_array = np.empty((num_sims, 1))
     
     # file to save print outputs to
     sys.stdout=open('../data/' + dirarg + 'saved/' +'process.out', "w")
@@ -70,8 +70,14 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         f.close()
 
         if imbal_size == 'perc':
-            Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
-            N1_array[i] = theory['N1'] - theory['N2']
+            if which_maj == 1:
+                Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
+                Ns_array[i] = theory['N1'] - theory['N2']
+                print('1st-component is majority')
+            elif which_maj == 2:
+                Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
+                Ns_array[i] = theory['N2'] - theory['N1']
+                print('2nd-component is majority')
         elif imbal_size == 'Nr':
             Nr_or_perc_array[i] = 1/(dr*setup['Nr'])
         
@@ -99,16 +105,16 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         mu2_out_array[i] = theory['mu2']
  
     # concatenating data into 2D array of omega and gamma for component 1 
-    dens_data = np.column_stack((Nr_or_perc_array, del_dens_out_array))
-    dens1_end_data = np.column_stack((Nr_or_perc_array, end_dens1_out_array))
-    dens2_end_data = np.column_stack((Nr_or_perc_array, end_dens2_out_array))
-    eng_data = np.column_stack((Nr_or_perc_array, energy_out_array))
-    mu1_data = np.column_stack((Nr_or_perc_array, mu1_out_array))
-    mu2_data = np.column_stack((Nr_or_perc_array, mu2_out_array))
+    dens_data = np.column_stack((Ns_array, del_dens_out_array))
+    dens1_end_data = np.column_stack((Ns_array, end_dens1_out_array))
+    dens2_end_data = np.column_stack((Ns_array, end_dens2_out_array))
+    eng_data = np.column_stack((Ns_array, energy_out_array))
+    mu1_data = np.column_stack((Ns_array, mu1_out_array))
+    mu2_data = np.column_stack((Ns_array, mu2_out_array))
     
     # new outputs, as function of N1
-    del_dens_v_N1 = np.column_stack((N1_array, del_dens_out_array))
-    near_end1_v_N1 = np.column_stack((N1_array, near_end_dens1_out_array))
+    del_dens_v_N1 = np.column_stack((Ns_array, del_dens_out_array))
+    near_end1_v_N1 = np.column_stack((Ns_array, near_end_dens1_out_array))
 
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'del_dens_' + sim_style + '.csv', dens_data, delimiter=',', fmt='%18.16f')
@@ -118,8 +124,8 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv', mu1_data, delimiter=',', fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv', mu2_data, delimiter=',', fmt='%18.16f')
 
-    np.savetxt('../data/' + dirarg + 'saved/' + 'N1_v_del_dens_' + sim_style + '.csv', del_dens_v_N1, delimiter=',', fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'N1_v_near_end1_' + sim_style + '.csv', near_end1_v_N1, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_del_dens_' + sim_style + '.csv', del_dens_v_N1, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_near_end1_' + sim_style + '.csv', near_end1_v_N1, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')
@@ -138,5 +144,10 @@ if __name__ == '__main__':
             type = str,
             required = True,
             nargs = 1)
+    parser.add_argument('--which_maj','-wm',
+            dest = 'WHICH_COMP_IS_MAJ',
+            type = int,
+            required = True,
+            nargs = 1)
     args = parser.parse_args()
-    run_ulck_process(args.READ_PATH[0], args.NUM_SIMS[0], args.IMBAL_SIZE[0])
+    run_ulck_process(args.READ_PATH[0], args.NUM_SIMS[0], args.IMBAL_SIZE[0], args.WHICH_COMP_IS_MAJ[0])
