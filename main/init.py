@@ -134,6 +134,7 @@ def init_wavefun_dens_ulck(r, dr, GAUSS_SIGMA1, GAUSS_SIGMA2, INIT_TYPE1, INIT_T
     Norm = 4*pi*trapz(r**2*abs(psi2)**2)*dr
     psi2 = psi2/sqrt(Norm) 
     print(67*'-')
+
     return psi1, psi2
 
 def potential_dens_lck(r,OMEGA,tau,dim_pot):
