@@ -61,7 +61,7 @@ def run_ulck_process(dirarg,num_sims,imbal_size):
         f = open('../data/' + dirarg + str(i + 1)  + '/' + fname, "r")
         setup = json.loads(f.read())
         f.close()
-      
+    
         dr = setup['dr']
 
         # read in theory parameters
