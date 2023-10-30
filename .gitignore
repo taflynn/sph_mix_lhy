@@ -26,6 +26,6 @@ texdocs/
 sph_drop/
 # pdf files
 process/*.pdf
-./*.pdf
+*.pdf
 # old codes
 main/old_dim_converters/
