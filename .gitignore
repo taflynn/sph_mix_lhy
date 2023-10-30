@@ -26,3 +26,4 @@ texdocs/
 sph_drop/
 # pdf files
 process/*.pdf
+./*.pdf
