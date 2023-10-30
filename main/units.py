@@ -4,28 +4,26 @@ def units(m1, m2, a11, a22, a12, n01):
     """
     time and length scales
     """
-    # natural constants
-    [hbar,a0,Da] = natural_consts()
-
     if m1 == m2:
         m = m1
         delta_a = a12 + sqrt(a11*a22)
         
         # length and time scaling
         xi = sqrt((3/(8*pi))*((sqrt(a11) + sqrt(a22))/(absolute(delta_a)*sqrt(a11)*n01)))
-        tau = (3*m/(8*pi*hbar))*((sqrt(a11) + sqrt(a22))/(absolute(delta_a)*sqrt(a11)*n01))
+        tau = (3*m/(8*pi))*((sqrt(a11) + sqrt(a22))/(absolute(delta_a)*sqrt(a11)*n01))
         
     elif m1 != m2:
         # interaction strengths
-        g11 = 4*pi*hbar**2*a11/m1
-        g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
-        g22 = 4*pi*hbar**2*a22/m2
+        g11 = 4*pi*a11/m1
+        g22 = 4*pi*a22/m2
+        g12 = 2*pi*a12*(1/m1 + 1/m2)
+
         deltag = g12 + sqrt(g11*g22)
         
         # length and time scaling
-        xi = hbar*sqrt(1.5*(sqrt(g22)/m1 + sqrt(g11)/m2)/(absolute(deltag)*sqrt(g11)*n01))
-        tau = hbar*1.5*(sqrt(g11) + sqrt(g22))/(absolute(deltag)*sqrt(g11)*n01)
-        
+        xi = sqrt((3/2)*(sqrt(g22)/m1 + sqrt(g11)/m2)/(absolute(deltag)*sqrt(g11)*n01))
+        tau = (3/2)*(sqrt(g11) + sqrt(g22))/(absolute(deltag)*sqrt(g11)*n01)
+
     return xi, tau
 
 def natural_consts():

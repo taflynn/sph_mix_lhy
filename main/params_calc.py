@@ -1,5 +1,5 @@
 from numpy import pi, sqrt, absolute
-from main.equil_dens import eq_dens_lck,eq_dens_ulck
+from main.equil_dens import eq_dens_lck
 from main.units import units,natural_consts
 
 def params_dens_lck(m1, m2, a11, a22, a12, N):
@@ -78,13 +78,8 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
     [hbar, a0, Da] = natural_consts()
     
     if m1 == m2:
-        a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
-        m1 = m1*Da; m2 = m2*Da
         # equilibrium densities equal masses solving coupled equations
-        n01, n02 = eq_dens_ulck(m1, m2, a11, a22, a12)
-        
-        # equilibrium densities equal masses with density-lock
-        #n01,n02 = eq_dens_lck(m1,m2,a11,a22,a12)
+        n01, n02 = eq_dens_lck(m1, m2, a11, a22, a12)
         
         delta_a = a12 + sqrt(a11*a22)
         
@@ -104,10 +99,19 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
             print('Balancing N1 to the value of N2')
             N1 = N2*sqrt(a22/a11)
 
-        dim_pot = (m1*tau*xi**2)/hbar
+        dim_pot = (Da**2*a0**4/hbar**4)*(m1*xi**2*tau)
 
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
+
+        # define dimensional scalings in terms of SI units
+        n01 = n01*a0**-3
+        n02 = n02*a0**-3
+        rho1 = rho1*a0**-3
+        rho2 = rho2*a0**-3
+        xi = xi*a0
+        tau = tau*(Da*a0**2)/hbar
+
         print('Calculating defining parameters and scales for density-unlocked mixture (equal masses):')
         print('Dimensionless parameters of mixture:')
         print(f'alpha = {alpha}, beta = {beta}, eta = {eta}')
@@ -121,21 +125,18 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
     elif m1 != m2:
         # equilibrium densities unequal masses
         z = m2/m1
-        a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
-        m1 = m1*Da; m2 = m2*Da    
+
+        g11 = 4*pi*a11/m1
+        g22 = 4*pi*a22/m2
+        g12 = 2*pi*a12*(1/m1 + 1/m2)
         
         # equilibrium densities equal masses with density-lock
-        n01,n02 = eq_dens_lck(m1,m2,a11,a22,a12)
-        
-        # defining effective interaction strenghts
-        g11 = 4*pi*hbar**2*a11/m1
-        g22 = 4*pi*hbar**2*a22/m2
-        g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
+        n01, n02 = eq_dens_lck(m1,m2,a11,a22,a12)
         
         delta_g = g12 + sqrt(g11*g22)
         
         gam = (sqrt(g11) + sqrt(g22))/(m1*(sqrt(g11)/m2 + sqrt(g22)/m1))
-        alpha = (8/(15*pi**2))*sqrt((2/3)*(m1/hbar**2)**3*(absolute(delta_g)*g11**2.5*n01)/(sqrt(g11) + sqrt(g22)))
+        alpha = (4/(3*pi**2.0))*sqrt((2/3)*m1**3*(absolute(delta_g)*g11**2.5*n01)/(sqrt(g11) + sqrt(g22)))
         beta = sqrt(g22/g11)
         eta = g12/sqrt(g11*g22)
         
@@ -143,7 +144,7 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
         rho2 = (2/3)*((absolute(delta_g)*n01)/(sqrt(g22)*(sqrt(g11) + sqrt(g22))))
 
         xi, tau = units(m1, m2, a11, a22, a12, n01)
-        
+
         if BALANCE == 1:
             print('Balancing N2 to the value of N1')
             N2 = N1*sqrt(g11/g22)
@@ -153,11 +154,20 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
             N1 = N2*sqrt(g22/g11)
             print(f'Experimental N1 = {N1}')
 
-        dim_pot1 = (m1*xi**2*tau)/hbar#(sqrt(g22) + (m1/m2)*sqrt(g11))/(sqrt(g11) + sqrt(g22))
-        dim_pot2 = (m2*xi**2*tau)/hbar#((m2/m1)*sqrt(g22) + sqrt(g11))/(sqrt(g11) + sqrt(g22))
-
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
+
+        dim_pot1 = (Da**2*a0**4/hbar**4)*(m1*xi**2*tau)
+        dim_pot2 = (Da**2*a0**4/hbar**4)*(m2*xi**2*tau)
+        
+        # define dimensional scalings in terms of SI units
+        n01 = n01*a0**-3
+        n02 = n02*a0**-3
+        rho1 = rho1*a0**-3
+        rho2 = rho2*a0**-3
+        xi = xi*a0
+        tau = tau*(Da*a0**2)/hbar
+ 
         print(f'Calculating defining parameters and scales for density-unlocked mixture (mass ratio z = {z}):')
         print('Dimensionless parameters of mixture:')
         print(f'gamma = {gam}')

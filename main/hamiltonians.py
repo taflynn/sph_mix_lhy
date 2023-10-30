@@ -154,7 +154,7 @@ def ham1_uneqm_dens_ulck(psi1, psi2, V1, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi1) + (Dr2 @ psi1)
     H_ke[1:-1] = -0.5*gam*KE[1:-1] # KE term  
 
-    H_lhy[1:-1] = 2.5*alpha*(N1*absolute(psi1[1:-1])**2 + N2*z**0.6*beta*absolute(psi2[1:-1])**2)**1.5*psi1[1:-1]
+    H_lhy[1:-1] = alpha*(N1*absolute(psi1[1:-1])**2 + N2*z**0.6*beta*absolute(psi2[1:-1])**2)**1.5*psi1[1:-1]
 
     H_int[1:-1] = (N1*absolute(psi1[1:-1])**2 + eta*N2*absolute(psi2[1:-1])**2)*psi1[1:-1]
 
@@ -196,13 +196,12 @@ def ham2_uneqm_dens_ulck(psi1, psi2, V2, r, Dr, Dr2, dr, N1, N2, gam, z, alpha, 
     KE[1:-1] = (2/r[1:-1])*(Dr @ psi2) + (Dr2 @ psi2)
     H_ke[1:-1] = -0.5*(gam/z)*KE[1:-1] # KE term  
     
-    H_lhy[1:-1] = 2.5*alpha*beta**2.0*z**0.6*(N1*absolute(psi1[1:-1])**2 + N2*z**0.6*beta*absolute(psi2[1:-1])**2)**1.5*psi2[1:-1]
+    H_lhy[1:-1] = alpha*beta**2.0*z**0.6*(N1*absolute(psi1[1:-1])**2 + N2*z**0.6*beta*absolute(psi2[1:-1])**2)**1.5*psi2[1:-1]
 
     H_int[1:-1] = (beta*N2*absolute(psi2[1:-1])**2 + eta*beta*N1*absolute(psi1[1:-1])**2)*psi2[1:-1]
 
     H_trap[1:-1] = V2[1:-1]*psi2[1:-1]
 
-    H_mu[1:-1] = -mu*psi2[1:-1]
     H_mu[1:-1] = -mu*psi2[1:-1]
     
     return H_ke, H_trap, H_int, H_lhy, H_mu
@@ -302,18 +301,18 @@ def lhy_category(psi1, psi2, beta, tol, f_interp, df_interp):
 
 
 def lhy_ham1_uneqm(psi1, psi2, alpha, beta, f, dfdx):
-    return alpha*(2.5*f*absolute(psi1)**3 
-                  - beta*dfdx*absolute(psi1)*absolute(psi2)**2)*psi1
+    return alpha*(f*absolute(psi1)**3 
+                  - 0.4*beta*dfdx*absolute(psi1)*absolute(psi2)**2)*psi1
 
 def lhy_ham2_uneqm(psi1, psi2, alpha, beta, f, dfdx):
-    return alpha*beta**2*dfdx*absolute(psi1)**3*psi2
+    return 0.4*alpha*beta**2*dfdx*absolute(psi1)**3*psi2
 
 def inv_lhy_ham1_uneqm(psi1, psi2, alpha, beta, f, dfdx):
-    return alpha*beta**1.5*dfdx*absolute(psi2)**3*psi1
+    return 0.4*alpha*beta**1.5*dfdx*absolute(psi2)**3*psi1
 
 def inv_lhy_ham2_uneqm(psi1, psi2, alpha, beta, f, dfdx):
-    return alpha*beta**2.5*(2.5*beta*f*absolute(psi2)**3 
-                            - dfdx*absolute(psi1)**2*absolute(psi2))*psi2
+    return alpha*beta**2.5*(beta*f*absolute(psi2)**3 
+                            - 0.4*dfdx*absolute(psi1)**2*absolute(psi2))*psi2
 
 def ham_checker(f_category, psi1, psi2, alpha, beta, f, dfdx):   
     if f_category == 'std':
