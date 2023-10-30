@@ -29,3 +29,6 @@ process/*.pdf
 *.pdf
 # old codes
 main/old_dim_converters/
+# testing codes
+het_gp_checks.py
+updated_params.py
