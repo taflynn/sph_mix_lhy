@@ -99,7 +99,7 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
             print('Balancing N1 to the value of N2')
             N1 = N2*sqrt(a22/a11)
 
-        dim_pot = (Da**2*a0**4/hbar**4)*(m1*xi**2*tau)
+        dim_pot = (Da**2*a0**4/hbar**2)*(m1*xi**2*tau)
 
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
@@ -157,8 +157,8 @@ def params_dens_ulck(m1, m2, a11, a22, a12, N1, N2, BALANCE):
         N1 = N1/(rho1*xi**3)
         N2 = N2/(rho2*xi**3)
 
-        dim_pot1 = (Da**2*a0**4/hbar**4)*(m1*xi**2*tau)
-        dim_pot2 = (Da**2*a0**4/hbar**4)*(m2*xi**2*tau)
+        dim_pot1 = (Da**2*a0**4/hbar**2)*(m1*xi**2*tau)
+        dim_pot2 = (Da**2*a0**4/hbar**2)*(m2*xi**2*tau)
         
         # define dimensional scalings in terms of SI units
         n01 = n01*a0**-3
