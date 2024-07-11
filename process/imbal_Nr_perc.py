@@ -72,11 +72,11 @@ def run_ulck_process(dirarg, num_sims, imbal_size, which_maj):
         if imbal_size == 'perc':
             if which_maj == 1:
                 Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
-                Ns_array[i] = theory['N1'] - theory['N2']
+                Ns_array[i] = (theory['N1'] - theory['N2'])*10**(-3)
                 print('1st-component is majority')
             elif which_maj == 2:
                 Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
-                Ns_array[i] = theory['N2'] - theory['N1']
+                Ns_array[i] = (theory['N2'] - theory['N1'])*10**(-3)
                 print('2nd-component is majority')
         elif imbal_size == 'Nr':
             Nr_or_perc_array[i] = 1/(dr*setup['Nr'])
