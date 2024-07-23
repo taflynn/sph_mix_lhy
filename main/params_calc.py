@@ -1,6 +1,6 @@
 from numpy import pi, sqrt, absolute
 from main.equil_dens import eq_dens_lck
-from main.units import units,natural_consts
+from main.units import units,units_lck,natural_consts
 
 def params_dens_lck(m1, m2, a11, a22, a12, N):
     """
@@ -24,7 +24,7 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
     n01, n02 = eq_dens_lck(m1, m2, a11, a22, a12)
     
     # length and time scales
-    xi, tau = units(m1, m2, a11, a22, a12, n01)
+    xi, tau = units_lck(m1, m2, a11, a22, a12, n01)
     
     # density-locked effective atom number
     if m1 == m2:
@@ -42,7 +42,8 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
         g12 = 2*pi*hbar**2*a12*(1/m1 + 1/m2)
         g22 = 4*pi*hbar**2*a22/m2
         
-        dim_pot = (m1*m2/(m1 + m2))*(tau*xi**2)/hbar
+        #dim_pot = (m1*m2/(m1 + m2))*(tau*xi**2)/hbar
+        dim_pot = (m1*m2/(m1 + m2))*(tau*xi**2)*hbar
         
         N_lck = (N/(n01*xi**3))*(sqrt(g22)/(sqrt(g11) + sqrt(g22)))
         print('Balanced experimental N1 = ', N*(sqrt(g22)/(sqrt(g11) + sqrt(g22))))
