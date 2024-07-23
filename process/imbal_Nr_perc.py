@@ -72,11 +72,11 @@ def run_ulck_process(dirarg, num_sims, imbal_size, which_maj):
         if imbal_size == 'perc':
             if which_maj == 1:
                 Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
-                Ns_array[i] = theory['N1'] - theory['N2']
+                Ns_array[i] = (theory['N1'] - theory['N2'])*10**(-3)
                 print('1st-component is majority')
             elif which_maj == 2:
                 Nr_or_perc_array[i] = ((setup['N1'] - setup['N2'])/setup['N2'])*100.0
-                Ns_array[i] = theory['N2'] - theory['N1']
+                Ns_array[i] = (theory['N2'] - theory['N1'])*10**(-3)
                 print('2nd-component is majority')
         elif imbal_size == 'Nr':
             Nr_or_perc_array[i] = 1/(dr*setup['Nr'])
@@ -113,8 +113,8 @@ def run_ulck_process(dirarg, num_sims, imbal_size, which_maj):
     mu2_data = np.column_stack((Ns_array, mu2_out_array))
     
     # new outputs, as function of N1
-    del_dens_v_N1 = np.column_stack((Ns_array, del_dens_out_array))
-    near_end1_v_N1 = np.column_stack((Ns_array, near_end_dens1_out_array))
+    del_dens_v_N = np.column_stack((Ns_array, del_dens_out_array))
+    near_end1_v_N = np.column_stack((Ns_array, near_end_dens1_out_array))
 
     # saving arrays of omega's and confidence intervals
     np.savetxt('../data/' + dirarg + 'saved/' + 'del_dens_' + sim_style + '.csv', dens_data, delimiter=',', fmt='%18.16f')
@@ -124,8 +124,8 @@ def run_ulck_process(dirarg, num_sims, imbal_size, which_maj):
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu1_' + sim_style + '.csv', mu1_data, delimiter=',', fmt='%18.16f')
     np.savetxt('../data/' + dirarg + 'saved/' + 'mu2_' + sim_style + '.csv', mu2_data, delimiter=',', fmt='%18.16f')
 
-    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_del_dens_' + sim_style + '.csv', del_dens_v_N1, delimiter=',', fmt='%18.16f')
-    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_near_end1_' + sim_style + '.csv', near_end1_v_N1, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_del_dens_' + sim_style + '.csv', del_dens_v_N, delimiter=',', fmt='%18.16f')
+    np.savetxt('../data/' + dirarg + 'saved/' + 'N_v_near_end1_' + sim_style + '.csv', near_end1_v_N, delimiter=',', fmt='%18.16f')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Process data of density-unlocked mixture simulation')

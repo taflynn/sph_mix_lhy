@@ -4,7 +4,7 @@ from numpy import pi, sqrt, tan, cos, linspace, empty, arcsin
 from main.units import units, natural_consts
 
 from scipy.special import ellipeinc,ellipe,ellipkinc,ellipk
-from scipy.interpolate import CubicHermiteSpline
+#from scipy.interpolate import CubicHermiteSpline
 
 def eq_dens_lck(m1,m2,a11,a22,a12):
     if m1 == m2:
