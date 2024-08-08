@@ -18,8 +18,6 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
     -> N1,N2 - the two component atom numbers
     """
     [hbar, a0, Da] = natural_consts()
-    a11 = a11*a0; a22 = a22*a0; a12 = a12*a0
-    m1 = m1*Da; m2 = m2*Da
     # equilibrium densities equal masses
     n01, n02 = eq_dens_lck(m1, m2, a11, a22, a12)
     
@@ -49,6 +47,10 @@ def params_dens_lck(m1, m2, a11, a22, a12, N):
         print('Balanced experimental N1 = ', N*(sqrt(g22)/(sqrt(g11) + sqrt(g22))))
         print('Balanced experimental N2 = ', N*(sqrt(g11)/(sqrt(g11) + sqrt(g22))))
  
+    n01 = n01*a0**-3
+    n02 = n02*a0**-3
+    xi = xi*a0
+    tau = tau*(Da*a0**2)/hbar
     print('Calculating defining parameters and scales for density locked mixture:')
     print(f'Effective atom number of density-locked mixture, N_lck = {N_lck}')
     print(f'Lengthscale, xi = {xi}')
